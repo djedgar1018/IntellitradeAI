@@ -197,6 +197,10 @@ class DataIngestion:
         try:
             stock_data = {}
             
+            # Validate symbols input
+            if not symbols:
+                return stock_data
+            
             for symbol in symbols:
                 try:
                     # Create ticker object
