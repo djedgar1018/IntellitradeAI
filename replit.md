@@ -105,4 +105,27 @@ Preferred communication style: Simple, everyday language.
 - **Future Enhancement**: The architecture supports easy migration to database systems
 - **Data Persistence**: Model states and application data are maintained in session state and files
 
+## Recent Changes
+
+- **2025-01-17**: Added dedicated `data/data_ingestion.py` module for API calls
+- **2025-01-17**: Created `models/model_trainer.py` for centralized ML model training
+- **2025-01-17**: Implemented comprehensive `.gitignore` file to protect sensitive data
+- **2025-01-17**: Fixed TensorFlow compatibility issues by making LSTM model optional
+- **2025-01-17**: Resolved technical indicators calculation errors
+- **2025-01-17**: Enhanced error handling for cache validity checks
+
+## File Structure Updates
+
+### Data Layer
+- `data/data_ingestion.py`: Centralized API calls for cryptocurrency and stock data
+- `data/crypto_data.json`: Cached cryptocurrency data
+- `data/stock_data.json`: Cached stock market data
+
+### Models Layer
+- `models/model_trainer.py`: Centralized ML model training logic
+- `models/lstm_model.py`: LSTM neural network (optional, requires TensorFlow)
+- `models/random_forest_model.py`: Random Forest classifier/regressor
+- `models/xgboost_model.py`: XGBoost classifier/regressor
+- `models/model_comparison.py`: Framework for comparing model performance
+
 The system is designed to be extensible and maintainable, with clear separation of concerns and standardized interfaces between components. The configuration-driven approach allows for easy customization of model parameters, API endpoints, and system behavior.
