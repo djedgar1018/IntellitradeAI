@@ -1,9 +1,10 @@
 # features/feature_engineering.py
 import pandas as pd
 import numpy as np
-from ta.momentum import RSIIndicator
-from ta.trend import MACD, EMAIndicator
-from ta.volatility import BollingerBands
+# Temporarily disable ta imports due to missing library
+# from ta.momentum import RSIIndicator
+# from ta.trend import MACD, EMAIndicator
+# from ta.volatility import BollingerBands
 
 def build_features(df: pd.DataFrame, horizon: int = 1):
     """
@@ -26,16 +27,27 @@ def build_features(df: pd.DataFrame, horizon: int = 1):
     x["upper_shadow"] = x["high"] - x[["close","open"]].max(axis=1)
     x["lower_shadow"] = x[["close","open"]].min(axis=1) - x["low"]
 
-    # technicals
-    x["rsi"] = RSIIndicator(close=x["close"]).rsi()
-    x["ema20"] = EMAIndicator(close=x["close"], window=20).ema_indicator()
-    macd = MACD(close=x["close"])
-    x["macd"] = macd.macd()
-    x["macd_diff"] = macd.macd_diff()
-    bb = BollingerBands(close=x["close"])
-    x["bb_mavg"] = bb.bollinger_mavg()
-    x["bb_high"] = bb.bollinger_hband()
-    x["bb_low"] = bb.bollinger_lband()
+    # technicals (simplified without ta library)
+    # Simple RSI approximation
+    delta = x["close"].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    x["rsi"] = 100 - (100 / (1 + gain / loss))
+    
+    # Simple EMA
+    x["ema20"] = x["close"].ewm(span=20).mean()
+    
+    # Simple MACD approximation
+    ema12 = x["close"].ewm(span=12).mean()
+    ema26 = x["close"].ewm(span=26).mean()
+    x["macd"] = ema12 - ema26
+    x["macd_diff"] = x["macd"].ewm(span=9).mean()
+    
+    # Simple Bollinger Bands
+    x["bb_mavg"] = x["close"].rolling(window=20).mean()
+    bb_std = x["close"].rolling(window=20).std()
+    x["bb_high"] = x["bb_mavg"] + (bb_std * 2)
+    x["bb_low"] = x["bb_mavg"] - (bb_std * 2)
 
     # time/cycle
     x["dow"] = x.index.dayofweek
