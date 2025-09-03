@@ -8,7 +8,6 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import plotly.express as px
 from datetime import datetime, timedelta
 import time
 import sys
@@ -24,11 +23,12 @@ from utils.data_cleaner import DataCleaner
 from utils.explainability import ExplainabilityEngine
 # LSTM model temporarily disabled due to TensorFlow compatibility issues
 LSTM_AVAILABLE = False
-from models.random_forest_model import RandomForestPredictor
-from models.xgboost_model import XGBoostPredictor
-from models.model_comparison import ModelComparison
-from backtest.backtesting_engine import BacktestingEngine
-from backtest.metrics import BacktestMetrics
+# Temporarily comment out complex model imports to fix import errors
+# from models.random_forest_model import make_model as make_rf_model
+# from models.xgboost_model import make_model as make_xgb_model
+# from models.model_comparison import compare_models
+# from backtest.backtesting_engine import simulate_long_flat, proba_to_signal
+# from backtest.metrics import BacktestMetrics
 from ranking.tool_ranking import ToolRanking
 from analysis.cross_market import CrossMarketAnalysis
 from config import config
@@ -760,17 +760,17 @@ def settings_page():
     
     col1, col2 = st.columns(2)
     with col1:
-        st.info(f"**Data Sources:** Yahoo Finance, CoinMarketCap")
+        st.info("**Data Sources:** Yahoo Finance, CoinMarketCap")
         models_text = "Random Forest, XGBoost"
         if LSTM_AVAILABLE:
             models_text = "LSTM, " + models_text
         st.info(f"**ML Models:** {models_text}")
-        st.info(f"**Technical Indicators:** RSI, MACD, Bollinger Bands, EMA")
+        st.info("**Technical Indicators:** RSI, MACD, Bollinger Bands, EMA")
     
     with col2:
-        st.info(f"**Backtesting:** Custom engine with comprehensive metrics")
-        st.info(f"**Explainability:** SHAP-based model interpretation")
-        st.info(f"**Cross-Market:** Correlation and arbitrage analysis")
+        st.info("**Backtesting:** Custom engine with comprehensive metrics")
+        st.info("**Explainability:** SHAP-based model interpretation")
+        st.info("**Cross-Market:** Correlation and arbitrage analysis")
     
     # Clear cache button
     if st.button("🗑️ Clear Cache", type="secondary"):

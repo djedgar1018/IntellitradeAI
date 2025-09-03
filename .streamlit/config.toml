@@ -1,7 +1,12 @@
 [server]
 headless = true
-address = "0.0.0.0"
-port = 5000
+port = 8501
+enableCORS = false
+enableXsrfProtection = false
 
 [theme]
-base = "light"
+base="light"
+primaryColor="#1f6feb"
+backgroundColor="#ffffff"
+secondaryBackgroundColor="#f6f8fa"
+textColor="#0d1117"
