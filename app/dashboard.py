@@ -3,24 +3,14 @@ IntelliTradeAI Dashboard
 Streamlit interface for the AI trading agent
 """
 
-# --- make project root importable when running from app/ ---
-import os, sys
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if ROOT_DIR not in sys.path:
-    sys.path.insert(0, ROOT_DIR)
-# -----------------------------------------------------------
-
 # app/dashboard.py
-import time, json
+import os, time, json
 import streamlit as st
 import pandas as pd
 
 from data.data_ingestion import DataIngestion
 from models.model_comparison import compare_models
 from backtest.backtesting_engine import simulate_long_flat, proba_to_signal
-from backtest.features.feature_engineering import build_features
-import joblib
-import numpy as np
 
 EXPERIMENTS_DIR = os.getenv("EXPERIMENTS_DIR","experiments")
 os.makedirs(EXPERIMENTS_DIR, exist_ok=True)
@@ -58,34 +48,22 @@ with tabs[1]:
             st.error("Add at least one crypto symbol.")
         else:
             dfmap = ing.fetch_mixed_data(symbols_c[:1], [], period=period, interval=interval)
-            sym, df = list(dfmap.items())[0]
-            scoreboard, best_model, best_path = compare_models(df)
-            st.write("**Scoreboard:**")
-            st.dataframe(scoreboard, use_container_width=True)
-            st.success(f"Best: {best_model} ({best_path})")
-            # save result for thesis
-            rid = str(int(time.time()))
-            with open(os.path.join(EXPERIMENTS_DIR, f"compare_{rid}.json"), "w") as f:
-                json.dump({"symbol":sym,"scoreboard":scoreboard.to_dict("records"),"best":best_model, "path": best_path}, f, indent=2)
+            if not dfmap:
+                st.error("No data available. Please check symbols and try again.")
+            else:
+                sym, df = list(dfmap.items())[0]
+                scoreboard, best_model, best_path = compare_models(df)
+                st.write("**Scoreboard:**")
+                st.dataframe(scoreboard, use_container_width=True)
+                st.success(f"Best: {best_model} ({best_path})")
+                # save result for thesis
+                rid = str(int(time.time()))
+                with open(os.path.join(EXPERIMENTS_DIR, f"compare_{rid}.json"), "w") as f:
+                    json.dump({"symbol":sym,"scoreboard":scoreboard.to_dict("records"),"best":best_model, "path": best_path}, f, indent=2)
 
 with tabs[2]:
-    st.subheader("Backtest a probability signal file (or generate quickly)")
-    st.caption("For a quick demo, we create a simple thresholded signal from pct_change.")
-    thr = st.slider("Threshold (for demo proba→signal)", 0.5, 0.7, 0.55, 0.01)
-    if st.button("Run backtest (demo)"):
-        dfmap = ing.fetch_mixed_data([ "BTC" ], [], period=period, interval=interval)
-        sym, df = list(dfmap.items())[0]
-        demo_proba = df["close"].pct_change().rolling(5).mean().fillna(0)
-        # normalize to [0,1]
-        demo_proba = (demo_proba - demo_proba.min()) / (demo_proba.max()-demo_proba.min() + 1e-9)
-        sig = proba_to_signal(demo_proba, threshold=thr)
-        metrics, equity, trades = simulate_long_flat(df["close"], sig)
-        st.json(metrics)
-        st.line_chart(equity.set_index("date")["equity"])
-
-    # Add the model-driven backtesting section
     st.subheader("Backtest using best model probabilities")
-    thr_model = st.slider("Prob. threshold (long when ≥ threshold)", 0.50, 0.70, 0.55, 0.01)
+    thr = st.slider("Prob. threshold (long when ≥ threshold)", 0.50, 0.70, 0.55, 0.01)
 
     if st.button("Run backtest (best model)"):
         # 1) pick one symbol (stock or crypto)
@@ -132,10 +110,9 @@ with tabs[2]:
                     proba = model.predict(X).astype(float)
 
                 proba_s = pd.Series(proba, index=processed.index[:len(proba)])
-                signals = (proba_s >= thr_model).astype(int)
+                signals = (proba_s >= thr).astype(int)
 
                 # 5) Backtest
-                from backtest.backtesting_engine import simulate_long_flat
                 metrics, equity, trades = simulate_long_flat(processed["close"], signals)
                 st.json(metrics)
                 st.line_chart(equity.set_index("date")["equity"])
