@@ -13,7 +13,7 @@ class Config:
     """Configuration class for the AI Trading Agent"""
     
     # API Configuration
-    COINMARKETCAP_API_KEY = os.getenv("COINMARKETCAP_API_KEY", "default_key")
+    COINMARKETCAP_API_KEY = os.getenv("CMC_API_KEY", "default_key")
     COINMARKETCAP_BASE_URL = "https://pro-api.coinmarketcap.com/v1"
     
     # Yahoo Finance doesn't require API key
