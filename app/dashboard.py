@@ -3,14 +3,24 @@ IntelliTradeAI Dashboard
 Streamlit interface for the AI trading agent
 """
 
+# --- make project root importable when running from app/ ---
+import os, sys
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+# -----------------------------------------------------------
+
 # app/dashboard.py
-import os, time, json
+import time, json
 import streamlit as st
 import pandas as pd
 
 from data.data_ingestion import DataIngestion
 from models.model_comparison import compare_models
 from backtest.backtesting_engine import simulate_long_flat, proba_to_signal
+from backtest.features.feature_engineering import build_features
+import joblib
+import numpy as np
 
 EXPERIMENTS_DIR = os.getenv("EXPERIMENTS_DIR","experiments")
 os.makedirs(EXPERIMENTS_DIR, exist_ok=True)
