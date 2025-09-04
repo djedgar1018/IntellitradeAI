@@ -77,23 +77,34 @@ with tab_data:
             st.success(f"Loaded {len(MIX)} series")
             for sym, df in MIX.items():
                 st.markdown(f"**{sym}** ({len(df)} rows)")
-                # Create proper price chart with axis labels
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(
-                    x=df.index[-250:],
-                    y=df["close"].tail(250),
-                    mode='lines',
-                    name=f'{sym} Price',
-                    line=dict(color='blue')
-                ))
-                fig.update_layout(
-                    title=f'{sym} Price Chart',
-                    xaxis_title='Date',
-                    yaxis_title='Price (USD)',
-                    height=400,
-                    showlegend=True
-                )
-                st.plotly_chart(fig, use_container_width=True)
+                
+                if len(df) <= 1:
+                    st.warning(f"⚠️ {sym}: Only current price available (limited historical data)")
+                    if len(df) == 1:
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            st.metric(f"{sym} Price", f"${df['close'].iloc[0]:,.2f}")
+                        with col2:
+                            st.metric(f"{sym} Volume", f"${df['volume'].iloc[0]/1e6:.1f}M")
+                else:
+                    # Create proper price chart with axis labels
+                    fig = go.Figure()
+                    chart_data = df.tail(250) if len(df) > 250 else df
+                    fig.add_trace(go.Scatter(
+                        x=chart_data.index,
+                        y=chart_data["close"],
+                        mode='lines',
+                        name=f'{sym} Price',
+                        line=dict(color='blue')
+                    ))
+                    fig.update_layout(
+                        title=f'{sym} Price Chart',
+                        xaxis_title='Date',
+                        yaxis_title='Price (USD)',
+                        height=400,
+                        showlegend=True
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         if st.button("Quick-Load BTC from CoinMarketCap"):
@@ -103,24 +114,42 @@ with tab_data:
                 st.error("No BTC data returned. Check your CMC_API_KEY in .env/Secrets.")
             else:
                 df = BTC["BTC"]
-                st.success(f"BTC rows: {len(df)} (source: CMC)")
-                # Create proper BTC price chart with axis labels
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(
-                    x=df.index[-250:],
-                    y=df["close"].tail(250),
-                    mode='lines',
-                    name='BTC Price',
-                    line=dict(color='orange')
-                ))
-                fig.update_layout(
-                    title='Bitcoin (BTC) Price Chart',
-                    xaxis_title='Date',
-                    yaxis_title='Price (USD)',
-                    height=400,
-                    showlegend=True
-                )
-                st.plotly_chart(fig, use_container_width=True)
+                if len(df) == 1:
+                    st.warning(f"⚠️ Only current price available (CMC free tier limits historical data)")
+                    st.success(f"BTC current price: ${df['close'].iloc[0]:,.2f} (source: CMC)")
+                    
+                    # Show current price as a metric instead of empty chart
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Current Price", f"${df['close'].iloc[0]:,.2f}")
+                    with col2:
+                        st.metric("24h Volume", f"${df['volume'].iloc[0]/1e9:.1f}B")
+                    with col3:
+                        st.metric("High", f"${df['high'].iloc[0]:,.2f}")
+                    with col4:
+                        st.metric("Low", f"${df['low'].iloc[0]:,.2f}")
+                    
+                    st.info("💡 For historical charts, try the stock data (AAPL, MSFT, NVDA) which shows full price history.")
+                else:
+                    st.success(f"BTC rows: {len(df)} (source: CMC)")
+                    # Create proper BTC price chart with axis labels
+                    fig = go.Figure()
+                    chart_data = df.tail(250) if len(df) > 250 else df
+                    fig.add_trace(go.Scatter(
+                        x=chart_data.index,
+                        y=chart_data["close"],
+                        mode='lines',
+                        name='BTC Price',
+                        line=dict(color='orange')
+                    ))
+                    fig.update_layout(
+                        title='Bitcoin (BTC) Price Chart',
+                        xaxis_title='Date',
+                        yaxis_title='Price (USD)',
+                        height=400,
+                        showlegend=True
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
 
     st.caption("Note: Crypto uses CoinMarketCap (CMC_API_KEY required). Stocks use Yahoo Finance via `yfinance`.")
 
