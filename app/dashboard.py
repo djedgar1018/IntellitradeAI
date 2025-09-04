@@ -9,6 +9,8 @@ import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
+import plotly.graph_objects as go
+import plotly.express as px
 
 from data.data_ingestion import DataIngestion
 from models.model_comparison import compare_models
@@ -75,7 +77,23 @@ with tab_data:
             st.success(f"Loaded {len(MIX)} series")
             for sym, df in MIX.items():
                 st.markdown(f"**{sym}** ({len(df)} rows)")
-                st.line_chart(df["close"].tail(250))
+                # Create proper price chart with axis labels
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=df.index.tail(250),
+                    y=df["close"].tail(250),
+                    mode='lines',
+                    name=f'{sym} Price',
+                    line=dict(color='blue')
+                ))
+                fig.update_layout(
+                    title=f'{sym} Price Chart',
+                    xaxis_title='Date',
+                    yaxis_title='Price (USD)',
+                    height=400,
+                    showlegend=True
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         if st.button("Quick-Load BTC from CoinMarketCap"):
@@ -86,7 +104,23 @@ with tab_data:
             else:
                 df = BTC["BTC"]
                 st.success(f"BTC rows: {len(df)} (source: CMC)")
-                st.line_chart(df["close"].tail(250))
+                # Create proper BTC price chart with axis labels
+                fig = go.Figure()
+                fig.add_trace(go.Scatter(
+                    x=df.index.tail(250),
+                    y=df["close"].tail(250),
+                    mode='lines',
+                    name='BTC Price',
+                    line=dict(color='orange')
+                ))
+                fig.update_layout(
+                    title='Bitcoin (BTC) Price Chart',
+                    xaxis_title='Date',
+                    yaxis_title='Price (USD)',
+                    height=400,
+                    showlegend=True
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
     st.caption("Note: Crypto uses CoinMarketCap (CMC_API_KEY required). Stocks use Yahoo Finance via `yfinance`.")
 
@@ -177,5 +211,23 @@ with tab_backtest:
             # 5) Backtest
             metrics, equity, trades = simulate_long_flat(processed["close"], signals)
             st.json(metrics)
-            st.line_chart(equity.set_index("date")["equity"])
+            
+            # Create proper equity curve chart with axis labels
+            equity_df = equity.set_index("date")
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=equity_df.index,
+                y=equity_df["equity"],
+                mode='lines',
+                name='Portfolio Equity',
+                line=dict(color='green', width=2)
+            ))
+            fig.update_layout(
+                title='Backtest Equity Curve',
+                xaxis_title='Date',
+                yaxis_title='Portfolio Value (USD)',
+                height=400,
+                showlegend=True
+            )
+            st.plotly_chart(fig, use_container_width=True)
             st.caption(f"Backtested: {sym} | Model: {os.path.basename(model_path)}")
