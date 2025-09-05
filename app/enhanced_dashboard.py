@@ -657,7 +657,28 @@ def render_ai_analysis_page():
                 crypto_symbols = [s for s in selected_symbols if s in ['BTC', 'ETH']]
                 
                 try:
-                    market_data = ing.fetch_mixed_data(crypto_symbols=crypto_symbols, stock_symbols=stock_symbols, period=analysis_period.lower(), interval="1d")
+                    # Convert period format for Yahoo Finance compatibility
+                    period_map = {"1M": "1mo", "3M": "3mo", "6M": "6mo", "1Y": "1y"}
+                    yahoo_period = period_map.get(analysis_period, "1y")
+                    
+                    market_data = ing.fetch_mixed_data(crypto_symbols=crypto_symbols, stock_symbols=stock_symbols, period=yahoo_period, interval="1d")
+                    
+                    if not market_data:
+                        st.error("❌ Could not fetch market data. Using sample data for demonstration.")
+                        # Create sample data for demo
+                        dates = pd.date_range(start='2024-01-01', periods=100, freq='D')
+                        sample_data = pd.DataFrame({
+                            'open': np.random.randn(100).cumsum() + 100,
+                            'high': np.random.randn(100).cumsum() + 102,
+                            'low': np.random.randn(100).cumsum() + 98,
+                            'close': np.random.randn(100).cumsum() + 100,
+                            'volume': np.random.randint(1000, 10000, 100)
+                        }, index=dates)
+                        
+                        market_data = {}
+                        for symbol in selected_symbols:
+                            market_data[symbol] = sample_data
+                    
                     st.session_state.market_data.update(market_data)
                     
                     # Run AI analysis on each asset
@@ -781,9 +802,9 @@ def render_pattern_recognition_page():
                 try:
                     # Fetch data
                     if symbol_input in ['BTC', 'ETH']:
-                        data = ing.fetch_crypto_data([symbol_input], "6M", "1d")
+                        data = ing.fetch_crypto_data([symbol_input], "6mo", "1d")
                     else:
-                        data = ing.fetch_mixed_data(stock_symbols=[symbol_input], period="6M", interval="1d")
+                        data = ing.fetch_mixed_data(stock_symbols=[symbol_input], period="6mo", interval="1d")
                     
                     if data and symbol_input in data:
                         asset_data = data[symbol_input]
