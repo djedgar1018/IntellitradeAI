@@ -62,8 +62,10 @@ except ImportError as e:
     
     # Create dummy data module
     class DataIngestion:
-        @staticmethod
-        def fetch_mixed_data(crypto_symbols, stock_symbols, period, interval):
+        def __init__(self):
+            pass
+            
+        def fetch_mixed_data(self, crypto_symbols=None, stock_symbols=None, period='1y', interval='1d'):
             # Return sample data
             dates = pd.date_range(start='2024-01-01', periods=100, freq='D')
             sample_data = pd.DataFrame({
@@ -75,9 +77,16 @@ except ImportError as e:
             }, index=dates)
             
             result = {}
-            for symbol in crypto_symbols + stock_symbols:
+            all_symbols = (crypto_symbols or []) + (stock_symbols or [])
+            for symbol in all_symbols:
                 result[symbol] = sample_data
             return result
+        
+        def fetch_crypto_data(self, symbols, period='1y', interval='1d'):
+            return self.fetch_mixed_data(crypto_symbols=symbols, period=period, interval=interval)
+        
+        def fetch_stock_data(self, symbols, period='1y', interval='1d'):
+            return self.fetch_mixed_data(stock_symbols=symbols, period=period, interval=interval)
     
     ing = DataIngestion()
 
@@ -475,7 +484,7 @@ def render_stock_portfolio():
         with st.spinner(f"Loading {selected_stock} data..."):
             # Simulate loading stock data
             try:
-                stock_data = ing.fetch_mixed_data([], [selected_stock], "1y", "1d")
+                stock_data = ing.fetch_mixed_data(stock_symbols=[selected_stock], period="1y", interval="1d")
                 if stock_data and selected_stock in stock_data:
                     df = stock_data[selected_stock]
                     
@@ -637,7 +646,7 @@ def render_ai_analysis_page():
                 crypto_symbols = [s for s in selected_symbols if s in ['BTC', 'ETH']]
                 
                 try:
-                    market_data = ing.fetch_mixed_data(crypto_symbols, stock_symbols, analysis_period.lower(), "1d")
+                    market_data = ing.fetch_mixed_data(crypto_symbols=crypto_symbols, stock_symbols=stock_symbols, period=analysis_period.lower(), interval="1d")
                     st.session_state.market_data.update(market_data)
                     
                     # Run AI analysis on each asset
@@ -763,7 +772,7 @@ def render_pattern_recognition_page():
                     if symbol_input in ['BTC', 'ETH']:
                         data = ing.fetch_crypto_data([symbol_input], "6M", "1d")
                     else:
-                        data = ing.fetch_mixed_data([], [symbol_input], "6M", "1d")
+                        data = ing.fetch_mixed_data(stock_symbols=[symbol_input], period="6M", interval="1d")
                     
                     if data and symbol_input in data:
                         asset_data = data[symbol_input]
