@@ -139,13 +139,13 @@ def create_day_trader_prediction_sequence():
     diagram.add_message(model_x, model_x + 0.01, '9. Ensemble prediction\n(RF+XGB+LSTM)', y_offset, False)
     y_offset += 0.5
     
-    diagram.add_message(model_x, api_x, '10. Return {signal: BUY,\nconfidence: 85%}', y_offset, True)
+    diagram.add_message(api_x, model_x, '10. Return {signal: BUY,\nconfidence: 85%}', y_offset, True)
     y_offset += 0.5
     
-    diagram.add_message(api_x, dashboard_x, '11. JSON response', y_offset, True)
+    diagram.add_message(dashboard_x, api_x, '11. JSON response', y_offset, True)
     y_offset += 0.5
     
-    diagram.add_message(dashboard_x, user_x, '12. Display: BUY @ 85%\nwith price chart', y_offset, True)
+    diagram.add_message(user_x, dashboard_x, '12. Display: BUY @ 85%\nwith price chart', y_offset, True)
     y_offset += 0.5
     
     diagram.add_note(user_x, diagram.current_y - y_offset - 0.5, 'Decision: Execute trade\nbased on signal', 2)
