@@ -4,16 +4,19 @@ This folder contains comprehensive UML diagrams documenting the IntelliTradeAI t
 
 ## 📁 What's Inside
 
-### 🎯 Use Case Diagrams (5 diagrams)
+### 🎯 Use Case Diagrams (6 diagrams)
 Show **WHO** uses the system and **WHAT** features they access.
 
-1. **`01_core_trading_use_case.png`** - Day traders, swing traders, investors
-2. **`02_model_management_use_case.png`** - Data scientists, advanced users
-3. **`03_analytics_risk_use_case.png`** - Portfolio managers, financial advisors
-4. **`04_api_automation_use_case.png`** - Algorithm developers, trading bots
-5. **`05_system_overview_use_case.png`** - Complete system view (all actors)
+1. **`use_case_consolidated.png`** - ⭐ **COMPREHENSIVE VIEW** - All 10 actors & 27 use cases in one diagram
+2. **`01_core_trading_use_case.png`** - Day traders, swing traders, investors
+3. **`02_model_management_use_case.png`** - Data scientists, advanced users
+4. **`03_analytics_risk_use_case.png`** - Portfolio managers, financial advisors
+5. **`04_api_automation_use_case.png`** - Algorithm developers, trading bots
+6. **`05_system_overview_use_case.png`** - Complete system view (all actors)
 
-📖 **Guide**: `USE_CASE_DIAGRAMS_GUIDE.md`
+📖 **Guides**: 
+- `USE_CASE_DIAGRAMS_GUIDE.md` - Detailed guide for each diagram
+- `PRESENTATION_NOTES.md` - **Speaker notes for presentations** 🎤
 
 ---
 
@@ -160,10 +163,11 @@ python generate_sequence_diagrams.py
 ## 📚 Complete Documentation Suite
 
 ### In This Folder (`diagrams/`)
-- ✅ 5 Use Case Diagrams (PNG)
+- ✅ 6 Use Case Diagrams (PNG) - Including consolidated view
 - ✅ 4 Sequence Diagrams (PNG)
 - ✅ USE_CASE_DIAGRAMS_GUIDE.md
 - ✅ SEQUENCE_DIAGRAMS_GUIDE.md
+- ✅ PRESENTATION_NOTES.md - **Complete speaker notes for all diagrams** 🎤
 - ✅ This README.md
 
 ### In Project Root
@@ -206,11 +210,11 @@ python generate_sequence_diagrams.py
 
 | Metric | Count |
 |--------|-------|
-| Total Diagrams | 9 |
-| Use Case Diagrams | 5 |
+| Total Diagrams | 10 |
+| Use Case Diagrams | 6 |
 | Sequence Diagrams | 4 |
-| Actors Documented | 9+ |
-| Use Cases Covered | 30+ |
+| Actors Documented | 10 |
+| Use Cases Covered | 27 |
 | Workflows Detailed | 4 |
 | Sprints Mapped | 3 |
 
