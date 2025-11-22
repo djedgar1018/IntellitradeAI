@@ -152,4 +152,10 @@ Preferred communication style: Simple, everyday language.
 - `models/xgboost_model.py`: XGBoost classifier/regressor
 - `models/model_comparison.py`: Framework for comparing model performance
 
+### AI Advisor Layer
+- `ai_advisor/signal_fusion_engine.py`: **NEW** - Intelligent signal fusion with conflict resolution
+- `ai_advisor/price_level_analyzer.py`: **NEW** - Support/resistance analysis for HOLD signals
+- `ai_advisor/ml_predictor.py`: ML-based prediction engine
+- `ai_vision/chart_pattern_recognition.py`: Technical pattern recognition engine
+
 The system is designed to be extensible and maintainable, with clear separation of concerns and standardized interfaces between components. The configuration-driven approach allows for easy customization of model parameters, API endpoints, and system behavior.
