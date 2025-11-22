@@ -702,11 +702,12 @@ def render_ai_analysis_page():
                                 ml_analysis = st.session_state.ai_advisor.analyze_asset(symbol, asset_data)
                                 patterns = st.session_state.pattern_recognizer.detect_patterns_from_data(asset_data, symbol)
                                 
-                                # Fuse signals using the Signal Fusion Engine
+                                # Fuse signals using the Signal Fusion Engine (pass historical data for price levels)
                                 unified_signal = st.session_state.signal_fusion.fuse_signals(
                                     ml_prediction=ml_analysis,
                                     pattern_signals=patterns,
-                                    symbol=symbol
+                                    symbol=symbol,
+                                    historical_data=asset_data
                                 )
                                 
                                 rec = unified_signal['recommendation']
@@ -758,6 +759,48 @@ def render_ai_analysis_page():
                                         <small>{pattern_insight.get('reasoning', 'No pattern detected')[:80]}...</small>
                                     </div>
                                     """, unsafe_allow_html=True)
+                                
+                                # Display price levels for HOLD signals
+                                if unified_signal['signal'] == 'HOLD' and 'price_levels' in unified_signal:
+                                    st.markdown("---")
+                                    st.markdown("### 🎯 **Key Price Levels - Actionable Trading Plan**")
+                                    st.markdown("When signal is HOLD, watch these 3 key levels for your next move:")
+                                    
+                                    price_levels_data = unified_signal['price_levels']
+                                    key_levels = price_levels_data['key_levels']
+                                    
+                                    for i, level in enumerate(key_levels, 1):
+                                        action_color = {'BUY': '#28a745', 'SELL': '#dc3545'}.get(level['action'], '#6c757d')
+                                        action_icon = {'BUY': '📈', 'SELL': '📉'}.get(level['action'], '⏸️')
+                                        level_type_icon = {'SUPPORT': '🛡️', 'RESISTANCE': '🚧'}.get(level['type'], '📍')
+                                        
+                                        st.markdown(f"""
+                                        <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px; margin: 8px 0; 
+                                                    border-left: 4px solid {action_color};">
+                                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                <div>
+                                                    <strong style="font-size: 16px;">
+                                                        {level_type_icon} Level {i}: ${level['price']:.2f} 
+                                                        <span style="color: #666;">({level['distance_pct']:+.1f}%)</span>
+                                                    </strong>
+                                                </div>
+                                                <div>
+                                                    <span style="background-color: {action_color}; color: white; padding: 4px 12px; 
+                                                                border-radius: 4px; font-weight: bold;">
+                                                        {action_icon} {level['action']}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div style="margin-top: 8px; color: #495057;">
+                                                <small><strong>What to do:</strong> {level['reasoning']}</small>
+                                            </div>
+                                            <div style="margin-top: 4px; color: #6c757d;">
+                                                <small>Confidence: {level['confidence']:.0%} | Type: {level['type']}</small>
+                                            </div>
+                                        </div>
+                                        """, unsafe_allow_html=True)
+                                    
+                                    st.markdown("---")
                                 
                                 # Key metrics
                                 col_m1, col_m2, col_m3 = st.columns(3)

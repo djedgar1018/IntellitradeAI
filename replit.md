@@ -112,6 +112,9 @@ Preferred communication style: Simple, everyday language.
 - **2025-11-22**: Implemented smart conflict rules: defaults to HOLD when both systems have high confidence (>65%) but disagree
 - **2025-11-22**: Enhanced dashboard UI to show unified signal with both ML insight and Pattern insight side-by-side for transparency
 - **2025-11-22**: Added visual conflict warnings (red border) when AI systems disagree to protect users from risky trades
+- **2025-11-22**: 📊 **NEW: Actionable Price Levels for HOLD Signals** - Created `PriceLevelAnalyzer` that calculates 3 key support/resistance levels
+- **2025-11-22**: HOLD signals now show specific price targets with BUY/SELL recommendations at each level (e.g., "BUY at $49.00 support", "SELL at $55.00 resistance")
+- **2025-11-22**: Price levels use technical analysis (swing highs/lows, moving averages, round numbers) with confidence scores
 - **2025-11-19**: 🚀 **Major Enhancement: Top 10 Coins Support** - System now dynamically fetches and supports top 10 cryptocurrencies from CoinMarketCap
 - **2025-11-19**: Created `TopCoinsManager` for dynamic coin discovery with 1-hour caching (100% success rate)
 - **2025-11-19**: Built `EnhancedCryptoFetcher` with multi-coin support, portfolio analytics, and robust error handling

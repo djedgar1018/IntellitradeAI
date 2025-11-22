@@ -7,6 +7,7 @@ Resolves conflicts and provides unified trading recommendations
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 import numpy as np
+from ai_advisor.price_level_analyzer import PriceLevelAnalyzer
 
 
 @dataclass
@@ -33,9 +34,12 @@ class SignalFusionEngine:
         # Conflict thresholds
         self.high_confidence_threshold = 0.65
         self.conflict_gap_threshold = 0.15
+        
+        # Price level analyzer for HOLD signals
+        self.price_analyzer = PriceLevelAnalyzer()
     
     def fuse_signals(self, ml_prediction: Dict, pattern_signals: List[Dict], 
-                    symbol: str) -> Dict:
+                    symbol: str, historical_data=None) -> Dict:
         """
         Combine ML prediction and pattern signals into unified recommendation
         
@@ -56,10 +60,10 @@ class SignalFusionEngine:
         
         if has_conflict:
             # Resolve conflict
-            unified_signal = self._resolve_conflict(ml_signal, pattern_signal, ml_prediction, symbol)
+            unified_signal = self._resolve_conflict(ml_signal, pattern_signal, ml_prediction, symbol, historical_data)
         else:
             # No conflict - combine strengths
-            unified_signal = self._combine_aligned_signals(ml_signal, pattern_signal, ml_prediction)
+            unified_signal = self._combine_aligned_signals(ml_signal, pattern_signal, ml_prediction, historical_data)
         
         # Add both perspectives for transparency
         unified_signal['ml_insight'] = {
@@ -123,7 +127,7 @@ class SignalFusionEngine:
         return False
     
     def _resolve_conflict(self, ml_signal: SignalPayload, pattern_signal: SignalPayload,
-                         ml_prediction: Dict, symbol: str) -> Dict:
+                         ml_prediction: Dict, symbol: str, historical_data=None) -> Dict:
         """
         Resolve conflicting signals with intelligent logic
         
@@ -160,7 +164,7 @@ class SignalFusionEngine:
             pattern_conf >= self.high_confidence_threshold and
             confidence_gap < self.conflict_gap_threshold):
             
-            return {
+            hold_signal = {
                 'symbol': symbol,
                 'signal': 'HOLD',
                 'confidence': max(ml_conf, pattern_conf),
@@ -181,6 +185,17 @@ class SignalFusionEngine:
                 'price_change_24h': ml_prediction.get('price_change_24h', 0),
                 'technical_indicators': ml_prediction.get('technical_indicators', {})
             }
+            
+            # Add price levels for HOLD signals
+            if historical_data is not None:
+                price_levels = self.price_analyzer.analyze_key_levels(
+                    historical_data,
+                    hold_signal['current_price'],
+                    hold_signal['technical_indicators']
+                )
+                hold_signal['price_levels'] = price_levels
+            
+            return hold_signal
         
         # Rule 2: Choose higher weighted score
         if ml_score > pattern_score:
@@ -227,7 +242,7 @@ class SignalFusionEngine:
         }
     
     def _combine_aligned_signals(self, ml_signal: SignalPayload, 
-                                pattern_signal: SignalPayload, ml_prediction: Dict) -> Dict:
+                                pattern_signal: SignalPayload, ml_prediction: Dict, historical_data=None) -> Dict:
         """
         Combine signals when they agree (both BUY, both SELL, or one is HOLD)
         """
@@ -257,7 +272,7 @@ class SignalFusionEngine:
             # Both HOLD
             signal = 'HOLD'
             combined_confidence = max(ml_signal.confidence, pattern_signal.confidence)
-            explanation = "Both ML Model and Chart Pattern suggest waiting. No clear signals detected."
+            explanation = "Both ML Model and Chart Pattern suggest waiting. No clear signals detected. Watch the key levels below for actionable opportunities."
         
         # Determine levels
         if combined_confidence >= 0.75:
@@ -275,7 +290,7 @@ class SignalFusionEngine:
         else:
             risk_level = 'Low'
         
-        return {
+        result = {
             'symbol': ml_prediction.get('symbol', 'UNKNOWN'),
             'signal': signal,
             'confidence': combined_confidence,
@@ -290,3 +305,14 @@ class SignalFusionEngine:
             'price_change_24h': ml_prediction.get('price_change_24h', 0),
             'technical_indicators': ml_prediction.get('technical_indicators', {})
         }
+        
+        # Add price levels for HOLD signals
+        if signal == 'HOLD' and historical_data is not None:
+            price_levels = self.price_analyzer.analyze_key_levels(
+                historical_data,
+                result['current_price'],
+                result['technical_indicators']
+            )
+            result['price_levels'] = price_levels
+        
+        return result
