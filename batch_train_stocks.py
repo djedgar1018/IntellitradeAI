@@ -6,7 +6,7 @@ Train AI models for a comprehensive list of popular stocks
 import sys
 import time
 from datetime import datetime
-from models.model_trainer import ModelTrainer
+from models.model_trainer import RobustModelTrainer
 from data.data_ingestion import DataIngestion
 
 # Comprehensive list of popular stocks across sectors
@@ -100,20 +100,24 @@ def train_stock_model(symbol, trainer, data_ingestion):
         
         print(f"  ✅ Fetched {len(data)} data points")
         
-        # Train Random Forest model
+        # Train Random Forest model using RobustModelTrainer
         print(f"  🤖 Training Random Forest model...")
-        model_info = trainer.train_model(
-            symbol=symbol,
+        results = trainer.run_comprehensive_training(
             data=data,
-            model_type='random_forest',
-            force_retrain=True
+            symbol=symbol,
+            algorithms=['random_forest'],
+            model_type='classifier'
         )
         
-        if model_info and 'accuracy' in model_info:
-            accuracy = model_info['accuracy']
-            print(f"  ✅ Model trained successfully!")
-            print(f"  📊 Accuracy: {accuracy:.2%}")
-            return True, f"✅ {symbol}: Accuracy {accuracy:.2%}"
+        if results and 'models' in results:
+            rf_result = results['models'].get('random_forest', {})
+            if rf_result.get('status') == 'success':
+                accuracy = rf_result.get('accuracy', 0)
+                print(f"  ✅ Model trained successfully!")
+                print(f"  📊 Accuracy: {accuracy:.2%}")
+                return True, f"✅ {symbol}: Accuracy {accuracy:.2%}"
+            else:
+                return False, f"❌ Training failed for {symbol}: {rf_result.get('error', 'Unknown error')}"
         else:
             return False, f"❌ Training failed for {symbol}"
             
@@ -136,7 +140,7 @@ def main():
     print(f"\n{'='*80}")
     
     # Initialize trainer and data ingestion
-    trainer = ModelTrainer()
+    trainer = RobustModelTrainer()
     data_ingestion = DataIngestion()
     
     # Track results
