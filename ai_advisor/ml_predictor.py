@@ -28,6 +28,11 @@ class MLPredictor:
         
         try:
             model_data = joblib.load(model_path)
+            
+            # Compatibility fix: convert feature_names to feature_columns if needed
+            if isinstance(model_data, dict) and 'feature_names' in model_data and 'feature_columns' not in model_data:
+                model_data['feature_columns'] = model_data['feature_names']
+            
             self.loaded_models[symbol] = model_data
             return model_data
         except Exception as e:
