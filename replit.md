@@ -2,7 +2,12 @@
 
 ## Overview
 
-This is a comprehensive AI-powered trading agent that provides real-time predictive signals across cryptocurrency and stock markets. The system uses multiple machine learning models (LSTM, Random Forest, XGBoost) to generate trading signals with explainable AI features and comprehensive backtesting capabilities.
+This is a comprehensive AI-powered trading agent that provides real-time predictive signals across **36 tradable assets** (20 cryptocurrencies + 18 stocks). The system uses multiple machine learning models (LSTM, Random Forest, XGBoost) to generate trading signals with explainable AI features and comprehensive backtesting capabilities.
+
+### Supported Assets (36 Total)
+**Cryptocurrencies (20):** BTC, ETH, USDT, XRP, BNB, SOL, USDC, TRX, DOGE, ADA, AVAX, SHIB, TON, DOT, LINK, BCH, LTC, XLM, WTRX, STETH
+
+**Stocks (18):** AAPL, MSFT, GOOGL, AMZN, NVDA, META, TSLA, JPM, WMT, JNJ, V, BAC, DIS, NFLX, INTC, AMD, CRM, ORCL
 
 ## User Preferences
 
@@ -107,6 +112,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **2025-11-22**: 🚀 **MAJOR EXPANSION TO 36 ASSETS** - Successfully doubled asset coverage from 18 to 36 total tradable assets
+- **2025-11-22**: Added 10 new cryptocurrency models: AVAX, SHIB, TON, DOT, LINK, BCH, LTC, XLM, WTRX, STETH (now 20 total cryptos)
+- **2025-11-22**: Added 10 new stock models: WMT, JNJ, V, BAC, DIS, NFLX, INTC, AMD, CRM, ORCL (now 18 total stocks)
+- **2025-11-22**: All 36 assets tested and working with Random Forest models (accuracies 47-79%)
+- **2025-11-22**: Dashboard now supports 20 cryptocurrencies + 18 major stocks across tech, finance, retail, healthcare, and enterprise sectors
+- **2025-11-22**: Installed yahooquery package to dynamically discover available Yahoo Finance crypto tickers
 - **2025-11-22**: 🎯 **CRITICAL FIX: Signal Fusion Engine** - Resolved conflicting signals issue where ML predictor and pattern recognizer gave contradictory recommendations (e.g., BUY vs SELL)
 - **2025-11-22**: Created `SignalFusionEngine` that intelligently combines ML predictions and chart patterns with conflict resolution logic
 - **2025-11-22**: Implemented smart conflict rules: defaults to HOLD when both systems have high confidence (>65%) but disagree
@@ -117,9 +128,6 @@ Preferred communication style: Simple, everyday language.
 - **2025-11-22**: Enhanced chart visualization: green rays = support (buy zones), red rays = resistance (sell zones)
 - **2025-11-22**: Chart patterns now display entry points, target prices, and stop losses as interactive horizontal lines
 - **2025-11-22**: Increased chart height to 500px for better visibility of all visual elements
-- **2025-11-22**: 📈 **MAJOR EXPANSION: Multi-Stock Support** - Trained AI models for 8 major stocks across tech, finance, and other sectors
-- **2025-11-22**: New stock models available: AAPL, MSFT, GOOGL, AMZN, NVDA, META, TSLA, JPM (in addition to 10 cryptocurrencies)
-- **2025-11-22**: Dashboard now supports analysis of 18 total assets (10 crypto + 8 stocks) with pre-trained Random Forest models
 - **2025-11-22**: 📊 **NEW: Actionable Price Levels for HOLD Signals** - Created `PriceLevelAnalyzer` that calculates 3 key support/resistance levels
 - **2025-11-22**: HOLD signals now show specific price targets with BUY/SELL recommendations at each level (e.g., "BUY at $49.00 support", "SELL at $55.00 resistance")
 - **2025-11-22**: Price levels use technical analysis (swing highs/lows, moving averages, round numbers) with confidence scores
