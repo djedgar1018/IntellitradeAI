@@ -50,8 +50,7 @@ for i, symbol in enumerate(NEW_CRYPTOS, 1):
         result = trainer.run_comprehensive_training(
             df, 
             symbol, 
-            algorithms=['random_forest'],
-            save_model=True
+            algorithms=['random_forest']
         )
         
         if 'random_forest' in result and 'accuracy' in result['random_forest']:
@@ -93,8 +92,7 @@ for i, symbol in enumerate(NEW_STOCKS, 1):
         result = trainer.run_comprehensive_training(
             df, 
             symbol, 
-            algorithms=['random_forest'],
-            save_model=True
+            algorithms=['random_forest']
         )
         
         if 'random_forest' in result and 'accuracy' in result['random_forest']:
