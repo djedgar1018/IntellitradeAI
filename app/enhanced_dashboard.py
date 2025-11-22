@@ -636,7 +636,7 @@ def render_ai_analysis_page():
     st.markdown("### 🤖 AI-Powered Market Analysis")
     
     # Info banner about available assets
-    st.info("📊 **Available Assets:** 18 cryptocurrencies + 18 major stocks across all sectors. These assets have pre-trained AI models ready for instant analysis!")
+    st.info("📊 **Available Assets:** 20 cryptocurrencies + 18 major stocks across all sectors. These 38 assets have pre-trained AI models ready for instant analysis!")
     
     # Load market data
     if 'market_data' not in st.session_state:
@@ -646,9 +646,8 @@ def render_ai_analysis_page():
     col1, col2 = st.columns([2, 1])
     
     # Define available cryptocurrencies and stocks WITH TRAINED MODELS AND WORKING DATA
-    # Note: MATIC and UNI excluded due to Yahoo Finance ticker issues
     available_cryptos = ["BTC", "ETH", "USDT", "XRP", "BNB", "SOL", "USDC", "TRX", "DOGE", "ADA", 
-                         "AVAX", "SHIB", "TON", "DOT", "LINK", "BCH", "LTC", "XLM"]  # 18 cryptos
+                         "AVAX", "SHIB", "TON", "DOT", "LINK", "BCH", "LTC", "XLM", "WTRX", "STETH"]  # 20 cryptos
     trained_stocks = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM",
                       "WMT", "JNJ", "V", "BAC", "DIS", "NFLX", "INTC", "AMD", "CRM", "ORCL"]  # 18 stocks
     
@@ -657,7 +656,7 @@ def render_ai_analysis_page():
             "Select assets to analyze (only assets with trained AI models):",
             trained_stocks + available_cryptos,
             default=["BTC", "XRP"],
-            help="These 36 assets have pre-trained AI models ready for analysis"
+            help="These 38 assets have pre-trained AI models ready for analysis"
         )
     
     with col2:
@@ -667,9 +666,9 @@ def render_ai_analysis_page():
         if selected_symbols:
             with st.spinner("Running AI analysis on selected assets..."):
                 # Load data for selected symbols
-                # 18 available cryptocurrencies (MATIC, UNI excluded due to data availability)
+                # 20 available cryptocurrencies
                 known_cryptos = ["BTC", "ETH", "USDT", "XRP", "BNB", "SOL", "USDC", "TRX", "DOGE", "ADA",
-                                "AVAX", "SHIB", "TON", "DOT", "LINK", "BCH", "LTC", "XLM"]
+                                "AVAX", "SHIB", "TON", "DOT", "LINK", "BCH", "LTC", "XLM", "WTRX", "STETH"]
                 crypto_symbols = [s for s in selected_symbols if s in known_cryptos]
                 stock_symbols = [s for s in selected_symbols if s not in known_cryptos]
                 
