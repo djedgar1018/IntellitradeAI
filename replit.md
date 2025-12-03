@@ -112,6 +112,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+- **2025-12-03**: 🚀 **MASSIVE FEATURE EXPANSION** - Added options trading, automated execution, blockchain integration, sentiment analysis, and email subscriptions
+- **2025-12-03**: Created PostgreSQL database schema with 6 tables (trades, positions, portfolio, trade_alerts, options_chains, crypto_wallets)
+- **2025-12-03**: Built Options Chain Data Fetcher with real-time calls/puts data, Greeks (delta, gamma, theta, vega, rho), and implied volatility
+- **2025-12-03**: Implemented Trading Mode Manager: Manual mode (AI recommendations as assists) vs Automatic mode (autonomous AI execution)
+- **2025-12-03**: Created Trade Executor supporting stocks, options, and crypto with paper trading and alert system
+- **2025-12-03**: Integrated Blockchain Wallet Manager (Web3.py) for crypto purchases/sales and wallet balance tracking
+- **2025-12-03**: Added Twitter/X Sentiment Analysis engine with real-time social media sentiment scoring
+- **2025-12-03**: Implemented Fear & Greed Index display for all asset classes (crypto, stocks, options)
+- **2025-12-03**: Created Trade Log & P&L tracking system with real-time position monitoring and performance analytics
+- **2025-12-03**: Built Email Subscription Manager with instructions for investing.com, barchart.com, webull.com, and 3 other sources
+- **2025-12-03**: Added new dashboard tabs: Options Analysis, Trade Log & P&L, Market Sentiment, Email Subscriptions
+- **2025-12-03**: Database stores $10,000 starting capital with complete P&L tracking (realized/unrealized)
 - **2025-11-22**: 🚀 **MAJOR EXPANSION TO 36 ASSETS** - Successfully doubled asset coverage from 18 to 36 total tradable assets
 - **2025-11-22**: Added 10 new cryptocurrency models: AVAX, SHIB, TON, DOT, LINK, BCH, LTC, XLM, WTRX, STETH (now 20 total cryptos)
 - **2025-11-22**: Added 10 new stock models: WMT, JNJ, V, BAC, DIS, NFLX, INTC, AMD, CRM, ORCL (now 18 total stocks)

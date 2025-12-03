@@ -287,7 +287,8 @@ def render_main_dashboard():
             "🗺️ Navigate",
             ["🏠 Dashboard Overview", "💼 Stock Portfolio", "₿ Crypto Portfolio", 
              "🔍 AI Analysis", "📊 Pattern Recognition", "💳 Wallet Management",
-             "⚙️ Settings", "🔒 Security"]
+             "📈 Options Analysis", "📝 Trade Log & P&L", "😊 Market Sentiment",
+             "📧 Email Subscriptions", "⚙️ Settings", "🔒 Security"]
         )
         
         st.markdown("---")
@@ -318,6 +319,14 @@ def render_main_dashboard():
         render_pattern_recognition_page()
     elif page == "💳 Wallet Management":
         render_wallet_management()
+    elif page == "📈 Options Analysis":
+        render_options_analysis_page()
+    elif page == "📝 Trade Log & P&L":
+        render_trade_log_page()
+    elif page == "😊 Market Sentiment":
+        render_market_sentiment_page()
+    elif page == "📧 Email Subscriptions":
+        render_email_subscriptions_page()
     elif page == "⚙️ Settings":
         render_settings_page()
     elif page == "🔒 Security":
@@ -1327,6 +1336,200 @@ def render_security_page():
         
         if st.button("🚫 Revoke All Other Sessions"):
             st.success("All other sessions have been revoked!")
+
+def render_options_analysis_page():
+    """Render Options Analysis page"""
+    try:
+        from app.options_analysis_tab import render_options_analysis_tab
+        render_options_analysis_tab()
+    except Exception as e:
+        st.error(f"Error loading Options Analysis: {str(e)}")
+        st.info("Options Analysis module is being set up. Please check back soon!")
+
+
+def render_trade_log_page():
+    """Render Trade Log & P&L page"""
+    try:
+        from app.trade_log_tab import render_trade_log_tab
+        render_trade_log_tab()
+    except Exception as e:
+        st.error(f"Error loading Trade Log: {str(e)}")
+        st.info("Trade Log module is being set up. Please check back soon!")
+
+
+def render_market_sentiment_page():
+    """Render Market Sentiment page with Twitter/X sentiment and Fear & Greed Index"""
+    st.title("😊 Market Sentiment Analysis")
+    
+    try:
+        from sentiment.twitter_sentiment import TwitterSentimentAnalyzer
+        from sentiment.fear_greed_index import FearGreedIndexAnalyzer
+        
+        sentiment_analyzer = TwitterSentimentAnalyzer()
+        fear_greed = FearGreedIndexAnalyzer()
+        
+        tab1, tab2 = st.tabs(["📊 Fear & Greed Index", "🐦 Social Sentiment"])
+        
+        with tab1:
+            st.subheader("📊 Fear & Greed Index - All Asset Classes")
+            
+            all_indices = fear_greed.get_all_indices()
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                crypto_fng = all_indices['crypto']
+                st.markdown(f"### {crypto_fng['emoji']} Crypto")
+                st.metric("Value", crypto_fng['value'], delta=crypto_fng['classification'])
+                st.markdown(f"**{crypto_fng['classification']}**")
+                st.info(crypto_fng['recommendation'])
+            
+            with col2:
+                stock_fng = all_indices['stocks']
+                st.markdown(f"### {stock_fng['emoji']} Stocks")
+                st.metric("Value", stock_fng['value'], delta=stock_fng['classification'])
+                st.markdown(f"**{stock_fng['classification']}**")
+                st.info(stock_fng['recommendation'])
+            
+            with col3:
+                options_fng = all_indices['options']
+                st.markdown(f"### {options_fng['emoji']} Options")
+                st.metric("Value", options_fng['value'], delta=options_fng['classification'])
+                st.markdown(f"**{options_fng['classification']}**")
+                st.info(options_fng['recommendation'])
+            
+            st.markdown("---")
+            
+            overall = all_indices['overall_market_sentiment']
+            st.markdown(f"### {overall['emoji']} Overall Market Sentiment")
+            st.metric("Combined Index", f"{overall['value']}/100", delta=overall['classification'])
+            st.success(overall['message'])
+        
+        with tab2:
+            st.subheader("🐦 Social Media Sentiment Analysis")
+            
+            symbol = st.text_input("Enter Symbol (Stock or Crypto)", value="BTC", help="Enter ticker symbol").upper()
+            asset_type = st.radio("Asset Type", ["crypto", "stock"], horizontal=True)
+            
+            if st.button("📡 Analyze Sentiment", type="primary"):
+                with st.spinner(f"Analyzing sentiment for {symbol}..."):
+                    sentiment = sentiment_analyzer.get_sentiment_score(symbol, asset_type)
+                    st.session_state['sentiment_data'] = sentiment
+            
+            if 'sentiment_data' in st.session_state:
+                sentiment = st.session_state['sentiment_data']
+                
+                col1, col2, col3 = st.columns(3)
+                
+                col1.metric(
+                    f"{sentiment['emoji']} Sentiment",
+                    sentiment['sentiment_label'],
+                    delta=f"{sentiment['sentiment_score']:.3f}"
+                )
+                
+                col2.metric("Confidence", f"{sentiment['confidence']}%")
+                col3.metric("Tweet Volume (24h)", sentiment['tweet_volume_24h'])
+                
+                st.markdown("### Sentiment Breakdown")
+                breakdown = sentiment['sentiment_breakdown']
+                
+                col1, col2, col3 = st.columns(3)
+                col1.metric("Positive", f"{breakdown['positive']}%")
+                col2.metric("Neutral", f"{breakdown['neutral']}%")
+                col3.metric("Negative", f"{breakdown['negative']}%")
+                
+                st.markdown("### 🔥 Trending Topics")
+                cols = st.columns(len(sentiment['trending_topics']))
+                for idx, topic in enumerate(sentiment['trending_topics']):
+                    cols[idx].markdown(f"**{topic}**")
+                
+                st.success(f"💡 **Recommendation:** {sentiment['recommendation']}")
+    
+    except Exception as e:
+        st.error(f"Error loading sentiment analysis: {str(e)}")
+        st.info("Sentiment analysis modules are being initialized. Please check back soon!")
+
+
+def render_email_subscriptions_page():
+    """Render Email Subscriptions page"""
+    st.title("📧 Email Subscriptions to Market Data")
+    
+    try:
+        from notifications.email_subscription_manager import EmailSubscriptionManager
+        
+        email_manager = EmailSubscriptionManager()
+        
+        tab1, tab2, tab3 = st.tabs(["📋 Available Sources", "✅ My Subscriptions", "📊 Summary"])
+        
+        with tab1:
+            st.subheader("📋 Available Market Data Sources")
+            
+            sources = email_manager.get_available_sources()
+            
+            for source_id, source_info in sources['sources'].items():
+                with st.expander(f"📰 {source_info['name']}", expanded=False):
+                    st.write(f"**Description:** {source_info['description']}")
+                    st.write(f"**URL:** {source_info['url']}")
+                    st.write(f"**Categories:** {', '.join(source_info['categories'])}")
+                    
+                    if st.button(f"📖 View Instructions", key=f"instructions_{source_id}"):
+                        instructions = email_manager.get_subscription_instructions(source_id)
+                        st.success(f"**{instructions['name']}** - Estimated time: {instructions['estimated_time']}")
+                        st.markdown("### Subscription Steps:")
+                        for step in instructions['subscription_steps']:
+                            st.markdown(f"- {step}")
+                        st.info(instructions['note'])
+                        
+                        email = st.text_input(f"Your Email for {source_info['name']}", key=f"email_{source_id}")
+                        if st.button(f"✅ Mark as Subscribed", key=f"mark_{source_id}"):
+                            if email:
+                                result = email_manager.mark_subscription_completed(source_id, email)
+                                if result['success']:
+                                    st.success(result['message'])
+                                    st.rerun()
+                            else:
+                                st.warning("Please enter your email address")
+        
+        with tab2:
+            st.subheader("✅ Your Active Subscriptions")
+            
+            active = email_manager.get_active_subscriptions()
+            
+            if active['total_subscriptions'] > 0:
+                for sub in active['active_subscriptions']:
+                    col1, col2, col3 = st.columns([2, 2, 1])
+                    
+                    col1.write(f"**{sub['source']}**")
+                    col2.write(f"Email: {sub['email']}")
+                    col3.write(f"📧 Active")
+                    
+                    st.markdown("---")
+                
+                st.success(f"📧 You're subscribed to {active['total_subscriptions']} market data sources!")
+            else:
+                st.info("No active subscriptions yet. Subscribe to sources in the 'Available Sources' tab!")
+        
+        with tab3:
+            st.subheader("📊 Subscription Summary")
+            
+            summary = email_manager.get_subscription_summary()
+            
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Active Subscriptions", summary['total_active'])
+            col2.metric("Coverage", summary['subscription_coverage'])
+            col3.metric("Total Sources Available", summary['total_sources'])
+            
+            st.info(f"💡 **Recommendation:** {summary['recommendation']}")
+            
+            if summary['category_coverage']:
+                st.markdown("### 📂 Coverage by Category")
+                for category, count in summary['category_coverage'].items():
+                    st.write(f"**{category.title()}:** {count} source(s)")
+    
+    except Exception as e:
+        st.error(f"Error loading email subscriptions: {str(e)}")
+        st.info("Email subscription module is being set up. Please check back soon!")
+
 
 # Main application logic
 def main():
