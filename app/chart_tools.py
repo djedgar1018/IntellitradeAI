@@ -312,6 +312,75 @@ def create_advanced_chart(
                 row=1, col=1
             )
     
+    # Add trendline if enabled
+    if toolbar_config.get('show_trendline'):
+        # Calculate automatic trendline using linear regression on recent data
+        lookback = min(50, len(df))
+        recent_df = df.tail(lookback)
+        
+        # Find swing lows for uptrend line
+        x_vals = np.arange(len(recent_df))
+        y_vals = recent_df['close'].values
+        
+        # Linear regression for trendline
+        slope, intercept = np.polyfit(x_vals, y_vals, 1)
+        trend_y = slope * x_vals + intercept
+        
+        # Determine trend direction
+        trend_direction = "Uptrend" if slope > 0 else "Downtrend"
+        trend_color = "#16C784" if slope > 0 else "#EA3943"
+        
+        fig.add_trace(
+            go.Scatter(
+                x=recent_df.index,
+                y=trend_y,
+                name=f"Trendline ({trend_direction})",
+                line=dict(color=trend_color, width=2, dash='dash'),
+                mode='lines'
+            ),
+            row=1, col=1
+        )
+        
+        # Add trend angle annotation
+        angle_pct = (slope / y_vals[0]) * 100 * lookback if y_vals[0] != 0 else 0
+        fig.add_annotation(
+            x=recent_df.index[-1],
+            y=trend_y[-1],
+            text=f"{trend_direction}: {angle_pct:+.1f}%",
+            showarrow=True,
+            arrowhead=2,
+            arrowcolor=trend_color,
+            font=dict(color=trend_color, size=10),
+            bgcolor="rgba(255,255,255,0.8)",
+            row=1, col=1
+        )
+    
+    # Add horizontal line if enabled
+    if toolbar_config.get('show_hline'):
+        # Draw horizontal line at current price
+        current_price = df['close'].iloc[-1]
+        fig.add_hline(
+            y=current_price,
+            line_dash="solid",
+            line_color="#FFD700",
+            line_width=2,
+            annotation_text=f"Current: ${current_price:,.2f}",
+            annotation_position="right",
+            row=1, col=1
+        )
+    
+    # Add vertical line if enabled (at latest date)
+    if toolbar_config.get('show_vline'):
+        fig.add_vline(
+            x=df.index[-1],
+            line_dash="solid",
+            line_color="#00BFFF",
+            line_width=1,
+            annotation_text="Now",
+            annotation_position="top",
+            row=1, col=1
+        )
+    
     if toolbar_config.get('show_fib_retracement'):
         fib_levels = calculate_fibonacci_levels(df)
         colors = ['#F44336', '#FF9800', '#FFEB3B', '#4CAF50', '#2196F3', '#9C27B0', '#795548']
@@ -320,7 +389,7 @@ def create_advanced_chart(
                 y=price, 
                 line_dash="dash", 
                 line_color=colors[i % len(colors)],
-                annotation_text=f"Fib {level}: ${price:.2f}",
+                annotation_text=f"Fib {level}: ${price:,.2f}",
                 annotation_position="right",
                 row=1, col=1
             )
