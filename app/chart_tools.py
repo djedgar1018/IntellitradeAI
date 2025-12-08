@@ -312,48 +312,70 @@ def create_advanced_chart(
                 row=1, col=1
             )
     
-    # Add trendline if enabled
+    # Add trendline if enabled - draws from swing lows (support line)
     if toolbar_config.get('show_trendline'):
-        # Calculate automatic trendline using linear regression on recent data
-        lookback = min(50, len(df))
-        recent_df = df.tail(lookback)
+        lookback = min(100, len(df))
+        recent_df = df.tail(lookback).copy()
+        recent_df = recent_df.reset_index(drop=False)
         
-        # Find swing lows for uptrend line
-        x_vals = np.arange(len(recent_df))
-        y_vals = recent_df['close'].values
+        # Find swing lows (local minima)
+        lows = recent_df['low'].values
+        swing_low_indices = []
         
-        # Linear regression for trendline
-        slope, intercept = np.polyfit(x_vals, y_vals, 1)
-        trend_y = slope * x_vals + intercept
+        # Find local minima with window of 5
+        window = 5
+        for i in range(window, len(lows) - window):
+            if lows[i] == min(lows[i-window:i+window+1]):
+                swing_low_indices.append(i)
         
-        # Determine trend direction
-        trend_direction = "Uptrend" if slope > 0 else "Downtrend"
-        trend_color = "#16C784" if slope > 0 else "#EA3943"
-        
-        fig.add_trace(
-            go.Scatter(
-                x=recent_df.index,
-                y=trend_y,
-                name=f"Trendline ({trend_direction})",
-                line=dict(color=trend_color, width=2, dash='dash'),
-                mode='lines'
-            ),
-            row=1, col=1
-        )
-        
-        # Add trend angle annotation
-        angle_pct = (slope / y_vals[0]) * 100 * lookback if y_vals[0] != 0 else 0
-        fig.add_annotation(
-            x=recent_df.index[-1],
-            y=trend_y[-1],
-            text=f"{trend_direction}: {angle_pct:+.1f}%",
-            showarrow=True,
-            arrowhead=2,
-            arrowcolor=trend_color,
-            font=dict(color=trend_color, size=10),
-            bgcolor="rgba(255,255,255,0.8)",
-            row=1, col=1
-        )
+        # Need at least 2 swing lows for a trendline
+        if len(swing_low_indices) >= 2:
+            # Use the first and last swing lows for the trendline
+            x_indices = np.array(swing_low_indices)
+            y_lows = lows[swing_low_indices]
+            
+            # Linear regression on swing lows
+            slope, intercept = np.polyfit(x_indices, y_lows, 1)
+            
+            # Calculate trendline from first swing low to end of chart
+            first_idx = swing_low_indices[0]
+            last_idx = len(recent_df) - 1
+            
+            trend_x_range = np.arange(first_idx, last_idx + 1)
+            trend_y = slope * trend_x_range + intercept
+            
+            # Get corresponding dates
+            trend_dates = recent_df.iloc[first_idx:last_idx + 1]['index'].values
+            
+            # Determine trend direction
+            trend_direction = "Uptrend" if slope > 0 else "Downtrend"
+            trend_color = "#16C784" if slope > 0 else "#EA3943"
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=trend_dates,
+                    y=trend_y,
+                    name=f"Support Line ({trend_direction})",
+                    line=dict(color=trend_color, width=2),
+                    mode='lines'
+                ),
+                row=1, col=1
+            )
+            
+            # Mark swing low points
+            swing_low_dates = recent_df.iloc[swing_low_indices]['index'].values
+            swing_low_prices = lows[swing_low_indices]
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=swing_low_dates,
+                    y=swing_low_prices,
+                    name="Swing Lows",
+                    mode='markers',
+                    marker=dict(color=trend_color, size=8, symbol='triangle-up')
+                ),
+                row=1, col=1
+            )
     
     # Add horizontal line if enabled
     if toolbar_config.get('show_hline'):
