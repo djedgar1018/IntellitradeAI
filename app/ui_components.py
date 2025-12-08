@@ -158,7 +158,7 @@ def render_asset_trading_mode_toggle(asset_type: str, mode_manager) -> str:
     with col1:
         manual_selected = current_mode == "manual"
         if st.button(
-            f"🚗 Manual",
+            f"👤 Manual",
             key=f"manual_{asset_type}",
             type="primary" if manual_selected else "secondary",
             use_container_width=True,
@@ -179,7 +179,7 @@ def render_asset_trading_mode_toggle(asset_type: str, mode_manager) -> str:
             st.session_state[mode_key] = "automatic"
             st.rerun()
     
-    mode_icon = "🚗" if current_mode == "manual" else "🤖"
+    mode_icon = "👤" if current_mode == "manual" else "🤖"
     mode_text = "Manual (AI-Assisted)" if current_mode == "manual" else "Automatic (AI Executes)"
     
     if current_mode == "manual":
@@ -371,10 +371,10 @@ def create_options_price_projection_chart(
         margin=dict(l=50, r=50, t=80, b=50),
         legend=dict(
             orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1
+            yanchor="top",
+            y=-0.15,
+            xanchor="center",
+            x=0.5
         ),
         hovermode='x unified'
     )

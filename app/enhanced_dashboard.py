@@ -1517,7 +1517,7 @@ def render_market_sentiment_page():
             
             with st.expander("ℹ️ About Trading Modes"):
                 st.markdown("""
-                **🚗 Manual Mode (AI-Assisted)**
+                **👤 Manual Mode (AI-Assisted)**
                 - AI provides recommendations and analysis
                 - You make the final decision on all trades
                 - Best for learning and maintaining control

@@ -79,11 +79,11 @@ def render_trading_mode_selector(mode_manager: TradingModeManager):
     
     with col1:
         current_mode = mode_manager.get_current_mode()
-        mode_display = "🚗 MANUAL" if current_mode == TradingMode.MANUAL else "🤖 AUTOMATIC"
+        mode_display = "👤 MANUAL" if current_mode == TradingMode.MANUAL else "🤖 AUTOMATIC"
         st.metric("Current Mode", mode_display)
     
     with col2:
-        if st.button("🚗 Switch to Manual", use_container_width=True):
+        if st.button("👤 Switch to Manual", use_container_width=True):
             result = mode_manager.switch_mode(TradingMode.MANUAL)
             st.success(result['message'])
             st.rerun()
