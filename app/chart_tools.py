@@ -74,7 +74,6 @@ class ChartToolbar:
         with col1:
             st.markdown("**📐 Drawing**")
             toolbar_config['show_trendline'] = st.checkbox("Auto Trendline", key=f"{chart_key}_trendline")
-            toolbar_config['show_custom_trendline'] = st.checkbox("Custom Trendline", key=f"{chart_key}_custom_trendline")
             toolbar_config['show_hline'] = st.checkbox("H-Line", key=f"{chart_key}_hline")
             toolbar_config['show_vline'] = st.checkbox("V-Line", key=f"{chart_key}_vline")
         
@@ -624,17 +623,32 @@ def create_advanced_chart(
         row=1, col=1
     )
     
+    # Enable editable shapes for mouse-drawn trendlines
+    fig.update_layout(
+        dragmode='drawline',  # Set default mode to draw lines
+        newshape=dict(
+            line=dict(color='#FFD700', width=2),
+            fillcolor='rgba(255, 215, 0, 0.3)'
+        ),
+        modebar=dict(
+            bgcolor='rgba(0,0,0,0.5)',
+            color='white',
+            activecolor='#e94560'
+        )
+    )
+    
     config = {
         'modeBarButtonsToAdd': [
             'drawline',
-            'drawopenpath',
+            'drawopenpath', 
             'drawcircle',
             'drawrect',
             'eraseshape'
         ],
-        'modeBarButtonsToRemove': ['autoScale2d'],
+        'modeBarButtonsToRemove': ['autoScale2d', 'lasso2d', 'select2d'],
         'displayModeBar': True,
         'displaylogo': False,
+        'editable': True,  # Allow editing of shapes
         'toImageButtonOptions': {
             'format': 'png',
             'filename': f'{symbol}_chart',
@@ -656,13 +670,11 @@ def render_chart_with_toolbar(
     
     st.markdown(f"### 📊 {symbol} Technical Analysis")
     
+    # Drawing instructions
+    st.info("✏️ **Draw on Chart:** Click and drag directly on the chart to draw trendlines. Use the toolbar icons at top-right: 📏 Line | ✏️ Freehand | ⭕ Circle | ⬜ Rectangle | 🗑️ Erase")
+    
     toolbar_config = ChartToolbar.render_toolbar(chart_key)
     indicator_config = ChartToolbar.render_indicator_panel(chart_key)
-    
-    # Show custom trendline controls if enabled
-    if toolbar_config.get('show_custom_trendline') and df is not None and len(df) > 0:
-        custom_line_config = ChartToolbar.render_custom_trendline_controls(chart_key, df)
-        toolbar_config['custom_lines'] = custom_line_config.get('custom_lines', [])
     
     if df is not None and len(df) > 0:
         fig, config = create_advanced_chart(

@@ -910,13 +910,12 @@ def render_ai_analysis_page():
                     
                     # Get chart toolbar and indicator configurations
                     chart_key = f"ai_analysis_{symbol}"
+                    
+                    # Drawing instructions
+                    st.info("✏️ **Draw on Chart:** Click and drag directly on the chart to draw trendlines. Use the toolbar icons at top-right: 📏 Line | ✏️ Freehand | ⭕ Circle | ⬜ Rectangle | 🗑️ Erase")
+                    
                     toolbar_config = ChartToolbar.render_toolbar(chart_key)
                     indicator_config = ChartToolbar.render_indicator_panel(chart_key)
-                    
-                    # Show custom trendline controls if enabled
-                    if toolbar_config.get('show_custom_trendline'):
-                        custom_line_config = ChartToolbar.render_custom_trendline_controls(chart_key, asset_data)
-                        toolbar_config['custom_lines'] = custom_line_config.get('custom_lines', [])
                     
                     # AI-specific toggles
                     col_t1, col_t2 = st.columns(2)
