@@ -73,7 +73,8 @@ class ChartToolbar:
         
         with col1:
             st.markdown("**📐 Drawing**")
-            toolbar_config['show_trendline'] = st.checkbox("Trendline", key=f"{chart_key}_trendline")
+            toolbar_config['show_trendline'] = st.checkbox("Auto Trendline", key=f"{chart_key}_trendline")
+            toolbar_config['show_custom_trendline'] = st.checkbox("Custom Trendline", key=f"{chart_key}_custom_trendline")
             toolbar_config['show_hline'] = st.checkbox("H-Line", key=f"{chart_key}_hline")
             toolbar_config['show_vline'] = st.checkbox("V-Line", key=f"{chart_key}_vline")
         
@@ -135,6 +136,102 @@ class ChartToolbar:
             'show_atr': show_atr,
             'show_keltner': show_keltner,
             'show_donchian': show_donchian
+        }
+    
+    @staticmethod
+    def render_custom_trendline_controls(chart_key: str, df: pd.DataFrame) -> Dict[str, Any]:
+        """Render controls for drawing custom trendlines"""
+        
+        custom_lines = []
+        
+        # Initialize session state for custom trendlines
+        if f"{chart_key}_custom_lines" not in st.session_state:
+            st.session_state[f"{chart_key}_custom_lines"] = []
+        
+        with st.expander("✏️ Draw Custom Trendline", expanded=True):
+            st.markdown("**Set your trendline start and end points:**")
+            
+            # Get price range for sliders
+            min_price = float(df['low'].min()) * 0.95
+            max_price = float(df['high'].max()) * 1.05
+            current_price = float(df['close'].iloc[-1])
+            
+            # Get date range
+            dates = df.index.tolist()
+            num_bars = len(dates)
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("**Start Point**")
+                start_bar = st.slider(
+                    "Start Bar (from left)", 
+                    min_value=0, 
+                    max_value=num_bars-1, 
+                    value=max(0, num_bars - 50),
+                    key=f"{chart_key}_start_bar"
+                )
+                start_price = st.number_input(
+                    "Start Price ($)", 
+                    min_value=min_price,
+                    max_value=max_price,
+                    value=float(df['low'].iloc[start_bar]) if start_bar < len(df) else min_price,
+                    step=0.01,
+                    key=f"{chart_key}_start_price"
+                )
+            
+            with col2:
+                st.markdown("**End Point**")
+                end_bar = st.slider(
+                    "End Bar (from left)", 
+                    min_value=0, 
+                    max_value=num_bars-1, 
+                    value=num_bars-1,
+                    key=f"{chart_key}_end_bar"
+                )
+                end_price = st.number_input(
+                    "End Price ($)", 
+                    min_value=min_price,
+                    max_value=max_price,
+                    value=float(df['low'].iloc[end_bar]) if end_bar < len(df) else current_price,
+                    step=0.01,
+                    key=f"{chart_key}_end_price"
+                )
+            
+            col3, col4 = st.columns(2)
+            with col3:
+                line_color = st.color_picker("Line Color", "#FFD700", key=f"{chart_key}_line_color")
+            with col4:
+                line_style = st.selectbox("Line Style", ["Solid", "Dashed", "Dotted"], key=f"{chart_key}_line_style")
+            
+            col5, col6 = st.columns(2)
+            with col5:
+                if st.button("➕ Add Trendline", key=f"{chart_key}_add_line", use_container_width=True):
+                    new_line = {
+                        'start_date': dates[start_bar],
+                        'start_price': start_price,
+                        'end_date': dates[end_bar],
+                        'end_price': end_price,
+                        'color': line_color,
+                        'style': line_style
+                    }
+                    st.session_state[f"{chart_key}_custom_lines"].append(new_line)
+                    st.rerun()
+            
+            with col6:
+                if st.button("🗑️ Clear All Lines", key=f"{chart_key}_clear_lines", use_container_width=True):
+                    st.session_state[f"{chart_key}_custom_lines"] = []
+                    st.rerun()
+            
+            # Show existing lines
+            if st.session_state[f"{chart_key}_custom_lines"]:
+                st.markdown("**Your Trendlines:**")
+                for i, line in enumerate(st.session_state[f"{chart_key}_custom_lines"]):
+                    direction = "↗️ Up" if line['end_price'] > line['start_price'] else "↘️ Down"
+                    st.caption(f"{i+1}. {direction}: ${line['start_price']:.2f} → ${line['end_price']:.2f}")
+        
+        return {
+            'custom_lines': st.session_state.get(f"{chart_key}_custom_lines", [])
         }
 
 
@@ -377,6 +474,39 @@ def create_advanced_chart(
                 row=1, col=1
             )
     
+    # Add custom trendlines if enabled
+    if toolbar_config.get('show_custom_trendline'):
+        custom_lines = toolbar_config.get('custom_lines', [])
+        for i, line in enumerate(custom_lines):
+            dash_style = 'solid'
+            if line.get('style') == 'Dashed':
+                dash_style = 'dash'
+            elif line.get('style') == 'Dotted':
+                dash_style = 'dot'
+            
+            fig.add_trace(
+                go.Scatter(
+                    x=[line['start_date'], line['end_date']],
+                    y=[line['start_price'], line['end_price']],
+                    name=f"Trendline {i+1}",
+                    mode='lines',
+                    line=dict(color=line.get('color', '#FFD700'), width=2, dash=dash_style)
+                ),
+                row=1, col=1
+            )
+            
+            # Add markers at start and end points
+            fig.add_trace(
+                go.Scatter(
+                    x=[line['start_date'], line['end_date']],
+                    y=[line['start_price'], line['end_price']],
+                    mode='markers',
+                    marker=dict(color=line.get('color', '#FFD700'), size=8, symbol='circle'),
+                    showlegend=False
+                ),
+                row=1, col=1
+            )
+    
     # Add horizontal line if enabled
     if toolbar_config.get('show_hline'):
         # Draw horizontal line at current price
@@ -528,6 +658,11 @@ def render_chart_with_toolbar(
     
     toolbar_config = ChartToolbar.render_toolbar(chart_key)
     indicator_config = ChartToolbar.render_indicator_panel(chart_key)
+    
+    # Show custom trendline controls if enabled
+    if toolbar_config.get('show_custom_trendline') and df is not None and len(df) > 0:
+        custom_line_config = ChartToolbar.render_custom_trendline_controls(chart_key, df)
+        toolbar_config['custom_lines'] = custom_line_config.get('custom_lines', [])
     
     if df is not None and len(df) > 0:
         fig, config = create_advanced_chart(
