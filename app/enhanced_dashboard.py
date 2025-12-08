@@ -639,6 +639,78 @@ def render_crypto_portfolio():
     
     styled_crypto = crypto_df.style.applymap(color_crypto_pnl, subset=['Unrealized P&L', 'Day Change'])
     st.dataframe(styled_crypto, use_container_width=True)
+    
+    # Crypto Performance Charts - matching stock portfolio functionality
+    st.markdown("### 📊 Crypto Performance Charts")
+    
+    available_cryptos = ["BTC", "ETH", "USDT", "XRP", "BNB", "SOL", "USDC", "TRX", "DOGE", "ADA", 
+                         "AVAX", "SHIB", "TON", "DOT", "LINK", "BCH", "LTC", "XLM", "WTRX", "STETH"]
+    
+    selected_crypto = st.selectbox("Select cryptocurrency to analyze:", available_cryptos, key="crypto_perf_select")
+    
+    if st.button(f"Load {selected_crypto} Analysis", key="load_crypto_analysis"):
+        with st.spinner(f"Loading {selected_crypto} data..."):
+            try:
+                crypto_data = ing.fetch_mixed_data(crypto_symbols=[selected_crypto], period="1y", interval="1d")
+                if crypto_data and selected_crypto in crypto_data:
+                    df = crypto_data[selected_crypto]
+                    
+                    # Create crypto chart with AI signals overlay
+                    fig = go.Figure()
+                    
+                    # Candlestick chart
+                    fig.add_trace(go.Candlestick(
+                        x=df.index,
+                        open=df['open'],
+                        high=df['high'],
+                        low=df['low'],
+                        close=df['close'],
+                        name=f'{selected_crypto} Price'
+                    ))
+                    
+                    # Add pattern detection
+                    patterns = st.session_state.pattern_recognizer.detect_patterns_from_data(df, selected_crypto)
+                    
+                    # Add pattern annotations
+                    for pattern in patterns[:3]:
+                        if 'entry_price' in pattern:
+                            fig.add_hline(
+                                y=pattern['entry_price'], 
+                                line_dash="dash",
+                                annotation_text=f"{pattern['pattern_type']}: {pattern['signal']}",
+                                annotation_position="top right"
+                            )
+                    
+                    fig.update_layout(
+                        title=f"{selected_crypto} Price Chart with AI Pattern Recognition",
+                        xaxis_title="Date",
+                        yaxis_title="Price ($)",
+                        height=500
+                    )
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Display detected patterns
+                    if patterns:
+                        st.markdown("### 🔍 Detected Patterns & Signals")
+                        for i, pattern in enumerate(patterns[:3]):
+                            with st.expander(f"Pattern {i+1}: {pattern['pattern_type']} - {pattern['signal']}"):
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    st.write(f"**Confidence:** {pattern['confidence']:.2%}")
+                                    st.write(f"**Signal:** {pattern['signal']}")
+                                    st.write(f"**Entry Price:** ${pattern['entry_price']:.2f}")
+                                with col2:
+                                    st.write(f"**Target:** ${pattern['target_price']:.2f}")
+                                    st.write(f"**Stop Loss:** ${pattern['stop_loss']:.2f}")
+                                    st.write(f"**Risk/Reward:** {pattern['risk_reward_ratio']:.1f}")
+                                
+                                st.write(f"**Analysis:** {pattern['description']}")
+                else:
+                    st.warning(f"Could not load data for {selected_crypto}")
+                    
+            except Exception as e:
+                st.error(f"Error loading crypto data: {str(e)}")
 
 def render_ai_analysis_page():
     """Render the AI analysis page"""
