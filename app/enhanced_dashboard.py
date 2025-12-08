@@ -294,7 +294,7 @@ def render_main_dashboard():
             ["🏠 Dashboard Overview", "💼 Stock Portfolio", "₿ Crypto Portfolio", 
              "🔍 AI Analysis", "📊 Pattern Recognition", "💳 Wallet Management",
              "📈 Options Analysis", "📝 Trade Log & P&L", "😊 Market Sentiment",
-             "📧 Email Subscriptions", "🏗️ System Architecture", "⚙️ Settings", "🔒 Security"]
+             "📧 Email Subscriptions", "⚙️ Settings", "🔒 Security"]
         )
         
         st.markdown("---")
@@ -333,8 +333,6 @@ def render_main_dashboard():
         render_market_sentiment_page()
     elif page == "📧 Email Subscriptions":
         render_email_subscriptions_page()
-    elif page == "🏗️ System Architecture":
-        render_system_architecture_page()
     elif page == "⚙️ Settings":
         render_settings_page()
     elif page == "🔒 Security":
@@ -1654,198 +1652,6 @@ def render_email_subscriptions_page():
     except Exception as e:
         st.error(f"Error loading email subscriptions: {str(e)}")
         st.info("Email subscription module is being set up. Please check back soon!")
-
-
-def render_system_architecture_page():
-    """Render the system architecture visualization page"""
-    st.markdown("### 🏗️ System Architecture & Model Performance")
-    
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Class Diagram", "🔄 Data Flow", "📈 Model Performance", "📉 Data Sources"])
-    
-    with tab1:
-        st.subheader("System Class Diagram")
-        st.markdown("""
-        ```
-        ┌─────────────────────────────────────────────────────────────────────────┐
-        │                        IntelliTradeAI Architecture                       │
-        └─────────────────────────────────────────────────────────────────────────┘
-        
-        ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-        │  DataIngestion  │────▶│   MLPredictor   │────▶│ SignalFusion    │
-        │  - Yahoo Finance│     │  - RandomForest │     │ Engine          │
-        │  - CoinMarketCap│     │  - XGBoost      │     │ - Conflict Res. │
-        └─────────────────┘     │  - LSTM         │     └────────┬────────┘
-                                └─────────────────┘              │
-                                                                 ▼
-        ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-        │ ChartPattern    │────▶│ TradingMode     │────▶│ TradeExecutor   │
-        │ Recognizer      │     │ Manager         │     │ - Stocks        │
-        │ - Head&Shoulders│     │ - Manual/Auto   │     │ - Crypto        │
-        │ - Double Top    │     │ - Per-asset     │     │ - Options       │
-        └─────────────────┘     └─────────────────┘     └────────┬────────┘
-                                                                 │
-        ┌─────────────────┐     ┌─────────────────┐              │
-        │ FearGreed       │     │ SecureAuth      │              ▼
-        │ IndexAnalyzer   │     │ Manager         │     ┌─────────────────┐
-        │ - Crypto Index  │     │ - 2FA           │     │ PostgreSQL DB   │
-        │ - Stock Index   │     │ - JWT Tokens    │     │ - Trades        │
-        │ - Options Index │     └─────────────────┘     │ - Positions     │
-        └─────────────────┘                             │ - Portfolio     │
-                                                        └─────────────────┘
-        ┌─────────────────┐     ┌─────────────────┐
-        │ ChartToolbar    │     │ SecureWallet    │
-        │ - Trendlines    │     │ Manager         │
-        │ - Fibonacci     │     │ - ETH Wallets   │
-        │ - Indicators    │     │ - BTC Wallets   │
-        └─────────────────┘     └─────────────────┘
-        ```
-        """)
-        
-        st.info("📚 Full Mermaid diagram available in `docs/system_architecture.md`")
-    
-    with tab2:
-        st.subheader("Data Flow Pipeline")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("### 📥 Data Sources")
-            st.markdown("""
-            | Source | Type | Data |
-            |--------|------|------|
-            | Yahoo Finance | Free API | Historical OHLCV (5-10 years) |
-            | CoinMarketCap | Paid API | Real-time prices, Market Cap |
-            """)
-        
-        with col2:
-            st.markdown("### ⏱️ Data Periods Available")
-            st.markdown("""
-            - **1 Year**: ~250 data points
-            - **2 Years**: ~500 data points
-            - **5 Years**: ~1,250 data points ⭐
-            - **10 Years**: ~2,500 data points
-            - **Max**: All available history
-            """)
-        
-        st.markdown("---")
-        st.markdown("""
-        ```
-        Yahoo Finance ──┐                    ┌── Technical Indicators ──┐
-                        │                    │   SMA, EMA, RSI, MACD    │
-                        ▼                    │   Bollinger, ATR, Volume │
-                ┌───────────────┐            └───────────┬──────────────┘
-                │ DataIngestion │────────────────────────┤
-                │ (Hybrid)      │                        ▼
-                └───────────────┘            ┌───────────────────────────┐
-                        ▲                    │   ML Model Ensemble       │
-                        │                    │   RF + XGBoost + LSTM     │
-        CoinMarketCap ──┘                    └───────────┬───────────────┘
-        (Real-time enrichment)                           │
-                                                         ▼
-                                             ┌───────────────────────────┐
-                                             │   Signal Fusion Engine    │
-                                             │   BUY / SELL / HOLD       │
-                                             └───────────────────────────┘
-        ```
-        """)
-    
-    with tab3:
-        st.subheader("Model Performance Metrics")
-        
-        st.markdown("### 🎯 Current Accuracy (Random Forest)")
-        
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Crypto Models", "47-72%", "Avg: 58%")
-        with col2:
-            st.metric("Stock Models", "52-79%", "Avg: 64%")
-        with col3:
-            st.metric("Ensemble Boost", "+8-12%", "With extended data")
-        
-        st.markdown("---")
-        
-        st.markdown("### 📊 Expected Improvement with Extended Data")
-        
-        import plotly.graph_objects as go
-        
-        periods = ['1 Year', '2 Years', '5 Years', '10 Years']
-        samples = [250, 500, 1250, 2500]
-        crypto_acc = [58, 62, 68, 72]
-        stock_acc = [64, 68, 74, 78]
-        
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=periods, y=crypto_acc, mode='lines+markers', name='Crypto Accuracy', line=dict(color='#F7931A')))
-        fig.add_trace(go.Scatter(x=periods, y=stock_acc, mode='lines+markers', name='Stock Accuracy', line=dict(color='#16C784')))
-        fig.add_trace(go.Bar(x=periods, y=samples, name='Training Samples', yaxis='y2', opacity=0.3, marker_color='#3861FB'))
-        
-        fig.update_layout(
-            title='Model Accuracy vs Training Data Period',
-            xaxis_title='Data Period',
-            yaxis_title='Accuracy (%)',
-            yaxis2=dict(title='Training Samples', overlaying='y', side='right'),
-            template='plotly_dark',
-            height=400,
-            legend=dict(orientation='h', yanchor='bottom', y=1.02)
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.markdown("### 🧠 Model Ensemble Weights")
-        st.markdown("""
-        | Model | Weight | Strength |
-        |-------|--------|----------|
-        | Random Forest | 40% | Robust, handles noise well |
-        | XGBoost | 40% | High accuracy, fast training |
-        | Pattern AI | 20% | Technical analysis expertise |
-        """)
-    
-    with tab4:
-        st.subheader("Supported Assets (38 Total)")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown("### 🪙 Cryptocurrencies (20)")
-            cryptos = ["BTC", "ETH", "USDT", "XRP", "BNB", "SOL", "USDC", "TRX", "DOGE", "ADA", 
-                      "AVAX", "SHIB", "TON", "DOT", "LINK", "BCH", "LTC", "XLM", "WTRX", "STETH"]
-            
-            crypto_df = pd.DataFrame({
-                'Symbol': cryptos[:10],
-                'Status': ['✅ Active'] * 10
-            })
-            crypto_df2 = pd.DataFrame({
-                'Symbol': cryptos[10:],
-                'Status': ['✅ Active'] * 10
-            })
-            
-            st.dataframe(crypto_df, use_container_width=True, hide_index=True)
-            st.dataframe(crypto_df2, use_container_width=True, hide_index=True)
-        
-        with col2:
-            st.markdown("### 📈 Stocks (18)")
-            stocks = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM",
-                     "WMT", "JNJ", "V", "BAC", "DIS", "NFLX", "INTC", "AMD", "CRM", "ORCL"]
-            
-            stock_df = pd.DataFrame({
-                'Symbol': stocks[:9],
-                'Sector': ['Tech', 'Tech', 'Tech', 'Retail', 'Tech', 'Tech', 'Auto', 'Finance', 'Retail']
-            })
-            stock_df2 = pd.DataFrame({
-                'Symbol': stocks[9:],
-                'Sector': ['Healthcare', 'Finance', 'Finance', 'Media', 'Media', 'Tech', 'Tech', 'Enterprise', 'Enterprise']
-            })
-            
-            st.dataframe(stock_df, use_container_width=True, hide_index=True)
-            st.dataframe(stock_df2, use_container_width=True, hide_index=True)
-        
-        st.markdown("---")
-        st.markdown("### 📡 Data Source Details")
-        st.markdown("""
-        | Source | Endpoint | Rate Limit | Cost |
-        |--------|----------|------------|------|
-        | Yahoo Finance | `yfinance` Python library | No limit | Free |
-        | CoinMarketCap | `/v1/cryptocurrency/quotes/latest` | 10K/month | Paid |
-        """)
 
 
 # Main application logic
