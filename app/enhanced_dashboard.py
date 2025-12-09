@@ -28,6 +28,7 @@ try:
     from ai_vision.chart_pattern_recognition import ChartPatternRecognizer
     from ai_advisor.ml_predictor import MLPredictor  # Use real ML predictor
     from ai_advisor.signal_fusion_engine import SignalFusionEngine  # New unified signal system
+    from data.news_provider import get_news_for_asset  # News intelligence
     # Try to import the real data ingestion module
     from data.data_ingestion import DataIngestion
     ing = DataIngestion()
@@ -1037,6 +1038,117 @@ def render_ai_analysis_page():
                             <span style="color: #dc3545;">● Stop Loss</span>
                         </div>
                         """, unsafe_allow_html=True)
+                    
+                    # News Intelligence Section
+                    st.markdown("---")
+                    st.markdown("### 📰 News Intelligence & Market Catalysts")
+                    
+                    try:
+                        news_data = get_news_for_asset(symbol, limit=5)
+                        articles = news_data.get('articles', [])
+                        news_recommendation = news_data.get('recommendation', {})
+                        
+                        # News-based recommendation summary
+                        if news_recommendation:
+                            rec_signal = news_recommendation.get('recommendation', 'HOLD')
+                            rec_color = {'BUY': '#28a745', 'SELL': '#dc3545', 'HOLD': '#ffc107'}.get(rec_signal, '#6c757d')
+                            rec_confidence = news_recommendation.get('confidence', 0.5)
+                            
+                            st.markdown(f"""
+                            <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+                                        padding: 15px; border-radius: 10px; margin-bottom: 20px;
+                                        border-left: 4px solid {rec_color};">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <span style="color: #9ca3af; font-size: 14px;">News Sentiment Signal</span>
+                                        <h3 style="color: {rec_color}; margin: 5px 0;">📊 {rec_signal}</h3>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="color: #9ca3af; font-size: 12px;">Confidence</span>
+                                        <h4 style="color: white; margin: 5px 0;">{rec_confidence:.0%}</h4>
+                                    </div>
+                                </div>
+                                <p style="color: #d1d5db; margin-top: 10px; font-size: 13px;">
+                                    {news_recommendation.get('rationale', 'Analyzing news sentiment...')}
+                                </p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        
+                        # Display articles as cards
+                        if articles:
+                            for i, article in enumerate(articles):
+                                catalyst = article.get('catalyst', {})
+                                sentiment = article.get('sentiment', {})
+                                catalyst_types = catalyst.get('types', ['general'])
+                                is_high_impact = catalyst.get('is_high_impact', False)
+                                sentiment_type = sentiment.get('sentiment', 'neutral')
+                                
+                                # Catalyst badge colors
+                                catalyst_colors = {
+                                    'earnings': '#9333ea',
+                                    'regulatory': '#dc2626',
+                                    'macro': '#2563eb',
+                                    'product': '#16a34a',
+                                    'market': '#ea580c',
+                                    'crypto_specific': '#0891b2',
+                                    'general': '#6b7280'
+                                }
+                                
+                                sentiment_icon = {'bullish': '📈', 'bearish': '📉', 'neutral': '➡️'}.get(sentiment_type, '➡️')
+                                sentiment_color = {'bullish': '#16C784', 'bearish': '#EA3943', 'neutral': '#6b7280'}.get(sentiment_type, '#6b7280')
+                                
+                                # Time ago calculation
+                                try:
+                                    pub_time = datetime.fromisoformat(article.get('published_at', '').replace('Z', '+00:00'))
+                                    time_diff = datetime.now() - pub_time.replace(tzinfo=None)
+                                    if time_diff.days > 0:
+                                        time_ago = f"{time_diff.days}d ago"
+                                    elif time_diff.seconds > 3600:
+                                        time_ago = f"{time_diff.seconds // 3600}h ago"
+                                    else:
+                                        time_ago = f"{time_diff.seconds // 60}m ago"
+                                except:
+                                    time_ago = "Recent"
+                                
+                                with st.expander(f"{sentiment_icon} {article.get('title', 'News Article')}", expanded=(i == 0)):
+                                    col_img, col_content = st.columns([1, 3])
+                                    
+                                    with col_img:
+                                        image_url = article.get('image_url', '')
+                                        if image_url:
+                                            st.image(image_url, use_container_width=True)
+                                    
+                                    with col_content:
+                                        # Source and time
+                                        st.caption(f"📰 {article.get('source', 'Unknown')} • {time_ago}")
+                                        
+                                        # Catalyst badges
+                                        badges_html = ""
+                                        for cat_type in catalyst_types[:2]:
+                                            badge_color = catalyst_colors.get(cat_type, '#6b7280')
+                                            badges_html += f'<span style="background-color: {badge_color}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-right: 5px;">{cat_type.upper()}</span>'
+                                        
+                                        if is_high_impact:
+                                            badges_html += '<span style="background-color: #dc2626; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">⚡ HIGH IMPACT</span>'
+                                        
+                                        st.markdown(badges_html, unsafe_allow_html=True)
+                                        
+                                        # Summary
+                                        st.markdown(f"**Summary:** {article.get('summary', 'No summary available.')}")
+                                        
+                                        # Impact analysis
+                                        st.markdown(f"""
+                                        <div style="background-color: {'#d4edda' if sentiment_type == 'bullish' else '#f8d7da' if sentiment_type == 'bearish' else '#fff3cd'}; 
+                                                    padding: 10px; border-radius: 5px; margin-top: 10px;">
+                                            <strong style="color: {sentiment_color};">💡 Trading Impact:</strong>
+                                            <p style="margin: 5px 0 0 0; color: #333;">{article.get('impact_summary', 'Analysis pending...')}</p>
+                                        </div>
+                                        """, unsafe_allow_html=True)
+                        else:
+                            st.info("No recent news articles found for this asset.")
+                    
+                    except Exception as news_error:
+                        st.warning(f"Unable to load news data: {str(news_error)}")
 
 def render_pattern_recognition_page():
     """Render the pattern recognition page"""

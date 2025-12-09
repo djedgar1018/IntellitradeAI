@@ -240,6 +240,67 @@ class NewsProvider:
             'high_impact_events': high_impact_count
         }
     
+    def _fetch_yahoo_rss(self, symbol: str, limit: int = 5) -> List[Dict]:
+        """Fetch real news from Yahoo Finance RSS feed"""
+        articles = []
+        
+        try:
+            # Yahoo Finance RSS feed URL
+            rss_url = f"https://feeds.finance.yahoo.com/rss/2.0/headline?s={symbol}&region=US&lang=en-US"
+            
+            response = requests.get(rss_url, timeout=10, headers={
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            })
+            
+            if response.status_code == 200:
+                import xml.etree.ElementTree as ET
+                root = ET.fromstring(response.content)
+                
+                items = root.findall('.//item')[:limit]
+                
+                for item in items:
+                    title = item.find('title')
+                    link = item.find('link')
+                    description = item.find('description')
+                    pub_date = item.find('pubDate')
+                    
+                    # Strip HTML tags from description
+                    summary_text = description.text if description is not None else ''
+                    summary_text = re.sub(r'<[^>]+>', '', summary_text)
+                    summary_text = summary_text.strip()[:500]  # Limit length
+                    
+                    article = {
+                        'title': title.text if title is not None else 'News Article',
+                        'summary': summary_text,
+                        'url': link.text if link is not None else '#',
+                        'source': 'Yahoo Finance',
+                        'published_at': self._parse_rss_date(pub_date.text if pub_date is not None else ''),
+                        'image_url': self._get_stock_image(symbol),
+                        'is_live': True  # Indicates this is real news
+                    }
+                    articles.append(article)
+        except Exception as e:
+            print(f"Error fetching Yahoo RSS for {symbol}: {e}")
+        
+        return articles
+    
+    def _parse_rss_date(self, date_str: str) -> str:
+        """Parse RSS date format to ISO format"""
+        try:
+            from email.utils import parsedate_to_datetime
+            dt = parsedate_to_datetime(date_str)
+            return dt.isoformat()
+        except:
+            return datetime.now().isoformat()
+    
+    def _get_stock_image(self, symbol: str) -> str:
+        """Get a relevant stock image URL"""
+        is_crypto = symbol in self.CRYPTO_NAMES
+        if is_crypto:
+            return 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=400'
+        else:
+            return 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400'
+    
     def fetch_news(self, symbol: str, limit: int = 5) -> Dict:
         """Fetch news for a symbol"""
         # Check cache first
@@ -249,9 +310,12 @@ class NewsProvider:
         search_term = self._get_search_term(symbol)
         articles = []
         
-        # Generate mock news based on current market context
-        # In production, this would call actual news APIs
-        articles = self._generate_contextual_news(symbol, limit)
+        # Try to fetch real news from Yahoo Finance RSS
+        articles = self._fetch_yahoo_rss(symbol, limit)
+        
+        # If no real articles found, use contextual templates as fallback
+        if not articles:
+            articles = self._generate_contextual_news(symbol, limit)
         
         # Analyze each article
         for article in articles:
