@@ -294,6 +294,143 @@ def generate_training_data_analysis():
     plt.close()
     print("✅ Generated: training_data_analysis.png")
 
+def generate_train_test_split_diagram():
+    """Generate comprehensive train/test split diagram for the whole dataset"""
+    
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    
+    # 1. Overall Dataset Timeline (5-year view)
+    ax1 = axes[0, 0]
+    
+    # Full dataset breakdown
+    total_days = 1260  # 5 years of trading days
+    train_size = int(total_days * 0.8)  # 80% train
+    test_size = total_days - train_size  # 20% test
+    
+    # Create timeline visualization
+    ax1.barh(['Full Dataset'], [total_days], color='#e0e0e0', edgecolor='black', height=0.4, label='Total')
+    ax1.barh(['Training Set'], [train_size], color='#4a90e2', edgecolor='black', height=0.4, label='Training (80%)')
+    ax1.barh(['Test Set'], [test_size], left=[train_size], color='#28a745', edgecolor='black', height=0.4, label='Testing (20%)')
+    
+    ax1.set_xlabel('Trading Days', fontsize=11)
+    ax1.set_title('Dataset Split: 5-Year Historical Data\n(~1,260 Trading Days per Asset)', fontsize=12, fontweight='bold')
+    ax1.set_xlim(0, total_days + 100)
+    
+    # Add annotations
+    ax1.text(train_size/2, 0, f'{train_size} days\n(Training)', ha='center', va='center', fontsize=10, fontweight='bold', color='white')
+    ax1.text(train_size + test_size/2, 0, f'{test_size} days\n(Test)', ha='center', va='center', fontsize=10, fontweight='bold', color='white')
+    
+    ax1.legend(loc='upper right')
+    
+    # 2. Data Split by Asset Class
+    ax2 = axes[0, 1]
+    
+    categories = ['Crypto (20)', 'Stocks (18)', 'Combined (38)']
+    train_samples = [train_size * 20, train_size * 18, train_size * 38]
+    test_samples = [test_size * 20, test_size * 18, test_size * 38]
+    
+    x = np.arange(len(categories))
+    width = 0.35
+    
+    bars1 = ax2.bar(x - width/2, train_samples, width, label='Training', color='#4a90e2')
+    bars2 = ax2.bar(x + width/2, test_samples, width, label='Testing', color='#28a745')
+    
+    ax2.set_ylabel('Total Data Points', fontsize=11)
+    ax2.set_title('Training vs Test Samples by Asset Class', fontsize=12, fontweight='bold')
+    ax2.set_xticks(x)
+    ax2.set_xticklabels(categories)
+    ax2.legend()
+    
+    # Add value labels
+    for bar in bars1:
+        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 200, 
+                 f'{int(bar.get_height()):,}', ha='center', fontsize=9)
+    for bar in bars2:
+        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 200, 
+                 f'{int(bar.get_height()):,}', ha='center', fontsize=9)
+    
+    # 3. Time-series Cross Validation Folds
+    ax3 = axes[1, 0]
+    
+    n_folds = 5
+    fold_colors = plt.cm.Blues(np.linspace(0.3, 0.9, n_folds))
+    
+    for i in range(n_folds):
+        fold_start = i * (total_days // n_folds)
+        fold_train_end = fold_start + int((total_days // n_folds) * 0.8)
+        fold_test_end = (i + 1) * (total_days // n_folds)
+        
+        # Training portion
+        ax3.barh([f'Fold {i+1}'], [fold_train_end - fold_start], left=[fold_start], 
+                 color='#4a90e2', height=0.6, alpha=0.7)
+        # Testing portion
+        ax3.barh([f'Fold {i+1}'], [fold_test_end - fold_train_end], left=[fold_train_end], 
+                 color='#28a745', height=0.6, alpha=0.7)
+    
+    ax3.set_xlabel('Trading Days', fontsize=11)
+    ax3.set_title('Time-Series Cross-Validation (5 Folds)\nWalk-Forward Validation', fontsize=12, fontweight='bold')
+    ax3.set_xlim(0, total_days)
+    
+    # Legend
+    train_patch = mpatches.Patch(color='#4a90e2', alpha=0.7, label='Training')
+    test_patch = mpatches.Patch(color='#28a745', alpha=0.7, label='Validation')
+    ax3.legend(handles=[train_patch, test_patch], loc='upper right')
+    
+    # 4. Feature Engineering Pipeline
+    ax4 = axes[1, 1]
+    ax4.axis('off')
+    
+    # Create a flow diagram using text and arrows
+    pipeline_text = """
+    ┌─────────────────────────────────────────────────────────────┐
+    │                  DATA PROCESSING PIPELINE                   │
+    ├─────────────────────────────────────────────────────────────┤
+    │                                                             │
+    │   RAW DATA (OHLCV)                                          │
+    │        │                                                    │
+    │        ▼                                                    │
+    │   ┌─────────────────────┐                                   │
+    │   │  Data Cleaning      │  • Remove nulls, outliers         │
+    │   │  & Validation       │  • Validate OHLC relationships    │
+    │   └─────────────────────┘                                   │
+    │        │                                                    │
+    │        ▼                                                    │
+    │   ┌─────────────────────┐                                   │
+    │   │  Technical          │  • RSI, MACD, Bollinger Bands     │
+    │   │  Indicators (70+)   │  • EMA, SMA, ATR, OBV             │
+    │   └─────────────────────┘                                   │
+    │        │                                                    │
+    │        ▼                                                    │
+    │   ┌─────────────────────┐                                   │
+    │   │  Feature            │  • Lag features (1-5 days)        │
+    │   │  Engineering        │  • Rolling statistics             │
+    │   └─────────────────────┘                                   │
+    │        │                                                    │
+    │        ▼                                                    │
+    │   ┌─────────────────────┐                                   │
+    │   │  Train/Test Split   │  • 80% Train / 20% Test           │
+    │   │  (Time-based)       │  • No future data leakage         │
+    │   └─────────────────────┘                                   │
+    │        │                                                    │
+    │        ▼                                                    │
+    │   ┌─────────────────────┐                                   │
+    │   │  Model Training     │  • RF + XGBoost Ensemble          │
+    │   │  & Validation       │  • 5-Fold Time-Series CV          │
+    │   └─────────────────────┘                                   │
+    │                                                             │
+    └─────────────────────────────────────────────────────────────┘
+    """
+    
+    ax4.text(0.5, 0.5, pipeline_text, transform=ax4.transAxes, fontsize=9,
+             verticalalignment='center', horizontalalignment='center',
+             fontfamily='monospace', bbox=dict(boxstyle='round', facecolor='#f8f9fa', edgecolor='#dee2e6'))
+    ax4.set_title('Feature Engineering & Training Pipeline', fontsize=12, fontweight='bold', pad=20)
+    
+    plt.tight_layout()
+    plt.savefig('docs/train_test_split_diagram.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print("✅ Generated: train_test_split_diagram.png")
+
 def generate_confusion_matrix():
     """Generate confusion matrix visualization for model predictions"""
     
@@ -357,6 +494,7 @@ def generate_all_visualizations():
     generate_asset_coverage_chart()
     generate_performance_metrics()
     generate_training_data_analysis()
+    generate_train_test_split_diagram()  # New comprehensive train/test split diagram
     generate_confusion_matrix()
     
     print("\n" + "="*60)
