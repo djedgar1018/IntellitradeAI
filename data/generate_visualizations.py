@@ -734,143 +734,138 @@ def generate_train_test_split_diagram():
 def generate_benchmark_comparison():
     """Generate comparison of IntelliTradeAI vs industry benchmarks and existing tools"""
     
-    fig = plt.figure(figsize=(20, 14))
-    gs = fig.add_gridspec(3, 3, hspace=0.4, wspace=0.35)
+    fig = plt.figure(figsize=(20, 16))
+    gs = fig.add_gridspec(3, 3, hspace=0.35, wspace=0.3)
     
     # ============================================
     # 1. TRAINING TIME COMPARISON (Top Left)
     # ============================================
     ax1 = fig.add_subplot(gs[0, 0])
     
-    tools = ['IntelliTradeAI\n(Ours)', 'FreqAI\n(Freqtrade)', 'TrendSpider\nAI Lab', 
-             'Generic\nLSTM Bot', 'RL Trading\n(PPO/DQN)', 'LLM-Based\nTrading']
-    training_hours = [13, 24, 8, 168, 336, 48]  # Hours
-    colors = ['#28a745', '#4a90e2', '#4a90e2', '#4a90e2', '#4a90e2', '#4a90e2']
+    tools = ['IntelliTradeAI\n(Ours)', 'TrendSpider\nAI Lab', 'FreqAI\n(Freqtrade)', 
+             'LLM-Based\nTrading', 'Generic\nLSTM Bot', 'RL Trading\n(PPO/DQN)']
+    training_hours = [13, 8, 24, 48, 168, 336]
+    colors = ['#28a745', '#6c757d', '#6c757d', '#6c757d', '#6c757d', '#6c757d']
     
-    bars = ax1.barh(tools, training_hours, color=colors, edgecolor='white')
-    bars[0].set_color('#28a745')  # Highlight ours
+    bars = ax1.barh(tools, training_hours, color=colors, edgecolor='white', height=0.6)
     
-    ax1.set_xlabel('Training Time (Hours)', fontsize=10)
+    ax1.set_xlabel('Training Time (Hours)', fontsize=11)
     ax1.set_title('Training Time Comparison\n(38 Assets, Full Dataset)', fontsize=12, fontweight='bold')
     
-    # Add labels
     for bar, hours in zip(bars, training_hours):
-        label = f'{hours}h' if hours < 48 else f'{hours//24}d {hours%24}h'
-        ax1.text(bar.get_width() + 5, bar.get_y() + bar.get_height()/2, 
-                 label, va='center', fontsize=9)
+        if hours < 48:
+            label = f'{hours}h'
+        else:
+            label = f'{hours//24}d {hours%24}h' if hours % 24 else f'{hours//24} days'
+        ax1.text(bar.get_width() + 8, bar.get_y() + bar.get_height()/2, 
+                 label, va='center', fontsize=10, fontweight='bold')
     
-    ax1.set_xlim(0, max(training_hours) + 50)
-    ax1.axvline(x=13, color='#28a745', linestyle='--', alpha=0.5)
+    ax1.set_xlim(0, max(training_hours) + 80)
+    ax1.axvline(x=13, color='#28a745', linestyle='--', alpha=0.7, linewidth=2)
+    ax1.text(15, 5.3, 'Our Time', color='#28a745', fontsize=9, fontweight='bold')
     
     # ============================================
-    # 2. METHODOLOGY COMPARISON TABLE (Top Center)
+    # 2. FEATURE COUNT COMPARISON (Top Center)
     # ============================================
     ax2 = fig.add_subplot(gs[0, 1])
-    ax2.axis('off')
     
-    methodology_data = [
-        ['Feature', 'IntelliTradeAI', 'Industry Avg'],
-        ['Model Type', 'RF+XGB Ensemble', 'Single Model'],
-        ['Signal Sources', '3 (Tri-Fusion)', '1-2'],
-        ['Cross-Validation', '5-Fold Time-Series', '3-Fold or None'],
-        ['Feature Count', '70+', '20-40'],
-        ['Data Period', '5 Years', '1-2 Years'],
-        ['Retraining', 'Continuous', 'Weekly/Monthly'],
-        ['News Integration', 'Yes (Real-time)', 'Rare'],
-        ['Explainability', 'Full (SHAP)', 'Limited']
-    ]
+    categories = ['Features', 'Data Sources', 'CV Folds', 'Assets']
+    ours = [70, 3, 5, 38]
+    industry = [30, 1, 2, 8]
     
-    table = ax2.table(cellText=methodology_data[1:], 
-                      colLabels=methodology_data[0],
-                      cellLoc='center',
-                      loc='center',
-                      colWidths=[0.35, 0.35, 0.3])
-    table.auto_set_font_size(False)
-    table.set_fontsize(9)
-    table.scale(1.2, 1.6)
+    x = np.arange(len(categories))
+    width = 0.35
     
-    # Color header
-    for i in range(3):
-        table[(0, i)].set_facecolor('#4a90e2')
-        table[(0, i)].set_text_props(color='white', fontweight='bold')
+    bars1 = ax2.bar(x - width/2, ours, width, label='IntelliTradeAI', color='#28a745', edgecolor='white')
+    bars2 = ax2.bar(x + width/2, industry, width, label='Industry Avg', color='#6c757d', edgecolor='white')
     
-    # Highlight our column
-    for i in range(1, len(methodology_data)):
-        table[(i, 1)].set_facecolor('#e8f5e9')
+    ax2.set_ylabel('Count', fontsize=11)
+    ax2.set_title('Methodology Metrics Comparison', fontsize=12, fontweight='bold')
+    ax2.set_xticks(x)
+    ax2.set_xticklabels(categories, fontsize=10)
+    ax2.legend(loc='upper right')
     
-    ax2.set_title('Methodology Comparison', fontsize=12, fontweight='bold', pad=20)
+    for bar in bars1:
+        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
+                 f'{int(bar.get_height())}', ha='center', fontsize=10, fontweight='bold')
+    for bar in bars2:
+        ax2.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
+                 f'{int(bar.get_height())}', ha='center', fontsize=10)
     
     # ============================================
     # 3. ACCURACY COMPARISON (Top Right)
     # ============================================
     ax3 = fig.add_subplot(gs[0, 2])
     
-    benchmarks = ['Random\nBaseline', 'Simple MA\nCrossover', 'RSI\nStrategy', 
+    benchmarks = ['Random\nBaseline', 'MA\nCrossover', 'RSI\nStrategy', 
                   'LSTM\n(Literature)', 'XGBoost\n(Literature)', 'IntelliTradeAI\n(Ours)']
     accuracies = [50, 52, 55, 65, 68, 72]
     colors = ['#dc3545', '#ffc107', '#ffc107', '#4a90e2', '#4a90e2', '#28a745']
     
     bars = ax3.bar(benchmarks, accuracies, color=colors, edgecolor='white')
     
-    ax3.set_ylabel('Accuracy (%)', fontsize=10)
+    ax3.set_ylabel('Accuracy (%)', fontsize=11)
     ax3.set_title('Accuracy vs Benchmarks', fontsize=12, fontweight='bold')
     ax3.set_ylim(40, 80)
-    ax3.axhline(y=70, color='green', linestyle='--', alpha=0.5, label='Target')
+    ax3.axhline(y=70, color='green', linestyle='--', alpha=0.5, linewidth=2)
+    ax3.text(5.5, 71, 'Target', color='green', fontsize=9)
     
-    # Add value labels
     for bar in bars:
         ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1, 
-                 f'{bar.get_height()}%', ha='center', fontsize=9)
+                 f'{int(bar.get_height())}%', ha='center', fontsize=10, fontweight='bold')
     
     # ============================================
-    # 4. TRAINING METHODOLOGY FLOW (Middle - Full Width)
+    # 4. TRAINING PIPELINE FLOW (Middle Row - Full Width)
     # ============================================
     ax4 = fig.add_subplot(gs[1, :])
+    ax4.set_xlim(0, 10)
+    ax4.set_ylim(0, 3)
     ax4.axis('off')
     
-    # Training pipeline comparison
-    pipeline_text = """
-    +----------------------------------------------------------------------------------------------------------+
-    |                                    TRAINING METHODOLOGY COMPARISON                                        |
-    +----------------------------------------------------------------------------------------------------------+
-    |                                                                                                          |
-    |   INTELLITRADEAI (OURS)                           |   TYPICAL ML TRADING BOT                             |
-    |   ========================                        |   =======================                            |
-    |                                                   |                                                      |
-    |   [1] Data Collection (5 Years)                   |   [1] Data Collection (1-2 Years)                    |
-    |       - Yahoo Finance (Stocks)                    |       - Single data source                           |
-    |       - CoinMarketCap (Crypto)                    |       - Limited historical depth                     |
-    |       - Real-time News RSS                        |       - No news integration                          |
-    |                                                   |                                                      |
-    |   [2] Feature Engineering (70+ Features)          |   [2] Feature Engineering (20-40 Features)           |
-    |       - Technical indicators (RSI, MACD, BB)      |       - Basic technical indicators                   |
-    |       - Pattern recognition                       |       - Manual feature selection                     |
-    |       - News sentiment scores                     |                                                      |
-    |       - Cross-asset correlation                   |                                                      |
-    |                                                   |                                                      |
-    |   [3] Model Training (Ensemble)                   |   [3] Model Training (Single Model)                  |
-    |       - Random Forest (100 estimators)            |       - LSTM or XGBoost alone                        |
-    |       - XGBoost (150 rounds)                      |       - Basic hyperparameter tuning                  |
-    |       - Weighted ensemble voting                  |       - Standard train/test split                    |
-    |                                                   |                                                      |
-    |   [4] Validation (Rigorous)                       |   [4] Validation (Basic)                             |
-    |       - 5-Fold Time-Series CV                     |       - Single holdout test set                      |
-    |       - Walk-forward optimization                 |       - Limited cross-validation                     |
-    |       - Early stopping (10 rounds)                |                                                      |
-    |                                                   |                                                      |
-    |   [5] Signal Generation (Tri-Fusion)              |   [5] Signal Generation (Single Source)              |
-    |       - ML Model (45% weight)                     |       - Model prediction only                        |
-    |       - Pattern Recognition (30%)                 |       - No conflict resolution                       |
-    |       - News Intelligence (25%)                   |                                                      |
-    |       - Intelligent conflict resolution           |                                                      |
-    |                                                   |                                                      |
-    +----------------------------------------------------------------------------------------------------------+
-    """
+    stages = [
+        ('Data\nCollection', '5 Years\n3 Sources', '1-2 Years\n1 Source'),
+        ('Feature\nEngineering', '70+ Features\nPatterns+News', '20-40 Features\nBasic TA'),
+        ('Model\nTraining', 'RF+XGB\nEnsemble', 'Single\nModel'),
+        ('Validation', '5-Fold\nTime-Series CV', 'Single\nHoldout'),
+        ('Signal\nGeneration', 'Tri-Fusion\n3 Sources', 'Single\nSource')
+    ]
     
-    ax4.text(0.5, 0.5, pipeline_text, transform=ax4.transAxes, fontsize=8,
-             verticalalignment='center', horizontalalignment='center',
-             fontfamily='monospace', bbox=dict(boxstyle='round', facecolor='#f8f9fa', edgecolor='#dee2e6'))
-    ax4.set_title('Training Pipeline: IntelliTradeAI vs Industry Standard', fontsize=12, fontweight='bold', pad=15)
+    box_width = 1.6
+    box_height = 0.7
+    start_x = 0.5
+    gap = 0.3
+    
+    for i, (stage, ours_val, industry_val) in enumerate(stages):
+        x_pos = start_x + i * (box_width + gap)
+        
+        rect_stage = mpatches.FancyBboxPatch((x_pos, 2.1), box_width, box_height,
+                                              boxstyle="round,pad=0.05", facecolor='#4a90e2', edgecolor='white', linewidth=2)
+        ax4.add_patch(rect_stage)
+        ax4.text(x_pos + box_width/2, 2.45, stage, ha='center', va='center', 
+                 fontsize=9, fontweight='bold', color='white')
+        
+        rect_ours = mpatches.FancyBboxPatch((x_pos, 1.2), box_width, box_height,
+                                             boxstyle="round,pad=0.05", facecolor='#28a745', edgecolor='white', linewidth=2)
+        ax4.add_patch(rect_ours)
+        ax4.text(x_pos + box_width/2, 1.55, ours_val, ha='center', va='center', 
+                 fontsize=8, fontweight='bold', color='white')
+        
+        rect_industry = mpatches.FancyBboxPatch((x_pos, 0.3), box_width, box_height,
+                                                 boxstyle="round,pad=0.05", facecolor='#6c757d', edgecolor='white', linewidth=2)
+        ax4.add_patch(rect_industry)
+        ax4.text(x_pos + box_width/2, 0.65, industry_val, ha='center', va='center', 
+                 fontsize=8, color='white')
+        
+        if i < len(stages) - 1:
+            arrow_x = x_pos + box_width + 0.05
+            ax4.annotate('', xy=(arrow_x + gap - 0.1, 2.45), xytext=(arrow_x, 2.45),
+                        arrowprops=dict(arrowstyle='->', color='#4a90e2', lw=2))
+    
+    ax4.text(0.1, 2.45, 'Stage:', fontsize=10, fontweight='bold', color='#4a90e2')
+    ax4.text(0.1, 1.55, 'Ours:', fontsize=10, fontweight='bold', color='#28a745')
+    ax4.text(0.1, 0.65, 'Industry:', fontsize=10, fontweight='bold', color='#6c757d')
+    
+    ax4.set_title('Training Pipeline: IntelliTradeAI vs Industry Standard', fontsize=12, fontweight='bold', pad=10)
     
     # ============================================
     # 5. PERFORMANCE METRICS RADAR (Bottom Left)
@@ -880,112 +875,86 @@ def generate_benchmark_comparison():
     categories = ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'Speed', 'Explainability']
     N = len(categories)
     
-    # Our scores (normalized 0-1)
     our_scores = [0.72, 0.73, 0.72, 0.72, 0.85, 0.90]
     industry_scores = [0.65, 0.63, 0.65, 0.64, 0.60, 0.40]
     
     angles = [n / float(N) * 2 * np.pi for n in range(N)]
     angles += angles[:1]
-    our_scores += our_scores[:1]
-    industry_scores += industry_scores[:1]
+    our_scores_plot = our_scores + our_scores[:1]
+    industry_scores_plot = industry_scores + industry_scores[:1]
     
-    ax5.plot(angles, our_scores, 'o-', linewidth=2, label='IntelliTradeAI', color='#28a745')
-    ax5.fill(angles, our_scores, alpha=0.25, color='#28a745')
-    ax5.plot(angles, industry_scores, 'o-', linewidth=2, label='Industry Avg', color='#4a90e2')
-    ax5.fill(angles, industry_scores, alpha=0.25, color='#4a90e2')
+    ax5.plot(angles, our_scores_plot, 'o-', linewidth=2, label='IntelliTradeAI', color='#28a745', markersize=6)
+    ax5.fill(angles, our_scores_plot, alpha=0.25, color='#28a745')
+    ax5.plot(angles, industry_scores_plot, 'o-', linewidth=2, label='Industry Avg', color='#6c757d', markersize=6)
+    ax5.fill(angles, industry_scores_plot, alpha=0.25, color='#6c757d')
     
     ax5.set_xticks(angles[:-1])
-    ax5.set_xticklabels(categories, fontsize=8)
+    ax5.set_xticklabels(categories, fontsize=9)
     ax5.set_ylim(0, 1)
-    ax5.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1))
-    ax5.set_title('Performance Radar', fontsize=11, fontweight='bold', pad=15)
+    ax5.legend(loc='upper right', bbox_to_anchor=(1.35, 1.1))
+    ax5.set_title('Performance Radar Chart', fontsize=12, fontweight='bold', pad=15)
     
     # ============================================
-    # 6. RESEARCH CITATIONS (Bottom Center)
+    # 6. DATA PERIOD & RETRAINING COMPARISON (Bottom Center)
     # ============================================
     ax6 = fig.add_subplot(gs[2, 1])
-    ax6.axis('off')
     
-    citations_text = """
-    +-----------------------------------------------+
-    |         BENCHMARK SOURCES & CITATIONS         |
-    +-----------------------------------------------+
-    |                                               |
-    |  [1] Machine Learning for Trading             |
-    |      Coursera/Georgia Tech (2024)             |
-    |      - LSTM typical accuracy: 60-68%          |
-    |      - XGBoost typical accuracy: 65-70%       |
-    |                                               |
-    |  [2] Cryptocurrency Trading Using ML          |
-    |      MDPI Journal (2023)                      |
-    |      - 80/20 train/test split standard        |
-    |      - Rolling window retraining              |
-    |                                               |
-    |  [3] FreqAI (Freqtrade)                       |
-    |      Open-source benchmark (2024)             |
-    |      - Continuous retraining approach         |
-    |      - Multi-model ensemble support           |
-    |                                               |
-    |  [4] TrendSpider AI Strategy Lab              |
-    |      Commercial benchmark (2024)              |
-    |      - Custom ML model training               |
-    |      - Pattern recognition integration        |
-    |                                               |
-    |  [5] LLM Trading Bots Comparison              |
-    |      FlowHunt Analysis (2024)                 |
-    |      - LLM outperformed classic algos         |
-    |      - Multi-agent systems emerging           |
-    |                                               |
-    +-----------------------------------------------+
-    """
+    metrics = ['Data Period\n(Years)', 'Retraining\nFrequency\n(per day)', 'Signal\nSources']
+    ours_vals = [5, 1, 3]
+    industry_vals = [1.5, 0.14, 1.5]
     
-    ax6.text(0.5, 0.5, citations_text, transform=ax6.transAxes, fontsize=8,
-             verticalalignment='center', horizontalalignment='center',
-             fontfamily='monospace', bbox=dict(boxstyle='round', facecolor='#fff3cd', edgecolor='#ffc107'))
-    ax6.set_title('Benchmark Sources', fontsize=11, fontweight='bold', pad=10)
+    x = np.arange(len(metrics))
+    width = 0.35
+    
+    bars1 = ax6.bar(x - width/2, ours_vals, width, label='IntelliTradeAI', color='#28a745')
+    bars2 = ax6.bar(x + width/2, industry_vals, width, label='Industry Avg', color='#6c757d')
+    
+    ax6.set_ylabel('Value', fontsize=11)
+    ax6.set_title('Data & Methodology Depth', fontsize=12, fontweight='bold')
+    ax6.set_xticks(x)
+    ax6.set_xticklabels(metrics, fontsize=9)
+    ax6.legend()
+    
+    for bar in bars1:
+        ax6.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, 
+                 f'{bar.get_height():.1f}', ha='center', fontsize=10, fontweight='bold')
+    for bar in bars2:
+        ax6.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1, 
+                 f'{bar.get_height():.1f}', ha='center', fontsize=10)
     
     # ============================================
-    # 7. KEY DIFFERENTIATORS (Bottom Right)
+    # 7. KEY ADVANTAGES HEATMAP (Bottom Right)
     # ============================================
     ax7 = fig.add_subplot(gs[2, 2])
-    ax7.axis('off')
     
-    diff_text = """
-    +-----------------------------------------------+
-    |       INTELLITRADEAI KEY DIFFERENTIATORS      |
-    +-----------------------------------------------+
-    |                                               |
-    |  FASTER TRAINING                              |
-    |  - 13 hours vs 24-336 hours (competitors)     |
-    |  - Optimized ensemble approach                |
-    |  - Efficient feature engineering pipeline     |
-    |                                               |
-    |  TRI-SIGNAL FUSION                            |
-    |  - Only system with 3-source integration      |
-    |  - ML + Patterns + News Intelligence          |
-    |  - Intelligent conflict resolution            |
-    |                                               |
-    |  COMPREHENSIVE COVERAGE                       |
-    |  - 38 assets (20 crypto + 18 stocks)          |
-    |  - Most tools cover < 10 assets               |
-    |                                               |
-    |  TRANSPARENCY                                 |
-    |  - Full SHAP explainability                   |
-    |  - Decision reasoning exposed                 |
-    |  - Risk level classification                  |
-    |                                               |
-    |  REAL-TIME NEWS                               |
-    |  - Yahoo Finance RSS integration              |
-    |  - Sentiment analysis                         |
-    |  - Catalyst detection                         |
-    |                                               |
-    +-----------------------------------------------+
-    """
+    features = ['Training Speed', 'Asset Coverage', 'News Integration', 
+                'Pattern Recognition', 'Explainability', 'Cross-Validation']
+    tools_list = ['IntelliTradeAI', 'FreqAI', 'TrendSpider', 'Generic LSTM', 'RL Bots']
     
-    ax7.text(0.5, 0.5, diff_text, transform=ax7.transAxes, fontsize=8,
-             verticalalignment='center', horizontalalignment='center',
-             fontfamily='monospace', bbox=dict(boxstyle='round', facecolor='#e8f5e9', edgecolor='#28a745'))
-    ax7.set_title('Key Differentiators', fontsize=11, fontweight='bold', pad=10)
+    scores = np.array([
+        [5, 5, 5, 5, 5, 5],
+        [3, 4, 2, 3, 3, 4],
+        [4, 3, 2, 4, 3, 3],
+        [2, 2, 1, 2, 2, 2],
+        [1, 2, 1, 1, 2, 2]
+    ])
+    
+    im = ax7.imshow(scores, cmap='RdYlGn', aspect='auto', vmin=1, vmax=5)
+    
+    ax7.set_xticks(np.arange(len(features)))
+    ax7.set_yticks(np.arange(len(tools_list)))
+    ax7.set_xticklabels(features, fontsize=8, rotation=45, ha='right')
+    ax7.set_yticklabels(tools_list, fontsize=9)
+    
+    for i in range(len(tools_list)):
+        for j in range(len(features)):
+            text_color = 'white' if scores[i, j] >= 4 or scores[i, j] <= 2 else 'black'
+            ax7.text(j, i, scores[i, j], ha='center', va='center', color=text_color, fontsize=10, fontweight='bold')
+    
+    ax7.set_title('Feature Comparison Heatmap\n(1=Poor, 5=Excellent)', fontsize=12, fontweight='bold')
+    
+    cbar = plt.colorbar(im, ax=ax7, shrink=0.8)
+    cbar.set_label('Score', fontsize=10)
     
     plt.suptitle('IntelliTradeAI vs Industry Benchmarks: Training & Methodology Comparison', 
                  fontsize=14, fontweight='bold', y=0.98)
