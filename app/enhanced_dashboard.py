@@ -72,7 +72,15 @@ except ImportError as e:
             return b"fake_qr_code"
     
     class ChartPatternRecognizer:
-        def __init__(self): pass
+        def __init__(self):
+            self.pattern_library = {
+                "Double Bottom": {"description": "Bullish reversal pattern", "signal": "BUY", "reliability": 0.75},
+                "Double Top": {"description": "Bearish reversal pattern", "signal": "SELL", "reliability": 0.75},
+                "Head and Shoulders": {"description": "Bearish reversal pattern", "signal": "SELL", "reliability": 0.80},
+                "Ascending Triangle": {"description": "Bullish continuation pattern", "signal": "BUY", "reliability": 0.70},
+                "Descending Triangle": {"description": "Bearish continuation pattern", "signal": "SELL", "reliability": 0.70},
+                "Demo Pattern": {"description": "Demo pattern for testing", "signal": "BUY", "reliability": 0.85}
+            }
         def detect_patterns_from_data(self, df, symbol):
             return [{"pattern_type": "Demo Pattern", "signal": "BUY", "confidence": 0.85, "entry_price": 100.0, "target_price": 110.0, "stop_loss": 95.0, "risk_reward_ratio": 2.0, "description": "Demo pattern for testing"}]
     
@@ -122,7 +130,7 @@ except ImportError as e:
                 "news_signal": "NEUTRAL",
                 "reasoning": "Demo signal fusion"
             }
-        def fuse_signals(self, ml_prediction, pattern_signals, news_sentiment=None, symbol=None):
+        def fuse_signals(self, ml_prediction, pattern_signals, symbol=None, historical_data=None, news_data=None):
             return {
                 "final_signal": "BUY",
                 "confidence": 75,
@@ -133,7 +141,10 @@ except ImportError as e:
                 "news_signal": "NEUTRAL",
                 "news_confidence": 0.50,
                 "reasoning": "Demo: Combined ML, pattern, and news signals",
-                "signal_agreement": True
+                "signal_agreement": True,
+                "ml_insight": {"signal": "BUY", "confidence": 0.75, "reasoning": "Demo ML signal", "weight": 0.45},
+                "pattern_insight": {"signal": "BUY", "confidence": 0.70, "reasoning": "Demo pattern signal", "weight": 0.30},
+                "news_insight": {"signal": "NEUTRAL", "confidence": 0.50, "reasoning": "Demo news signal", "weight": 0.25}
             }
     
     # Create dummy data module
