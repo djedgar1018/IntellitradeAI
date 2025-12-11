@@ -122,6 +122,19 @@ except ImportError as e:
                 "news_signal": "NEUTRAL",
                 "reasoning": "Demo signal fusion"
             }
+        def fuse_signals(self, ml_prediction, pattern_signals, news_sentiment=None, symbol=None):
+            return {
+                "final_signal": "BUY",
+                "confidence": 75,
+                "ml_signal": "BUY",
+                "ml_confidence": 0.75,
+                "pattern_signal": "BUY",
+                "pattern_confidence": 0.70,
+                "news_signal": "NEUTRAL",
+                "news_confidence": 0.50,
+                "reasoning": "Demo: Combined ML, pattern, and news signals",
+                "signal_agreement": True
+            }
     
     # Create dummy data module
     class DataIngestion:
