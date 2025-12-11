@@ -96,6 +96,20 @@ except ImportError as e:
             return {"signal": "BUY", "confidence": 0.75, "prediction": "Bullish"}
         def get_model_info(self):
             return {"model": "Demo", "accuracy": 0.72}
+        def analyze_asset(self, symbol, data):
+            return {
+                "current_price": 100.0,
+                "price_change_24h": 2.5,
+                "signal": "BUY",
+                "confidence": 0.75,
+                "prediction": "Bullish",
+                "recommendation": {
+                    "decision": "BUY",
+                    "confidence_level": "High",
+                    "risk_level": "Medium",
+                    "action_explanation": "Demo analysis shows positive signals"
+                }
+            }
     
     class SignalFusionEngine:
         def __init__(self): pass
