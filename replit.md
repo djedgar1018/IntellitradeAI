@@ -4,6 +4,15 @@
 This AI-powered trading agent provides real-time predictive signals across 100+ cryptocurrencies and comprehensive stock market coverage. It leverages multiple machine learning models (LSTM, Random Forest, XGBoost), explainable AI features, and comprehensive backtesting capabilities to generate trading signals. The system integrates real-time news intelligence and sophisticated signal fusion to provide actionable trading recommendations. It includes capabilities for options trading, automated execution with e-signature consent, blockchain integration, sentiment analysis, personalized trading plans based on risk tolerance, and SEC-compliant legal disclosures.
 
 ## Recent Changes (December 2024)
+- **IEEE Paper Revisions (Dec 27)**: Addressed all 12+ reviewer comments for IEEE SoutheastCon 2026 submission
+  - Fixed accuracy claim: 5.4 percentage points (8.6% relative) improvement, not 8.3%
+  - Added specific SHAP properties (local accuracy, missingness, consistency)
+  - Reduced keywords to 5, expanded all acronyms (SEC, FINRA, GICS, SHAP)
+  - Added dashboard screenshot (Figure 4) to System Features section
+  - Regenerated Figure 1 with larger text (18pt title, 11-13pt labels)
+  - Added citations for GICS and CoinMarketCap
+  - Changed "70+" to exactly 70 technical indicators
+- **GitHub Preparation**: Created README.md, requirements.txt, LICENSE, .gitignore
 - Added SEC/FINRA legal compliance module with risk disclosures and e-signature authorization
 - Created hover-based tooltip definitions (3-second delay) replacing standalone dictionary tab
 - Implemented user onboarding survey with 5 risk tolerance levels
