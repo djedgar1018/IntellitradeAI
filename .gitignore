@@ -1,6 +1,3 @@
-# Environment variables
-.env
-
 # Python
 __pycache__/
 *.py[cod]
@@ -22,78 +19,71 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
 
 # Virtual environments
-.env
-.venv
-env/
 venv/
 ENV/
-env.bak/
-venv.bak/
+env/
+.venv/
 
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
 *.swo
 *~
 
-# OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-# Model cache
-models/cache/
-*.pkl
-*.joblib
-
-# Data cache
-data/*.json
-data/*.csv
-data/cache/
+# Secrets (never commit)
+*.pem
+*.key
+secrets.json
 
 # Logs
 *.log
 logs/
 
-# Temporary files
-*.tmp
-*.temp
+# Cache
+.cache/
+*.cache
+cached_data/
+
+# Database
+*.db
+*.sqlite3
+
+# Model files (large)
+*.h5
+*.pkl
+*.joblib
+saved_models/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Package archives
+*.tar.gz
+*.zip
+
+# Replit
+.replit
+replit.nix
+.upm/
+.config/

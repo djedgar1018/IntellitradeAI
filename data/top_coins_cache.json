@@ -1,0 +1,125 @@
+{
+  "timestamp": "2025-11-19T21:24:38.299072",
+  "coins": [
+    {
+      "id": 1,
+      "name": "Bitcoin",
+      "symbol": "BTC",
+      "rank": 1,
+      "price": 90403.66642459095,
+      "market_cap": 1803607387370.444,
+      "volume_24h": 76867566453.32513,
+      "percent_change_24h": -2.7097016,
+      "yahoo_symbol": "BTC-USD",
+      "last_updated": "2025-11-19T21:24:38.298991"
+    },
+    {
+      "id": 1027,
+      "name": "Ethereum",
+      "symbol": "ETH",
+      "rank": 2,
+      "price": 2979.18095561654,
+      "market_cap": 359575463610.04816,
+      "volume_24h": 37625525719.56001,
+      "percent_change_24h": -4.64531019,
+      "yahoo_symbol": "ETH-USD",
+      "last_updated": "2025-11-19T21:24:38.299009"
+    },
+    {
+      "id": 825,
+      "name": "Tether USDt",
+      "symbol": "USDT",
+      "rank": 3,
+      "price": 0.9992157249753796,
+      "market_cap": 183706406046.91092,
+      "volume_24h": 135000745707.14555,
+      "percent_change_24h": -0.02771535,
+      "yahoo_symbol": "USDT-USD",
+      "last_updated": "2025-11-19T21:24:38.299014"
+    },
+    {
+      "id": 52,
+      "name": "XRP",
+      "symbol": "XRP",
+      "rank": 4,
+      "price": 2.0699355260190107,
+      "market_cap": 124566656184.56604,
+      "volume_24h": 5758346691.252813,
+      "percent_change_24h": -6.91963486,
+      "yahoo_symbol": "XRP-USD",
+      "last_updated": "2025-11-19T21:24:38.299040"
+    },
+    {
+      "id": 1839,
+      "name": "BNB",
+      "symbol": "BNB",
+      "rank": 5,
+      "price": 891.4279346011167,
+      "market_cap": 122782435421.42119,
+      "volume_24h": 3081273560.0393243,
+      "percent_change_24h": -4.51429613,
+      "yahoo_symbol": "BNB-USD",
+      "last_updated": "2025-11-19T21:24:38.299044"
+    },
+    {
+      "id": 5426,
+      "name": "Solana",
+      "symbol": "SOL",
+      "rank": 6,
+      "price": 134.20332920971117,
+      "market_cap": 74401422452.25458,
+      "volume_24h": 5647927474.55255,
+      "percent_change_24h": -4.89623287,
+      "yahoo_symbol": "SOL-USD",
+      "last_updated": "2025-11-19T21:24:38.299048"
+    },
+    {
+      "id": 3408,
+      "name": "USDC",
+      "symbol": "USDC",
+      "rank": 7,
+      "price": 1.000214078988521,
+      "market_cap": 74399098268.17683,
+      "volume_24h": 17814548526.570576,
+      "percent_change_24h": 0.05109618,
+      "yahoo_symbol": "USDC-USD",
+      "last_updated": "2025-11-19T21:24:38.299052"
+    },
+    {
+      "id": 1958,
+      "name": "TRON",
+      "symbol": "TRX",
+      "rank": 8,
+      "price": 0.28532472991612073,
+      "market_cap": 27012364967.00285,
+      "volume_24h": 859868969.0690244,
+      "percent_change_24h": -2.03049071,
+      "yahoo_symbol": "TRX-USD",
+      "last_updated": "2025-11-19T21:24:38.299060"
+    },
+    {
+      "id": 74,
+      "name": "Dogecoin",
+      "symbol": "DOGE",
+      "rank": 9,
+      "price": 0.15184016683041932,
+      "market_cap": 23055805166.86582,
+      "volume_24h": 2140250404.8352711,
+      "percent_change_24h": -5.96693612,
+      "yahoo_symbol": "DOGE-USD",
+      "last_updated": "2025-11-19T21:24:38.299064"
+    },
+    {
+      "id": 2010,
+      "name": "Cardano",
+      "symbol": "ADA",
+      "rank": 10,
+      "price": 0.453964483064079,
+      "market_cap": 16287205140.86144,
+      "volume_24h": 972714732.7454563,
+      "percent_change_24h": -4.78458181,
+      "yahoo_symbol": "ADA-USD",
+      "last_updated": "2025-11-19T21:24:38.299068"
+    }
+  ]
+}
