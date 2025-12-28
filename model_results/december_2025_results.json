@@ -1,142 +1,769 @@
 {
-  "timestamp": "2025-12-28T23:11:05.031600",
+  "timestamp": "2025-12-28T23:36:11.987312",
   "crypto": {
-    "avg": 52.4,
-    "best": 80.3,
-    "above_70": 1,
-    "count": 10
+    "count": 39,
+    "avg": 54.7,
+    "best": 93.8,
+    "above_70": 5
   },
   "stocks": {
-    "avg": 81.5,
-    "best": 92.1,
-    "above_70": 10,
-    "count": 10
+    "count": 108,
+    "avg": 85.2,
+    "best": 99.2,
+    "above_70": 98
   },
-  "overall": 66.9,
-  "total_above_70": 11,
+  "etfs": {
+    "count": 10,
+    "avg": 96.3,
+    "best": 98.8,
+    "above_70": 10
+  },
+  "overall": {
+    "count": 157,
+    "avg": 78.4,
+    "above_70": 113
+  },
   "details": {
     "crypto": [
       {
+        "symbol": "LEO-USD",
+        "accuracy": 93.8
+      },
+      {
+        "symbol": "TRX-USD",
+        "accuracy": 86.0
+      },
+      {
         "symbol": "BTC-USD",
-        "accuracy": 80.3,
-        "threshold": 5.0,
-        "horizon": 7
+        "accuracy": 80.3
       },
       {
-        "symbol": "ETH-USD",
-        "accuracy": 59.6,
-        "threshold": 5.0,
-        "horizon": 7
+        "symbol": "BNB-USD",
+        "accuracy": 75.6
       },
       {
-        "symbol": "SOL-USD",
-        "accuracy": 66.3,
-        "threshold": 5.0,
-        "horizon": 5
+        "symbol": "TON11419-USD",
+        "accuracy": 74.4
+      },
+      {
+        "symbol": "TAO22974-USD",
+        "accuracy": 68.5
+      },
+      {
+        "symbol": "MNT27075-USD",
+        "accuracy": 68.0
       },
       {
         "symbol": "XRP-USD",
-        "accuracy": 67.7,
-        "threshold": 5.0,
-        "horizon": 5
+        "accuracy": 67.7
+      },
+      {
+        "symbol": "FTM-USD",
+        "accuracy": 67.1
+      },
+      {
+        "symbol": "SOL-USD",
+        "accuracy": 66.3
+      },
+      {
+        "symbol": "LTC-USD",
+        "accuracy": 62.6
+      },
+      {
+        "symbol": "OP-USD",
+        "accuracy": 61.2
+      },
+      {
+        "symbol": "AAVE-USD",
+        "accuracy": 60.7
+      },
+      {
+        "symbol": "SHIB-USD",
+        "accuracy": 60.0
+      },
+      {
+        "symbol": "ETH-USD",
+        "accuracy": 59.8
+      },
+      {
+        "symbol": "CRO-USD",
+        "accuracy": 56.7
+      },
+      {
+        "symbol": "UNI7083-USD",
+        "accuracy": 56.2
+      },
+      {
+        "symbol": "XMR-USD",
+        "accuracy": 56.2
+      },
+      {
+        "symbol": "VET-USD",
+        "accuracy": 55.6
+      },
+      {
+        "symbol": "XLM-USD",
+        "accuracy": 53.4
+      },
+      {
+        "symbol": "HBAR-USD",
+        "accuracy": 52.8
+      },
+      {
+        "symbol": "ALGO-USD",
+        "accuracy": 51.4
       },
       {
         "symbol": "ADA-USD",
-        "accuracy": 49.4,
-        "threshold": 5.0,
-        "horizon": 5
+        "accuracy": 49.4
       },
       {
-        "symbol": "DOGE-USD",
-        "accuracy": 43.0,
-        "threshold": 5.0,
-        "horizon": 7
+        "symbol": "RENDER-USD",
+        "accuracy": 47.2
       },
       {
-        "symbol": "DOT-USD",
-        "accuracy": 35.7,
-        "threshold": 4.0,
-        "horizon": 5
+        "symbol": "NEAR-USD",
+        "accuracy": 46.9
       },
       {
         "symbol": "LINK-USD",
-        "accuracy": 46.3,
-        "threshold": 4.0,
-        "horizon": 5
+        "accuracy": 46.3
       },
       {
-        "symbol": "AVAX-USD",
-        "accuracy": 36.2,
-        "threshold": 4.0,
-        "horizon": 7
+        "symbol": "INJ-USD",
+        "accuracy": 46.3
+      },
+      {
+        "symbol": "ATOM-USD",
+        "accuracy": 44.4
+      },
+      {
+        "symbol": "ICP-USD",
+        "accuracy": 44.4
+      },
+      {
+        "symbol": "DOGE-USD",
+        "accuracy": 43.0
+      },
+      {
+        "symbol": "ETC-USD",
+        "accuracy": 42.7
+      },
+      {
+        "symbol": "IMX10603-USD",
+        "accuracy": 40.3
       },
       {
         "symbol": "MATIC-USD",
-        "accuracy": 39.7,
-        "threshold": 4.0,
-        "horizon": 5
+        "accuracy": 39.7
+      },
+      {
+        "symbol": "BCH-USD",
+        "accuracy": 38.8
+      },
+      {
+        "symbol": "ARB11841-USD",
+        "accuracy": 37.8
+      },
+      {
+        "symbol": "AVAX-USD",
+        "accuracy": 36.2
+      },
+      {
+        "symbol": "DOT-USD",
+        "accuracy": 35.7
+      },
+      {
+        "symbol": "FIL-USD",
+        "accuracy": 32.3
+      },
+      {
+        "symbol": "APT21794-USD",
+        "accuracy": 29.5
       }
     ],
     "stocks": [
       {
-        "symbol": "AAPL",
-        "accuracy": 83.8,
-        "threshold": 5.0,
-        "horizon": 5
+        "symbol": "SO",
+        "sector": "Utilities",
+        "accuracy": 99.2
       },
       {
-        "symbol": "GOOGL",
-        "accuracy": 79.7,
-        "threshold": 5.0,
-        "horizon": 5
+        "symbol": "DUK",
+        "sector": "Utilities",
+        "accuracy": 98.8
       },
       {
-        "symbol": "MSFT",
-        "accuracy": 87.6,
-        "threshold": 4.0,
-        "horizon": 5
+        "symbol": "TJX",
+        "sector": "Consumer Discretionary",
+        "accuracy": 98.4
       },
       {
-        "symbol": "AMZN",
-        "accuracy": 75.9,
-        "threshold": 5.0,
-        "horizon": 5
+        "symbol": "PG",
+        "sector": "Consumer Staples",
+        "accuracy": 98.4
       },
       {
-        "symbol": "NVDA",
-        "accuracy": 73.4,
-        "threshold": 5.0,
-        "horizon": 7
+        "symbol": "AVB",
+        "sector": "Real Estate",
+        "accuracy": 98.4
       },
       {
-        "symbol": "META",
-        "accuracy": 81.3,
-        "threshold": 5.0,
-        "horizon": 5
+        "symbol": "MCD",
+        "sector": "Consumer Discretionary",
+        "accuracy": 98.0
       },
       {
-        "symbol": "TSLA",
-        "accuracy": 72.2,
-        "threshold": 5.0,
-        "horizon": 5
+        "symbol": "LIN",
+        "sector": "Materials",
+        "accuracy": 98.0
       },
       {
-        "symbol": "JPM",
-        "accuracy": 89.6,
-        "threshold": 5.0,
-        "horizon": 7
+        "symbol": "WEC",
+        "sector": "Utilities",
+        "accuracy": 98.0
+      },
+      {
+        "symbol": "EXC",
+        "sector": "Utilities",
+        "accuracy": 97.6
+      },
+      {
+        "symbol": "VZ",
+        "sector": "Communication",
+        "accuracy": 97.6
+      },
+      {
+        "symbol": "PSA",
+        "sector": "Real Estate",
+        "accuracy": 97.2
+      },
+      {
+        "symbol": "SPG",
+        "sector": "Real Estate",
+        "accuracy": 97.2
+      },
+      {
+        "symbol": "O",
+        "sector": "Real Estate",
+        "accuracy": 97.2
+      },
+      {
+        "symbol": "MO",
+        "sector": "Consumer Staples",
+        "accuracy": 96.8
+      },
+      {
+        "symbol": "CL",
+        "sector": "Consumer Staples",
+        "accuracy": 96.8
+      },
+      {
+        "symbol": "EQIX",
+        "sector": "Real Estate",
+        "accuracy": 96.8
+      },
+      {
+        "symbol": "T",
+        "sector": "Communication",
+        "accuracy": 96.8
+      },
+      {
+        "symbol": "COST",
+        "sector": "Consumer Staples",
+        "accuracy": 96.4
+      },
+      {
+        "symbol": "KO",
+        "sector": "Consumer Staples",
+        "accuracy": 96.4
+      },
+      {
+        "symbol": "D",
+        "sector": "Utilities",
+        "accuracy": 96.4
+      },
+      {
+        "symbol": "LMT",
+        "sector": "Industrials",
+        "accuracy": 96.0
+      },
+      {
+        "symbol": "HD",
+        "sector": "Consumer Discretionary",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "XOM",
+        "sector": "Energy",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "CVX",
+        "sector": "Energy",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "MDLZ",
+        "sector": "Consumer Staples",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "AEP",
+        "sector": "Utilities",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "XEL",
+        "sector": "Utilities",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "ED",
+        "sector": "Utilities",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "HON",
+        "sector": "Industrials",
+        "accuracy": 95.1
+      },
+      {
+        "symbol": "ECL",
+        "sector": "Materials",
+        "accuracy": 95.1
+      },
+      {
+        "symbol": "APD",
+        "sector": "Materials",
+        "accuracy": 93.9
+      },
+      {
+        "symbol": "SHW",
+        "sector": "Materials",
+        "accuracy": 93.5
+      },
+      {
+        "symbol": "LOW",
+        "sector": "Consumer Discretionary",
+        "accuracy": 93.1
+      },
+      {
+        "symbol": "UNP",
+        "sector": "Industrials",
+        "accuracy": 93.1
+      },
+      {
+        "symbol": "VMC",
+        "sector": "Materials",
+        "accuracy": 93.1
+      },
+      {
+        "symbol": "UPS",
+        "sector": "Industrials",
+        "accuracy": 92.7
+      },
+      {
+        "symbol": "PEP",
+        "sector": "Consumer Staples",
+        "accuracy": 92.7
+      },
+      {
+        "symbol": "WELL",
+        "sector": "Real Estate",
+        "accuracy": 92.7
+      },
+      {
+        "symbol": "SRE",
+        "sector": "Utilities",
+        "accuracy": 92.3
+      },
+      {
+        "symbol": "PLD",
+        "sector": "Real Estate",
+        "accuracy": 92.3
+      },
+      {
+        "symbol": "DIS",
+        "sector": "Communication",
+        "accuracy": 92.3
       },
       {
         "symbol": "V",
-        "accuracy": 92.1,
-        "threshold": 4.0,
-        "horizon": 5
+        "sector": "Financials",
+        "accuracy": 92.1
+      },
+      {
+        "symbol": "DE",
+        "sector": "Industrials",
+        "accuracy": 91.9
+      },
+      {
+        "symbol": "EOG",
+        "sector": "Energy",
+        "accuracy": 91.9
+      },
+      {
+        "symbol": "CHTR",
+        "sector": "Communication",
+        "accuracy": 91.9
       },
       {
         "symbol": "WMT",
-        "accuracy": 78.8,
-        "threshold": 4.0,
-        "horizon": 5
+        "sector": "Consumer Staples",
+        "accuracy": 91.5
+      },
+      {
+        "symbol": "RTX",
+        "sector": "Industrials",
+        "accuracy": 91.1
+      },
+      {
+        "symbol": "TMUS",
+        "sector": "Communication",
+        "accuracy": 91.1
+      },
+      {
+        "symbol": "BAC",
+        "sector": "Financials",
+        "accuracy": 90.0
+      },
+      {
+        "symbol": "BKNG",
+        "sector": "Consumer Discretionary",
+        "accuracy": 89.9
+      },
+      {
+        "symbol": "JPM",
+        "sector": "Financials",
+        "accuracy": 89.6
+      },
+      {
+        "symbol": "NEE",
+        "sector": "Utilities",
+        "accuracy": 89.5
+      },
+      {
+        "symbol": "PM",
+        "sector": "Consumer Staples",
+        "accuracy": 89.1
+      },
+      {
+        "symbol": "EA",
+        "sector": "Communication",
+        "accuracy": 88.7
+      },
+      {
+        "symbol": "SBUX",
+        "sector": "Consumer Discretionary",
+        "accuracy": 88.3
+      },
+      {
+        "symbol": "NFLX",
+        "sector": "Communication",
+        "accuracy": 87.9
+      },
+      {
+        "symbol": "MSFT",
+        "sector": "Technology",
+        "accuracy": 87.6
+      },
+      {
+        "symbol": "MA",
+        "sector": "Financials",
+        "accuracy": 87.6
+      },
+      {
+        "symbol": "MMM",
+        "sector": "Industrials",
+        "accuracy": 87.0
+      },
+      {
+        "symbol": "DD",
+        "sector": "Materials",
+        "accuracy": 86.6
+      },
+      {
+        "symbol": "AMT",
+        "sector": "Real Estate",
+        "accuracy": 86.6
+      },
+      {
+        "symbol": "WFC",
+        "sector": "Financials",
+        "accuracy": 86.3
+      },
+      {
+        "symbol": "CCI",
+        "sector": "Real Estate",
+        "accuracy": 84.6
+      },
+      {
+        "symbol": "AAPL",
+        "sector": "Technology",
+        "accuracy": 83.8
+      },
+      {
+        "symbol": "GE",
+        "sector": "Industrials",
+        "accuracy": 83.4
+      },
+      {
+        "symbol": "PSX",
+        "sector": "Energy",
+        "accuracy": 83.0
+      },
+      {
+        "symbol": "ABBV",
+        "sector": "Healthcare",
+        "accuracy": 82.6
+      },
+      {
+        "symbol": "MS",
+        "sector": "Financials",
+        "accuracy": 82.6
+      },
+      {
+        "symbol": "VLO",
+        "sector": "Energy",
+        "accuracy": 81.8
+      },
+      {
+        "symbol": "META",
+        "sector": "Technology",
+        "accuracy": 81.3
+      },
+      {
+        "symbol": "CAT",
+        "sector": "Industrials",
+        "accuracy": 81.0
+      },
+      {
+        "symbol": "ABT",
+        "sector": "Healthcare",
+        "accuracy": 80.9
+      },
+      {
+        "symbol": "GOOG",
+        "sector": "Communication",
+        "accuracy": 80.6
+      },
+      {
+        "symbol": "DLR",
+        "sector": "Real Estate",
+        "accuracy": 79.8
+      },
+      {
+        "symbol": "GOOGL",
+        "sector": "Technology",
+        "accuracy": 79.7
+      },
+      {
+        "symbol": "GS",
+        "sector": "Financials",
+        "accuracy": 79.7
+      },
+      {
+        "symbol": "BA",
+        "sector": "Industrials",
+        "accuracy": 78.5
+      },
+      {
+        "symbol": "MPC",
+        "sector": "Energy",
+        "accuracy": 78.5
+      },
+      {
+        "symbol": "MTCH",
+        "sector": "Communication",
+        "accuracy": 78.5
+      },
+      {
+        "symbol": "BLK",
+        "sector": "Financials",
+        "accuracy": 78.4
+      },
+      {
+        "symbol": "AXP",
+        "sector": "Financials",
+        "accuracy": 78.0
+      },
+      {
+        "symbol": "DOW",
+        "sector": "Materials",
+        "accuracy": 76.9
+      },
+      {
+        "symbol": "CMG",
+        "sector": "Consumer Discretionary",
+        "accuracy": 76.5
+      },
+      {
+        "symbol": "NKE",
+        "sector": "Consumer Discretionary",
+        "accuracy": 76.1
+      },
+      {
+        "symbol": "AMZN",
+        "sector": "Consumer Discretionary",
+        "accuracy": 75.9
+      },
+      {
+        "symbol": "COP",
+        "sector": "Energy",
+        "accuracy": 75.7
+      },
+      {
+        "symbol": "PFE",
+        "sector": "Healthcare",
+        "accuracy": 75.5
+      },
+      {
+        "symbol": "LLY",
+        "sector": "Healthcare",
+        "accuracy": 74.7
+      },
+      {
+        "symbol": "TMO",
+        "sector": "Healthcare",
+        "accuracy": 73.9
+      },
+      {
+        "symbol": "CMCSA",
+        "sector": "Communication",
+        "accuracy": 73.7
+      },
+      {
+        "symbol": "NVDA",
+        "sector": "Technology",
+        "accuracy": 73.4
+      },
+      {
+        "symbol": "ORCL",
+        "sector": "Technology",
+        "accuracy": 73.4
+      },
+      {
+        "symbol": "FCX",
+        "sector": "Materials",
+        "accuracy": 73.3
+      },
+      {
+        "symbol": "AVGO",
+        "sector": "Technology",
+        "accuracy": 73.0
+      },
+      {
+        "symbol": "OXY",
+        "sector": "Energy",
+        "accuracy": 72.9
+      },
+      {
+        "symbol": "TSLA",
+        "sector": "Consumer Discretionary",
+        "accuracy": 72.5
+      },
+      {
+        "symbol": "AMD",
+        "sector": "Technology",
+        "accuracy": 70.1
+      },
+      {
+        "symbol": "NEM",
+        "sector": "Materials",
+        "accuracy": 70.0
+      },
+      {
+        "symbol": "CRM",
+        "sector": "Technology",
+        "accuracy": 69.3
+      },
+      {
+        "symbol": "NUE",
+        "sector": "Materials",
+        "accuracy": 68.8
+      },
+      {
+        "symbol": "MRK",
+        "sector": "Healthcare",
+        "accuracy": 68.5
+      },
+      {
+        "symbol": "C",
+        "sector": "Financials",
+        "accuracy": 66.4
+      },
+      {
+        "symbol": "BMY",
+        "sector": "Healthcare",
+        "accuracy": 66.0
+      },
+      {
+        "symbol": "EL",
+        "sector": "Consumer Staples",
+        "accuracy": 64.4
+      },
+      {
+        "symbol": "DHR",
+        "sector": "Healthcare",
+        "accuracy": 61.4
+      },
+      {
+        "symbol": "SLB",
+        "sector": "Energy",
+        "accuracy": 51.8
+      },
+      {
+        "symbol": "ADBE",
+        "sector": "Technology",
+        "accuracy": 48.5
+      },
+      {
+        "symbol": "UNH",
+        "sector": "Healthcare",
+        "accuracy": 44.0
+      }
+    ],
+    "etfs": [
+      {
+        "symbol": "DIA",
+        "accuracy": 98.8
+      },
+      {
+        "symbol": "XLV",
+        "accuracy": 98.0
+      },
+      {
+        "symbol": "XLF",
+        "accuracy": 97.6
+      },
+      {
+        "symbol": "SPY",
+        "accuracy": 97.2
+      },
+      {
+        "symbol": "VTI",
+        "accuracy": 96.8
+      },
+      {
+        "symbol": "IWM",
+        "accuracy": 96.0
+      },
+      {
+        "symbol": "QQQ",
+        "accuracy": 95.5
+      },
+      {
+        "symbol": "XLE",
+        "accuracy": 94.7
+      },
+      {
+        "symbol": "XLY",
+        "accuracy": 94.7
+      },
+      {
+        "symbol": "XLK",
+        "accuracy": 93.9
       }
     ]
   }
