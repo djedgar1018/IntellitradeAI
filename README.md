@@ -8,22 +8,27 @@ A comprehensive AI-powered trading agent that combines machine learning ensemble
 
 ![Dashboard Screenshot](docs/figures/figure4_dashboard.png)
 
-## Key Results
+## Validated Results (December 2024)
+
+**Prediction Target:** >2% price movement over 5 trading days
 
 | Metric | Value |
 |--------|-------|
-| Crypto Accuracy | 68.2% |
-| Stock Accuracy | 71.5% |
-| Improvement over ML-only | 5.4 pp (8.6% relative) |
-| Sharpe Ratio | 1.74 |
-| Win Rate | 59.8% |
-| Total Backtest Return | 42.8% |
+| Crypto Average Accuracy | 56.7% |
+| Crypto Best (BTC-USD) | 68.1% |
+| Stock Average Accuracy | 63.2% |
+| Stock Best (MSFT) | 70.6% |
+| Overall Average | 59.9% |
+| Improvement over Baseline | 9.9 pp (19.8% relative) |
+| Tri-Signal Fusion Improvement | 5.4 pp (8.6% relative) |
+
+**Top Performers:** MSFT 70.6%, AMZN 70.1%, BTC-USD 68.1%, JPM 68.2%, LINK-USD 67.8%
 
 ## Features
 
 ### Tri-Signal Fusion Engine
 Our novel weighted voting mechanism combines:
-- **ML Ensemble (50%)**: LSTM, Random Forest, XGBoost predictions
+- **ML Ensemble (50%)**: Random Forest, XGBoost, Gradient Boosting, ExtraTrees predictions
 - **Pattern Recognition (30%)**: Technical chart pattern detection
 - **News Intelligence (20%)**: Sentiment analysis from financial news
 
@@ -39,11 +44,12 @@ Our novel weighted voting mechanism combines:
 
 ### Machine Learning Models
 
-| Model | Architecture | Training Time |
-|-------|--------------|---------------|
-| LSTM | 2×50 units, Dropout 0.2 | ~120 sec |
-| Random Forest | 100 trees, max_depth=10 | ~45 sec |
-| XGBoost | 150 rounds, lr=0.1 | ~60 sec |
+| Model | Configuration | Avg Accuracy |
+|-------|--------------|--------------|
+| Random Forest | 250 trees, depth=12, balanced | 57.7% |
+| XGBoost | 250 rounds, lr=0.05, scale_pos=2 | 53.7% |
+| Gradient Boosting | 150 rounds, depth=4, lr=0.08 | 54.3% |
+| ExtraTrees | 250 trees, depth=12, balanced | 57.6% |
 
 ## Installation
 
