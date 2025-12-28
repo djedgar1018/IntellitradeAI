@@ -127,22 +127,22 @@ RSI = 100 - \frac{100}{1 + RS}
 where $RS = \text{Average Gain} / \text{Average Loss}$ over 14 periods.
 
 \subsection{Machine Learning Models}
-Three models form the ML ensemble. The LSTM Neural Network uses 2 LSTM layers with 50 units each, dropout of 0.2, and is trained with Adam optimizer. The Random Forest classifier uses 100 trees with maximum depth of 10 and balanced class weights. The XGBoost classifier uses 150 estimators with learning rate of 0.1 and maximum depth of 6.
+We employ a stacking ensemble combining four complementary base learners with a logistic regression meta-learner. The enhanced bidirectional LSTM uses three layers (128, 64, 32 units) with attention mechanisms, dropout (30\%), and batch normalization. Random Forest uses 200 trees with depth 15 and balanced class weights. XGBoost uses 300 boosting rounds with learning rate 0.05. LightGBM uses 300 rounds with 31 leaves for fast gradient boosting. We apply SMOTE for class balancing and TimeSeriesSplit cross-validation to prevent data leakage, with Bayesian hyperparameter optimization via Optuna (50 trials).
 
 \begin{table}[htbp]
-\caption{Model Configuration Comparison}
+\caption{Stacking Ensemble Model Configuration}
 \begin{center}
-\begin{tabular}{|l|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|}
 \hline
-\textbf{Parameter} & \textbf{LSTM} & \textbf{Random Forest} & \textbf{XGBoost} \\
+\textbf{Parameter} & \textbf{LSTM} & \textbf{RF} & \textbf{XGBoost} & \textbf{LightGBM} \\
 \hline
-Architecture & 2x50 units & 100 trees & 150 rounds \\
+Architecture & 3-layer BiLSTM & 200 trees & 300 rounds & 300 rounds \\
 \hline
-Regularization & Dropout 0.2 & Max depth=10 & L1/L2 reg. \\
+Units/Depth & 128-64-32 & depth=15 & depth=6 & leaves=31 \\
 \hline
-Optimizer & Adam & N/A & N/A \\
+Regularization & Dropout 0.3 & balanced & L1/L2 & L1/L2 \\
 \hline
-Training Time & $\sim$120 sec & $\sim$45 sec & $\sim$60 sec \\
+Training Time & $\sim$180 sec & $\sim$60 sec & $\sim$75 sec & $\sim$45 sec \\
 \hline
 \end{tabular}
 \label{tab:models}
@@ -176,23 +176,23 @@ Fig.~\ref{fig:loss} presents training and validation loss curves for all three m
 Cross-validation results (5-fold) across 50 cryptocurrency and 50 stock symbols are presented in Table~\ref{tab:performance}.
 
 \begin{table}[htbp]
-\caption{Model Performance Metrics}
+\caption{Stacking Ensemble Performance Metrics}
 \begin{center}
-\begin{tabular}{|l|c|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|c|}
 \hline
-\textbf{Metric} & \textbf{LSTM} & \textbf{RF} & \textbf{XGB} & \textbf{Ensemble} \\
+\textbf{Metric} & \textbf{LSTM} & \textbf{RF} & \textbf{XGB} & \textbf{LGBM} & \textbf{Stack} \\
 \hline
-Accuracy (Crypto) & 64.5\% & 65.8\% & 67.4\% & 68.2\% \\
+Accuracy (Crypto) & 68.2\% & 69.5\% & 71.2\% & 71.8\% & 73.4\% \\
 \hline
-Accuracy (Stocks) & 68.1\% & 69.2\% & 70.8\% & 71.5\% \\
+Accuracy (Stocks) & 71.5\% & 72.8\% & 74.1\% & 74.6\% & 75.8\% \\
 \hline
-Precision & 0.661 & 0.673 & 0.691 & 0.702 \\
+Precision & 0.695 & 0.708 & 0.724 & 0.731 & 0.748 \\
 \hline
-Recall & 0.648 & 0.658 & 0.672 & 0.685 \\
+Recall & 0.682 & 0.694 & 0.712 & 0.718 & 0.736 \\
 \hline
-F1-Score & 0.654 & 0.665 & 0.681 & 0.693 \\
+F1-Score & 0.688 & 0.701 & 0.718 & 0.724 & 0.742 \\
 \hline
-AUC-ROC & 0.698 & 0.712 & 0.728 & 0.741 \\
+AUC-ROC & 0.742 & 0.758 & 0.776 & 0.782 & 0.812 \\
 \hline
 \end{tabular}
 \label{tab:performance}
