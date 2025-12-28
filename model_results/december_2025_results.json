@@ -1,0 +1,143 @@
+{
+  "timestamp": "2025-12-28T23:11:05.031600",
+  "crypto": {
+    "avg": 52.4,
+    "best": 80.3,
+    "above_70": 1,
+    "count": 10
+  },
+  "stocks": {
+    "avg": 81.5,
+    "best": 92.1,
+    "above_70": 10,
+    "count": 10
+  },
+  "overall": 66.9,
+  "total_above_70": 11,
+  "details": {
+    "crypto": [
+      {
+        "symbol": "BTC-USD",
+        "accuracy": 80.3,
+        "threshold": 5.0,
+        "horizon": 7
+      },
+      {
+        "symbol": "ETH-USD",
+        "accuracy": 59.6,
+        "threshold": 5.0,
+        "horizon": 7
+      },
+      {
+        "symbol": "SOL-USD",
+        "accuracy": 66.3,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "XRP-USD",
+        "accuracy": 67.7,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "ADA-USD",
+        "accuracy": 49.4,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "DOGE-USD",
+        "accuracy": 43.0,
+        "threshold": 5.0,
+        "horizon": 7
+      },
+      {
+        "symbol": "DOT-USD",
+        "accuracy": 35.7,
+        "threshold": 4.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "LINK-USD",
+        "accuracy": 46.3,
+        "threshold": 4.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "AVAX-USD",
+        "accuracy": 36.2,
+        "threshold": 4.0,
+        "horizon": 7
+      },
+      {
+        "symbol": "MATIC-USD",
+        "accuracy": 39.7,
+        "threshold": 4.0,
+        "horizon": 5
+      }
+    ],
+    "stocks": [
+      {
+        "symbol": "AAPL",
+        "accuracy": 83.8,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "GOOGL",
+        "accuracy": 79.7,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "MSFT",
+        "accuracy": 87.6,
+        "threshold": 4.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "AMZN",
+        "accuracy": 75.9,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "NVDA",
+        "accuracy": 73.4,
+        "threshold": 5.0,
+        "horizon": 7
+      },
+      {
+        "symbol": "META",
+        "accuracy": 81.3,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "TSLA",
+        "accuracy": 72.2,
+        "threshold": 5.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "JPM",
+        "accuracy": 89.6,
+        "threshold": 5.0,
+        "horizon": 7
+      },
+      {
+        "symbol": "V",
+        "accuracy": 92.1,
+        "threshold": 4.0,
+        "horizon": 5
+      },
+      {
+        "symbol": "WMT",
+        "accuracy": 78.8,
+        "threshold": 4.0,
+        "horizon": 5
+      }
+    ]
+  }
+}

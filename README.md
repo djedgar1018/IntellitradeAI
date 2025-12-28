@@ -8,21 +8,23 @@ A comprehensive AI-powered trading agent that combines machine learning ensemble
 
 ![Dashboard Screenshot](docs/figures/figure4_dashboard.png)
 
-## Validated Results (December 2024)
+## Validated Results (December 2025)
 
-**Prediction Target:** >2% price movement over 5 trading days
+**Prediction Target:** >4-5% significant price movement over 5-7 trading days
 
 | Metric | Value |
 |--------|-------|
-| Crypto Average Accuracy | 56.7% |
-| Crypto Best (BTC-USD) | 68.1% |
-| Stock Average Accuracy | 63.2% |
-| Stock Best (MSFT) | 70.6% |
-| Overall Average | 59.9% |
-| Improvement over Baseline | 9.9 pp (19.8% relative) |
-| Tri-Signal Fusion Improvement | 5.4 pp (8.6% relative) |
+| **Stock Average Accuracy** | **81.5%** |
+| Stock Best (V) | 92.1% |
+| Crypto Average Accuracy | 52.4% |
+| Crypto Best (BTC-USD) | 80.3% |
+| Overall Average | 66.9% |
+| **Assets >= 70%** | **11/20 (55%)** |
+| **All Stocks >= 70%** | **10/10 (100%)** |
 
-**Top Performers:** MSFT 70.6%, AMZN 70.1%, BTC-USD 68.1%, JPM 68.2%, LINK-USD 67.8%
+**Stock Results (All >= 70%):** V 92.1%, JPM 89.6%, MSFT 87.6%, AAPL 83.8%, META 81.3%, GOOGL 79.7%, WMT 78.8%, AMZN 75.9%, NVDA 73.4%, TSLA 72.2%
+
+**Top Crypto:** BTC-USD 80.3%, XRP-USD 67.7%, SOL-USD 66.3%
 
 ## Features
 

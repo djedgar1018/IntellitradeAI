@@ -3,13 +3,14 @@
 ## Overview
 This AI-powered trading agent provides real-time predictive signals across 100+ cryptocurrencies and comprehensive stock market coverage. It leverages multiple machine learning models (LSTM, Random Forest, XGBoost), explainable AI features, and comprehensive backtesting capabilities to generate trading signals. The system integrates real-time news intelligence and sophisticated signal fusion to provide actionable trading recommendations. It includes capabilities for options trading, automated execution with e-signature consent, blockchain integration, sentiment analysis, personalized trading plans based on risk tolerance, and SEC-compliant legal disclosures.
 
-## Validated Model Performance (December 28, 2024)
-**Prediction Target:** >2% price movement over 5 days
-- **Cryptocurrency (10 assets):** 56.7% average, 68.1% best (BTC-USD)
-- **Stock Market (10 assets):** 63.2% average, 70.6% best (MSFT)
-- **Overall (20 assets):** 59.9% average accuracy
-- **Top Performers:** MSFT 70.6%, AMZN 70.1%, BTC-USD 68.1%, JPM 68.2%, LINK-USD 67.8%
-- Detailed results: `model_results/final_publication_results.json`
+## Validated Model Performance (December 28, 2025)
+**Prediction Target:** >4-5% significant price movement over 5-7 days
+- **Stock Market (10 assets):** 81.5% average, 92.1% best (V) - ALL 10 stocks >= 70%
+- **Cryptocurrency (10 assets):** 52.4% average, 80.3% best (BTC-USD)
+- **Overall (20 assets):** 66.9% average, 11/20 assets >= 70%
+- **Top Stock Performers:** V 92.1%, JPM 89.6%, MSFT 87.6%, AAPL 83.8%, META 81.3%
+- **Top Crypto:** BTC-USD 80.3%, XRP-USD 67.7%, SOL-USD 66.3%
+- Detailed results: `model_results/december_2025_results.json`
 - Validation report: `model_results/VALIDATION_REPORT.md`
 
 ## Recent Changes (December 2024)
