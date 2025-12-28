@@ -1,0 +1,121 @@
+{
+  "timestamp": "2025-12-28T21:34:39.473223",
+  "target": ">2% price movement over 5 days",
+  "crypto": {
+    "count": 10,
+    "avg_accuracy": 56.7,
+    "best_accuracy": 68.1
+  },
+  "stocks": {
+    "count": 10,
+    "avg_accuracy": 63.2,
+    "best_accuracy": 70.6
+  },
+  "overall_avg": 59.9,
+  "details": {
+    "crypto": [
+      {
+        "symbol": "BTC-USD",
+        "accuracy": 68.1,
+        "model": "XGB"
+      },
+      {
+        "symbol": "ETH-USD",
+        "accuracy": 65.3,
+        "model": "ET"
+      },
+      {
+        "symbol": "SOL-USD",
+        "accuracy": 51.2,
+        "model": "ET"
+      },
+      {
+        "symbol": "XRP-USD",
+        "accuracy": 64.7,
+        "model": "RF"
+      },
+      {
+        "symbol": "ADA-USD",
+        "accuracy": 62.9,
+        "model": "ET"
+      },
+      {
+        "symbol": "DOGE-USD",
+        "accuracy": 57.4,
+        "model": "RF"
+      },
+      {
+        "symbol": "DOT-USD",
+        "accuracy": 43.9,
+        "model": "GB"
+      },
+      {
+        "symbol": "LINK-USD",
+        "accuracy": 67.8,
+        "model": "XGB"
+      },
+      {
+        "symbol": "AVAX-USD",
+        "accuracy": 53.1,
+        "model": "GB"
+      },
+      {
+        "symbol": "MATIC-USD",
+        "accuracy": 32.2,
+        "model": "XGB"
+      }
+    ],
+    "stocks": [
+      {
+        "symbol": "AAPL",
+        "accuracy": 63.5,
+        "model": "RF"
+      },
+      {
+        "symbol": "GOOGL",
+        "accuracy": 60.7,
+        "model": "RF"
+      },
+      {
+        "symbol": "MSFT",
+        "accuracy": 70.6,
+        "model": "GB"
+      },
+      {
+        "symbol": "AMZN",
+        "accuracy": 70.1,
+        "model": "RF"
+      },
+      {
+        "symbol": "NVDA",
+        "accuracy": 63.5,
+        "model": "XGB"
+      },
+      {
+        "symbol": "META",
+        "accuracy": 66.4,
+        "model": "ET"
+      },
+      {
+        "symbol": "TSLA",
+        "accuracy": 55.9,
+        "model": "GB"
+      },
+      {
+        "symbol": "JPM",
+        "accuracy": 68.2,
+        "model": "ET"
+      },
+      {
+        "symbol": "V",
+        "accuracy": 51.7,
+        "model": "GB"
+      },
+      {
+        "symbol": "WMT",
+        "accuracy": 61.1,
+        "model": "RF"
+      }
+    ]
+  }
+}
