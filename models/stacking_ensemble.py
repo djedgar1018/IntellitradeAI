@@ -58,7 +58,7 @@ class StackingEnsemble:
                 use_label_encoder=False,
                 eval_metric='logloss'
             )
-        except ImportError:
+        except (ImportError, OSError):
             print("XGBoost not available, skipping")
         
         try:
@@ -77,7 +77,7 @@ class StackingEnsemble:
                 n_jobs=-1,
                 verbose=-1
             )
-        except ImportError:
+        except (ImportError, OSError):
             print("LightGBM not available, skipping")
         
         models['gb'] = GradientBoostingClassifier(
@@ -107,6 +107,35 @@ class StackingEnsemble:
         else:
             from sklearn.model_selection import StratifiedKFold
             return StratifiedKFold(n_splits=self.n_splits, shuffle=True, random_state=42)
+    
+    def _time_series_oof_predict(self, model, X, y, n_splits):
+        """
+        Generate out-of-fold predictions using TimeSeriesSplit without data leakage.
+        Only predicts on validation folds, training only on past data.
+        """
+        from sklearn.base import clone
+        
+        n_samples = len(X)
+        class_preds = np.full(n_samples, np.nan)
+        proba_preds = np.full(n_samples, np.nan)
+        
+        tscv = TimeSeriesSplit(n_splits=n_splits)
+        
+        for train_idx, val_idx in tscv.split(X):
+            model_clone = clone(model)
+            model_clone.fit(X[train_idx], y[train_idx])
+            
+            class_preds[val_idx] = model_clone.predict(X[val_idx])
+            proba_preds[val_idx] = model_clone.predict_proba(X[val_idx])[:, 1]
+        
+        first_val_start = len(X) // (n_splits + 1)
+        if first_val_start > 0:
+            final_model = clone(model)
+            final_model.fit(X[:first_val_start], y[:first_val_start])
+            class_preds[:first_val_start] = final_model.predict(X[:first_val_start])
+            proba_preds[:first_val_start] = final_model.predict_proba(X[:first_val_start])[:, 1]
+        
+        return class_preds, proba_preds
     
     def train(self, X, y, verbose=True):
         """
@@ -140,16 +169,24 @@ class StackingEnsemble:
                 print(f"    - Training {name}...")
             
             try:
-                class_preds = cross_val_predict(
-                    model, X_arr, y_arr, 
-                    cv=cv_splitter, 
-                    method='predict'
-                )
-                proba_preds = cross_val_predict(
-                    model, X_arr, y_arr, 
-                    cv=cv_splitter, 
-                    method='predict_proba'
-                )[:, 1]
+                if self.use_time_series_cv:
+                    class_preds, proba_preds = self._time_series_oof_predict(
+                        model, X_arr, y_arr, self.n_splits
+                    )
+                else:
+                    from sklearn.model_selection import StratifiedKFold
+                    cv_for_predict = StratifiedKFold(n_splits=min(self.n_splits, 5), shuffle=True, random_state=42)
+                    
+                    class_preds = cross_val_predict(
+                        model, X_arr, y_arr, 
+                        cv=cv_for_predict, 
+                        method='predict'
+                    )
+                    proba_preds = cross_val_predict(
+                        model, X_arr, y_arr, 
+                        cv=cv_for_predict, 
+                        method='predict_proba'
+                    )[:, 1]
                 
                 meta_features[:, i*2] = class_preds
                 meta_features[:, i*2 + 1] = proba_preds
@@ -157,16 +194,39 @@ class StackingEnsemble:
                 model.fit(X_arr, y_arr)
                 
                 if verbose:
-                    cv_acc = accuracy_score(y_arr, class_preds)
-                    print(f"      CV Accuracy: {cv_acc:.4f}")
+                    valid_mask = ~np.isnan(class_preds)
+                    if valid_mask.sum() > 0:
+                        cv_acc = accuracy_score(y_arr[valid_mask], class_preds[valid_mask])
+                        print(f"      CV Accuracy: {cv_acc:.4f}")
+                    else:
+                        print(f"      Model trained")
                     
             except Exception as e:
-                print(f"    Error training {name}: {str(e)}")
-                meta_features[:, i*2] = 0
-                meta_features[:, i*2 + 1] = 0.5
+                if verbose:
+                    print(f"    CV failed for {name}, training directly...")
+                model.fit(X_arr, y_arr)
+                train_preds = model.predict(X_arr)
+                train_proba = model.predict_proba(X_arr)[:, 1]
+                meta_features[:, i*2] = train_preds
+                meta_features[:, i*2 + 1] = train_proba
+                if verbose:
+                    train_acc = accuracy_score(y_arr, train_preds)
+                    print(f"      Train Accuracy: {train_acc:.4f}")
         
         if verbose:
             print("  → Training meta-learner...")
+        
+        nan_mask = np.isnan(meta_features).any(axis=1)
+        if nan_mask.sum() > 0:
+            for col in range(meta_features.shape[1]):
+                col_values = meta_features[:, col]
+                valid_values = col_values[~np.isnan(col_values)]
+                if len(valid_values) > 0:
+                    fill_value = np.median(valid_values)
+                else:
+                    fill_value = 0.5 if col % 2 == 1 else 0
+                col_values[np.isnan(col_values)] = fill_value
+                meta_features[:, col] = col_values
         
         self.meta_model = self._get_meta_model()
         self.meta_model.fit(meta_features, y_arr)

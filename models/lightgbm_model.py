@@ -12,8 +12,8 @@ def make_model(params=None):
     """Create a LightGBM classifier with optimized parameters"""
     try:
         from lightgbm import LGBMClassifier
-    except ImportError as e:
-        raise SkipLightGBM("LightGBM not installed; skipping.") from e
+    except (ImportError, OSError) as e:
+        raise SkipLightGBM("LightGBM not available; skipping.") from e
     
     params = params or {
         'n_estimators': 500,
@@ -59,8 +59,8 @@ class LightGBMPredictor:
         """Train the LightGBM model with optional early stopping"""
         try:
             from lightgbm import LGBMClassifier, early_stopping, log_evaluation
-        except ImportError as e:
-            raise SkipLightGBM("LightGBM not installed; skipping.") from e
+        except (ImportError, OSError) as e:
+            raise SkipLightGBM("LightGBM not available; skipping.") from e
         
         self.model = LGBMClassifier(**self.params)
         
