@@ -17,9 +17,9 @@ This AI-powered trading agent provides real-time predictive signals across 39 cr
 
 ## Recent Changes (December 2025)
 - **Model Training Optimization (Dec 28)**: Created comprehensive training pipeline with validated accuracy
-  - Implemented 70+ technical indicators with feature selection
+  - Implemented 70 technical indicators with feature selection
   - Added SMOTE class balancing and temporal train/test splits
-  - Multiple models tested: RandomForest, XGBoost, GradientBoosting, ExtraTrees
+  - Final ensemble: RandomForest + XGBoost voting classifier
   - Walk-forward validation for proper time-series evaluation
 - **IEEE Paper Revisions (Dec 27)**: Addressed all 12+ reviewer comments for IEEE SoutheastCon 2026 submission
   - Fixed accuracy claim: 5.4 percentage points (8.6% relative) improvement, not 8.3%
@@ -59,7 +59,7 @@ File-based storage is used for caching cryptocurrency and stock data in JSON for
 
 ### Key Components
 - **Data Ingestion Layer**: Integrates CoinMarketCap API (cryptocurrency) and Yahoo Finance (stocks) with JSON-based caching, dynamic top coin discovery, and comprehensive data validation.
-- **Machine Learning Models**: Employs LSTM Neural Networks (TensorFlow/Keras), Random Forest, and XGBoost, with a framework for model comparison.
+- **Machine Learning Models**: Employs RandomForest + XGBoost voting ensemble with 70 technical indicators and SMOTE class balancing.
 - **Technical Analysis Engine**: Calculates RSI, MACD, Bollinger Bands, EMA, and performs automated feature engineering and cross-market correlation analysis.
 - **Explainability and Transparency**: Integrates SHAP for model interpretability, logs trading decisions, and visualizes predictions and explanations.
 - **Backtesting Engine**: Provides custom backtesting with configurable parameters, performance metrics (Sharpe ratio, max drawdown), and built-in risk management (stop-loss, take-profit).

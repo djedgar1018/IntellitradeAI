@@ -29,7 +29,7 @@ A comprehensive AI-powered trading agent that combines machine learning ensemble
 
 ### Tri-Signal Fusion Engine
 Our novel weighted voting mechanism combines:
-- **ML Ensemble (50%)**: Random Forest, XGBoost, Gradient Boosting, ExtraTrees predictions
+- **ML Ensemble (50%)**: Random Forest + XGBoost voting ensemble predictions
 - **Pattern Recognition (30%)**: Technical chart pattern detection
 - **News Intelligence (20%)**: Sentiment analysis from financial news
 
@@ -45,12 +45,11 @@ Our novel weighted voting mechanism combines:
 
 ### Machine Learning Models
 
-| Model | Configuration | Avg Accuracy |
-|-------|--------------|--------------|
-| Random Forest | 250 trees, depth=12, balanced | 57.7% |
-| XGBoost | 250 rounds, lr=0.05, scale_pos=2 | 53.7% |
-| Gradient Boosting | 150 rounds, depth=4, lr=0.08 | 54.3% |
-| ExtraTrees | 250 trees, depth=12, balanced | 57.6% |
+| Model | Configuration | Role |
+|-------|--------------|------|
+| Random Forest | 150 trees, depth=10, balanced | Primary classifier |
+| XGBoost | 150 rounds, lr=0.05, scale_pos=3 | Secondary classifier |
+| Voting Ensemble | Soft voting combination | Final prediction (78.4% avg) |
 
 ## Installation
 
