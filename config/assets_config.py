@@ -82,7 +82,7 @@ class CryptoAssets:
             ]
         },
         "AI Tokens": {
-            "description": "Tokens related to artificial intelligence and machine learning",
+            "description": "Tokens related to artificial intelligence and machine learning infrastructure",
             "risk_level": "Very High",
             "assets": [
                 {"symbol": "FET", "name": "Fetch.ai", "rank": 29},
@@ -93,7 +93,30 @@ class CryptoAssets:
                 {"symbol": "AKT", "name": "Akash Network", "rank": 58},
                 {"symbol": "ARKM", "name": "Arkham", "rank": 78},
                 {"symbol": "WLD", "name": "Worldcoin", "rank": 52},
-                {"symbol": "AI", "name": "Sleepless AI", "rank": 95}
+                {"symbol": "GRASS", "name": "Grass", "rank": 100},
+                {"symbol": "IO", "name": "io.net", "rank": 115},
+                {"symbol": "NOS", "name": "Nosana", "rank": 175},
+                {"symbol": "PRIME", "name": "Echelon Prime", "rank": 130}
+            ]
+        },
+        "AI Agent Tokens": {
+            "description": "Tokens powering autonomous AI agents and decentralized AI systems",
+            "risk_level": "Extreme",
+            "assets": [
+                {"symbol": "VIRTUAL", "name": "Virtuals Protocol", "rank": 35},
+                {"symbol": "AI16Z", "name": "ai16z", "rank": 110},
+                {"symbol": "GOAT", "name": "Goatseus Maximus", "rank": 125},
+                {"symbol": "AIXBT", "name": "aixbt by Virtuals", "rank": 140},
+                {"symbol": "ZEREBRO", "name": "Zerebro", "rank": 155},
+                {"symbol": "GRIFFAIN", "name": "Griffain", "rank": 170},
+                {"symbol": "LUNA2", "name": "Luna by Virtuals", "rank": 185},
+                {"symbol": "ARC", "name": "Arc", "rank": 190},
+                {"symbol": "SWARMS", "name": "Swarms", "rank": 195},
+                {"symbol": "PAAL", "name": "PAAL AI", "rank": 160},
+                {"symbol": "CGPT", "name": "ChainGPT", "rank": 165},
+                {"symbol": "AGRS", "name": "Agoras", "rank": 200},
+                {"symbol": "AI", "name": "Sleepless AI", "rank": 95},
+                {"symbol": "FARTCOIN", "name": "Fartcoin", "rank": 85}
             ]
         },
         "Meme Coins": {
@@ -107,7 +130,41 @@ class CryptoAssets:
                 {"symbol": "BONK", "name": "Bonk", "rank": 46},
                 {"symbol": "FLOKI", "name": "FLOKI", "rank": 54},
                 {"symbol": "MEME", "name": "Memecoin", "rank": 82},
-                {"symbol": "ELON", "name": "Dogelon Mars", "rank": 97}
+                {"symbol": "ELON", "name": "Dogelon Mars", "rank": 97},
+                {"symbol": "BRETT", "name": "Brett", "rank": 65},
+                {"symbol": "POPCAT", "name": "Popcat", "rank": 70},
+                {"symbol": "MOG", "name": "Mog Coin", "rank": 75},
+                {"symbol": "TURBO", "name": "Turbo", "rank": 135},
+                {"symbol": "NEIRO", "name": "First Neiro", "rank": 80},
+                {"symbol": "SPX", "name": "SPX6900", "rank": 90},
+                {"symbol": "PNUT", "name": "Peanut the Squirrel", "rank": 85},
+                {"symbol": "MYRO", "name": "Myro", "rank": 145},
+                {"symbol": "MEW", "name": "cat in a dogs world", "rank": 95},
+                {"symbol": "BABYDOGE", "name": "Baby Doge Coin", "rank": 100},
+                {"symbol": "COQ", "name": "Coq Inu", "rank": 150},
+                {"symbol": "BOME", "name": "Book of Meme", "rank": 60},
+                {"symbol": "SLERF", "name": "Slerf", "rank": 155},
+                {"symbol": "PONKE", "name": "Ponke", "rank": 160},
+                {"symbol": "GIGA", "name": "GigaChad", "rank": 165},
+                {"symbol": "MOODENG", "name": "Moo Deng", "rank": 120}
+            ]
+        },
+        "NFT Projects": {
+            "description": "Tokens associated with major NFT platforms and collections",
+            "risk_level": "Very High",
+            "assets": [
+                {"symbol": "APE", "name": "ApeCoin", "rank": 85},
+                {"symbol": "BLUR", "name": "Blur", "rank": 90},
+                {"symbol": "ENS", "name": "Ethereum Name Service", "rank": 95},
+                {"symbol": "LOOKS", "name": "LooksRare", "rank": 200},
+                {"symbol": "X2Y2", "name": "X2Y2", "rank": 250},
+                {"symbol": "RARE", "name": "SuperRare", "rank": 220},
+                {"symbol": "JPEG", "name": "JPEG'd", "rank": 230},
+                {"symbol": "BEND", "name": "BendDAO", "rank": 240},
+                {"symbol": "SUDO", "name": "sudoswap", "rank": 260},
+                {"symbol": "NFT", "name": "APENFT", "rank": 150},
+                {"symbol": "MAGIC", "name": "Magic", "rank": 105},
+                {"symbol": "PENGU", "name": "Pudgy Penguins", "rank": 45}
             ]
         },
         "RWA (Real World Assets)": {
@@ -115,7 +172,6 @@ class CryptoAssets:
             "risk_level": "Medium",
             "assets": [
                 {"symbol": "ONDO", "name": "Ondo Finance", "rank": 47},
-                {"symbol": "MNT", "name": "Mantle", "rank": 50},
                 {"symbol": "CFG", "name": "Centrifuge", "rank": 150},
                 {"symbol": "MPL", "name": "Maple", "rank": 180},
                 {"symbol": "CPOOL", "name": "Clearpool", "rank": 200}
@@ -125,7 +181,6 @@ class CryptoAssets:
             "description": "Tokens for blockchain gaming and virtual worlds",
             "risk_level": "High",
             "assets": [
-                {"symbol": "IMX", "name": "Immutable", "rank": 38},
                 {"symbol": "SAND", "name": "The Sandbox", "rank": 57},
                 {"symbol": "AXS", "name": "Axie Infinity", "rank": 62},
                 {"symbol": "MANA", "name": "Decentraland", "rank": 64},
@@ -140,7 +195,6 @@ class CryptoAssets:
             "description": "Core blockchain infrastructure and oracle services",
             "risk_level": "Medium",
             "assets": [
-                {"symbol": "LINK", "name": "Chainlink", "rank": 13},
                 {"symbol": "GRT", "name": "The Graph", "rank": 44},
                 {"symbol": "FIL", "name": "Filecoin", "rank": 31},
                 {"symbol": "AR", "name": "Arweave", "rank": 39},
@@ -153,7 +207,6 @@ class CryptoAssets:
             "description": "Native tokens of cryptocurrency exchanges",
             "risk_level": "Medium",
             "assets": [
-                {"symbol": "BNB", "name": "BNB", "rank": 4},
                 {"symbol": "OKB", "name": "OKB", "rank": 17},
                 {"symbol": "CRO", "name": "Cronos", "rank": 49},
                 {"symbol": "LEO", "name": "UNUS SED LEO", "rank": 23},
@@ -178,7 +231,6 @@ class CryptoAssets:
                 {"symbol": "STETH", "name": "Lido Staked ETH", "rank": 8},
                 {"symbol": "RETH", "name": "Rocket Pool ETH", "rank": 60},
                 {"symbol": "CBETH", "name": "Coinbase Staked ETH", "rank": 55},
-                {"symbol": "LDO", "name": "Lido DAO", "rank": 36},
                 {"symbol": "RPL", "name": "Rocket Pool", "rank": 115}
             ]
         }
@@ -216,6 +268,94 @@ class CryptoAssets:
                 if risk_order.index(sector_risk) <= max_idx:
                     symbols.extend([a["symbol"] for a in data["assets"]])
         return symbols
+    
+    @classmethod
+    def get_volatility_class(cls, symbol: str) -> str:
+        """Get volatility classification for a symbol (used for adaptive thresholds)"""
+        for sector, data in cls.SECTORS.items():
+            for asset in data["assets"]:
+                if asset["symbol"] == symbol:
+                    risk = data["risk_level"]
+                    if risk == "Extreme":
+                        return "extreme"
+                    elif risk == "Very High":
+                        return "very_high"
+                    elif risk in ["High", "Medium-High"]:
+                        return "high"
+                    else:
+                        return "standard"
+        return "standard"
+    
+    @classmethod
+    def get_unique_symbols(cls) -> List[str]:
+        """Get deduplicated list of all crypto symbols"""
+        symbols = set()
+        for sector, data in cls.SECTORS.items():
+            for asset in data["assets"]:
+                symbols.add(asset["symbol"])
+        return sorted(list(symbols))
+    
+    @classmethod
+    def get_sector_for_symbol(cls, symbol: str) -> Optional[str]:
+        """Get the primary sector for a given symbol"""
+        for sector, data in cls.SECTORS.items():
+            for asset in data["assets"]:
+                if asset["symbol"] == symbol:
+                    return sector
+        return None
+
+
+class VolatilityConfig:
+    """Volatility-aware training configuration for different asset classes"""
+    
+    THRESHOLDS = {
+        "extreme": {
+            "description": "Meme coins, AI agents - extremely volatile",
+            "price_move_thresholds": [8.0, 10.0, 12.0, 15.0],
+            "prediction_horizons": [3, 5, 7],
+            "min_class_balance": 0.05,
+            "max_class_balance": 0.95
+        },
+        "very_high": {
+            "description": "AI tokens, NFT projects - very high volatility",
+            "price_move_thresholds": [6.0, 8.0, 10.0],
+            "prediction_horizons": [5, 7, 10],
+            "min_class_balance": 0.06,
+            "max_class_balance": 0.94
+        },
+        "high": {
+            "description": "DeFi, Gaming - high volatility",
+            "price_move_thresholds": [5.0, 6.0, 8.0],
+            "prediction_horizons": [5, 7, 10],
+            "min_class_balance": 0.07,
+            "max_class_balance": 0.93
+        },
+        "standard": {
+            "description": "Large-cap, infrastructure - standard volatility",
+            "price_move_thresholds": [4.0, 5.0, 6.0],
+            "prediction_horizons": [5, 7, 10],
+            "min_class_balance": 0.08,
+            "max_class_balance": 0.92
+        }
+    }
+    
+    @classmethod
+    def get_config_for_symbol(cls, symbol: str) -> dict:
+        """Get volatility-aware training config for a symbol"""
+        volatility_class = CryptoAssets.get_volatility_class(symbol)
+        return cls.THRESHOLDS.get(volatility_class, cls.THRESHOLDS["standard"])
+    
+    @classmethod
+    def get_thresholds(cls, volatility_class: str) -> List[float]:
+        """Get price movement thresholds for a volatility class"""
+        config = cls.THRESHOLDS.get(volatility_class, cls.THRESHOLDS["standard"])
+        return config["price_move_thresholds"]
+    
+    @classmethod
+    def get_horizons(cls, volatility_class: str) -> List[int]:
+        """Get prediction horizons for a volatility class"""
+        config = cls.THRESHOLDS.get(volatility_class, cls.THRESHOLDS["standard"])
+        return config["prediction_horizons"]
 
 
 class StockAssets:
@@ -458,9 +598,9 @@ class AssetRecommendationEngine:
         """Get crypto recommendations based on risk level"""
         risk_sector_mapping = {
             "conservative": ["Stablecoins", "Staking/Liquid Staking"],
-            "moderate": ["Layer 1 (L1)", "Stablecoins", "Infrastructure"],
-            "growth": ["Layer 1 (L1)", "Layer 2 (L2)", "DeFi", "AI Tokens"],
-            "aggressive": ["Layer 1 (L1)", "Layer 2 (L2)", "DeFi", "AI Tokens", "Gaming/Metaverse", "RWA (Real World Assets)"],
+            "moderate": ["Layer 1 (L1)", "Stablecoins", "Infrastructure", "Exchange Tokens"],
+            "growth": ["Layer 1 (L1)", "Layer 2 (L2)", "DeFi", "AI Tokens", "NFT Projects"],
+            "aggressive": ["Layer 1 (L1)", "Layer 2 (L2)", "DeFi", "AI Tokens", "NFT Projects", "Gaming/Metaverse", "RWA (Real World Assets)"],
             "speculative": list(CryptoAssets.SECTORS.keys())
         }
         

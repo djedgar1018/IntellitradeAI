@@ -1,7 +1,7 @@
 # AI-Powered Trading Agent (IntelliTradeAI)
 
 ## Overview
-This AI-powered trading agent provides real-time predictive signals across 39 cryptocurrencies, 108 stocks (all 11 GICS sectors), and 10 major ETFs. It leverages multiple machine learning models (Random Forest, XGBoost ensemble), explainable AI features, and comprehensive backtesting capabilities to generate trading signals. The system integrates real-time news intelligence and sophisticated signal fusion to provide actionable trading recommendations. It includes capabilities for options trading, automated execution with e-signature consent, blockchain integration, sentiment analysis, personalized trading plans based on risk tolerance, and SEC-compliant legal disclosures.
+This AI-powered trading agent provides real-time predictive signals across 141 cryptocurrencies (including meme coins, NFT projects, AI agent tokens), 108 stocks (all 11 GICS sectors), and 10 major ETFs. It leverages multiple machine learning models (Random Forest, XGBoost ensemble, LSTM, Transformer), explainable AI features, and comprehensive backtesting capabilities to generate trading signals. The system integrates real-time news intelligence, social sentiment analysis, on-chain metrics, and sophisticated tri-signal fusion to provide actionable trading recommendations. It includes capabilities for options trading, automated execution with e-signature consent, blockchain integration, sentiment analysis, personalized trading plans based on risk tolerance, and SEC-compliant legal disclosures.
 
 ## Validated Model Performance (December 28, 2025)
 **Prediction Target:** >4-5% significant price movement over 5-7 days
@@ -30,6 +30,19 @@ This AI-powered trading agent provides real-time predictive signals across 39 cr
   - Citations updated: Cheng, Yanxi, Christine et al. references
   - Simplified structure matching PDF layout
   - Paper now 292 lines, 27 citations, 6 tables, 4 figures
+- **Crypto Expansion & Volatility-Aware Training (Dec 30)**:
+  - Expanded crypto assets from 39 to 141 unique tokens (deduplicated across 14 sectors)
+  - Added new sectors: NFT Projects (12 assets), AI Agent Tokens (14 assets)
+  - Expanded Meme Coins to 24 assets (BRETT, POPCAT, MOG, TURBO, NEIRO, etc.)
+  - AI Tokens: 12 infrastructure (FET, RNDR, TAO, etc.) + 14 agent tokens (VIRTUAL, AI16Z, GOAT, etc.)
+  - Implemented volatility-aware feature engineering (47 new features)
+  - Added adaptive threshold training: 8-15% for meme coins vs 4-5% for large-cap
+  - Created VolatilityConfig class with sector-specific model configurations
+  - Integrated on-chain metrics module (whale activity, exchange flows)
+  - Added social sentiment aggregator (Fear & Greed, price/volume sentiment)
+  - Implemented LSTM deep learning model for sequence-based prediction
+  - Created Transformer architecture for market regime detection
+  - New training pipeline: train_volatility_aware.py
 - **GitHub Preparation**: Created README.md, requirements.txt, LICENSE, .gitignore
 - Added SEC/FINRA legal compliance module with risk disclosures and e-signature authorization
 - Created hover-based tooltip definitions (3-second delay) replacing standalone dictionary tab
@@ -59,8 +72,10 @@ The backend features a modular design separating data fetching, model training, 
 File-based storage is used for caching cryptocurrency and stock data in JSON format, with in-memory processing using pandas DataFrames. Model persistence is handled via Joblib serialization, and Streamlit session state maintains application state. Database integration with PostgreSQL is used for trades, positions, portfolio, trade alerts, options chains, and crypto wallets.
 
 ### Key Components
-- **Data Ingestion Layer**: Integrates CoinMarketCap API (cryptocurrency) and Yahoo Finance (stocks) with JSON-based caching, dynamic top coin discovery, and comprehensive data validation.
-- **Machine Learning Models**: Employs RandomForest + XGBoost voting ensemble with 70 technical indicators and SMOTE class balancing.
+- **Data Ingestion Layer**: Integrates CoinMarketCap API (cryptocurrency) and Yahoo Finance (stocks) with JSON-based caching, dynamic top coin discovery, and comprehensive data validation. Supports 141 crypto symbols with custom Yahoo Finance mappings.
+- **Machine Learning Models**: Employs RandomForest + XGBoost voting ensemble with 70+ technical indicators, 47 volatility-aware features, and SMOTE class balancing. LSTM and Transformer deep learning models available for sequence prediction.
+- **Volatility-Aware Training**: Adaptive threshold training based on asset volatility class (extreme: 8-15%, very_high: 6-10%, high: 5-8%, standard: 4-6%). Sector-specific model configurations.
+- **Alternative Data Sources**: On-chain metrics (whale activity, exchange flows, holder distribution) and social sentiment (Fear & Greed Index, price/volume sentiment).
 - **Technical Analysis Engine**: Calculates RSI, MACD, Bollinger Bands, EMA, and performs automated feature engineering and cross-market correlation analysis.
 - **Explainability and Transparency**: Integrates SHAP for model interpretability, logs trading decisions, and visualizes predictions and explanations.
 - **Backtesting Engine**: Provides custom backtesting with configurable parameters, performance metrics (Sharpe ratio, max drawdown), and built-in risk management (stop-loss, take-profit).
