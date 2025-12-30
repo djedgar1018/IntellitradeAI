@@ -130,7 +130,7 @@ class VolatilityFeatures:
         df['momentum_intensity'] = returns.abs().rolling(5).sum()
         
         df['up_intensity_5d'] = returns.where(returns > 0, 0).rolling(5).sum()
-        df['down_intensity_5d'] = returns.where(returns < 0, 0).rolling(5).abs().sum()
+        df['down_intensity_5d'] = returns.where(returns < 0, 0).abs().rolling(5).sum()
         df['intensity_ratio'] = df['up_intensity_5d'] / (df['down_intensity_5d'] + 1e-10)
         
         sign_returns = pd.Series(np.sign(returns.values), index=returns.index)

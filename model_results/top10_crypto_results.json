@@ -1,0 +1,80 @@
+{
+  "timestamp": "2025-12-30T16:16:29.516445",
+  "top_10_crypto": [
+    {
+      "symbol": "BTC",
+      "accuracy": 0.9238095238095239,
+      "threshold": 6,
+      "horizon": 7,
+      "vol_class": "standard"
+    },
+    {
+      "symbol": "XRP",
+      "accuracy": 0.8809523809523809,
+      "threshold": 6,
+      "horizon": 5,
+      "vol_class": "high"
+    },
+    {
+      "symbol": "DOGE",
+      "accuracy": 0.7666666666666667,
+      "threshold": 8,
+      "horizon": 5,
+      "vol_class": "extreme"
+    },
+    {
+      "symbol": "ETH",
+      "accuracy": 0.7142857142857143,
+      "threshold": 6,
+      "horizon": 7,
+      "vol_class": "standard"
+    },
+    {
+      "symbol": "SOL",
+      "accuracy": 0.7095238095238096,
+      "threshold": 8,
+      "horizon": 5,
+      "vol_class": "high"
+    },
+    {
+      "symbol": "TRX",
+      "accuracy": 0.6952380952380952,
+      "threshold": 5,
+      "horizon": 7,
+      "vol_class": "high"
+    },
+    {
+      "symbol": "BNB",
+      "accuracy": 0.6857142857142857,
+      "threshold": 6,
+      "horizon": 7,
+      "vol_class": "high"
+    },
+    {
+      "symbol": "ADA",
+      "accuracy": 0.6714285714285714,
+      "threshold": 8,
+      "horizon": 7,
+      "vol_class": "high"
+    },
+    {
+      "symbol": "SHIB",
+      "accuracy": 0.638095238095238,
+      "threshold": 8,
+      "horizon": 5,
+      "vol_class": "extreme"
+    },
+    {
+      "symbol": "AVAX",
+      "accuracy": 0.6047619047619047,
+      "threshold": 8,
+      "horizon": 5,
+      "vol_class": "high"
+    }
+  ],
+  "summary": {
+    "avg": 72.9047619047619,
+    "above_70": 5,
+    "total": 10
+  }
+}

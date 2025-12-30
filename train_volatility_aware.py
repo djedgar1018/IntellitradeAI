@@ -195,17 +195,34 @@ def train_with_adaptive_threshold(symbol, asset_type, volatility_class='standard
     return best_result
 
 
+YAHOO_CRYPTO_MAP = {
+    'BTC': 'BTC-USD', 'ETH': 'ETH-USD', 'SOL': 'SOL-USD', 'BNB': 'BNB-USD', 
+    'XRP': 'XRP-USD', 'DOGE': 'DOGE-USD', 'ADA': 'ADA-USD', 'AVAX': 'AVAX-USD',
+    'DOT': 'DOT-USD', 'TRX': 'TRX-USD', 'LINK': 'LINK-USD', 'MATIC': 'MATIC-USD',
+    'SHIB': 'SHIB-USD', 'LTC': 'LTC-USD', 'ATOM': 'ATOM-USD', 'UNI': 'UNI7083-USD',
+    'TON': 'TON11419-USD', 'XMR': 'XMR-USD', 'ETC': 'ETC-USD', 'XLM': 'XLM-USD',
+    'BCH': 'BCH-USD', 'FIL': 'FIL-USD', 'HBAR': 'HBAR-USD', 'NEAR': 'NEAR-USD',
+    'ICP': 'ICP-USD', 'VET': 'VET-USD', 'APT': 'APT21794-USD', 'ARB': 'ARB11841-USD',
+    'MKR': 'MKR-USD', 'AAVE': 'AAVE-USD', 'GRT': 'GRT6719-USD', 'INJ': 'INJ-USD',
+    'FTM': 'FTM-USD', 'THETA': 'THETA-USD', 'SAND': 'SAND-USD', 'MANA': 'MANA-USD',
+    'AXS': 'AXS-USD', 'CHZ': 'CHZ-USD', 'CRO': 'CRO-USD', 'ALGO': 'ALGO-USD',
+    'EOS': 'EOS-USD', 'IMX': 'IMX10603-USD', 'MNT': 'MNT27075-USD', 'OP': 'OP-USD',
+    'TAO': 'TAO22974-USD', 'LDO': 'LDO-USD', 'RNDR': 'RNDR-USD', 'FET': 'FET-USD',
+    'LEO': 'LEO-USD', 'PEPE': 'PEPE24478-USD', 'WIF': 'WIF-USD', 'FLOKI': 'FLOKI-USD',
+    'BONK': 'BONK-USD', 'MEW': 'MEW-USD', 'POPCAT': 'POPCAT-USD', 'BRETT': 'BRETT-USD',
+    'WLD': 'WLD-USD', 'AGIX': 'AGIX-USD', 'OCEAN': 'OCEAN-USD', 'SUI': 'SUI20947-USD',
+    'SEI': 'SEI-USD', 'JUP': 'JUP29210-USD', 'STX': 'STX4847-USD', 'BLUR': 'BLUR-USD',
+    'APE': 'APE18876-USD', 'GMT': 'GMT18069-USD', 'ENS': 'ENS-USD', 'PENDLE': 'PENDLE-USD',
+    'VIRTUAL': 'VIRTUAL-USD', 'AI16Z': 'AI16Z-USD', 'GOAT': 'GOAT-USD',
+}
+
 def get_crypto_symbols():
     """Get all unique crypto symbols formatted for Yahoo Finance"""
-    from data.data_ingestion import DataIngestion
-    ingestion = DataIngestion()
-    yahoo_map = ingestion._get_yahoo_crypto_map()
-    
     unique_symbols = CryptoAssets.get_unique_symbols()
     
     symbols_with_yahoo = []
     for sym in unique_symbols:
-        yf_sym = yahoo_map.get(sym, f'{sym}-USD')
+        yf_sym = YAHOO_CRYPTO_MAP.get(sym, f'{sym}-USD')
         vol_class = CryptoAssets.get_volatility_class(sym)
         symbols_with_yahoo.append((sym, yf_sym, vol_class))
     
