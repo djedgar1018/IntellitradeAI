@@ -21,20 +21,15 @@ This AI-powered trading agent provides real-time predictive signals across 39 cr
   - Added SMOTE class balancing and temporal train/test splits
   - Final ensemble: RandomForest + XGBoost voting classifier
   - Walk-forward validation for proper time-series evaluation
-- **IEEE Paper Revisions (Dec 29)**: Critical review and improvements for IEEE SoutheastCon 2026 submission
-  - Added OBV (On-Balance Volume) definition with mathematical formula
-  - Added SMOTE explanation with interpolation formula in Class Imbalance Handling section
-  - Removed "novel" claim from weighted voting; justified weights via grid search optimization
-  - Added ablation study quantifying contribution of each signal source (ML: 23.2pp, Pattern: 3.6pp, News: 2.3pp)
-  - Added baseline comparisons (Buy & Hold, MA Crossover, RSI Mean Reversion, Random)
-  - Added statistical significance tests with p-values (paired t-test, Wilcoxon signed-rank)
-  - Explained fusion vs. ML-only accuracy discrepancy (weighted average across all asset classes)
-  - Added blockchain wallet integration to System Features section
-  - Added comparison table showing IntelliTradeAI vs existing platforms
-  - Added 95% confidence intervals to key metrics
-  - Added reproducibility details (random seed 42, exact train/test dates, 5-fold CV)
-  - Added detailed grid search parameter ranges for weight optimization
-  - Paper now ~440 lines, 27 citations, 9 tables, 4 figures
+- **IEEE Paper Revisions (Dec 30)**: Updated TEX file to match final PDF submission
+  - Author: Danario Edgar II, Prairie View A&M University (dedgar1@pvamu.edu)
+  - Abstract: Uses "novel tri-signal fusion", "Baysian hyperparameter optimization"
+  - Language: Changed to first person ("My contribution", "My tool", "My research")
+  - Models: "Random Forest, XGBoost, Random Forest+XGBoost, and voting ensemble classifiers"
+  - Accuracy: "85.2% for standalone ML accuracy by 5.4 percentage points (9.9% relative improvement)"
+  - Citations updated: Cheng, Yanxi, Christine et al. references
+  - Simplified structure matching PDF layout
+  - Paper now 292 lines, 27 citations, 6 tables, 4 figures
 - **GitHub Preparation**: Created README.md, requirements.txt, LICENSE, .gitignore
 - Added SEC/FINRA legal compliance module with risk disclosures and e-signature authorization
 - Created hover-based tooltip definitions (3-second delay) replacing standalone dictionary tab
