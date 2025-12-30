@@ -61,3 +61,4 @@ scipy>=1.11.0
 docx
 imbalanced-learn
 lightgbm
+numpy<2
