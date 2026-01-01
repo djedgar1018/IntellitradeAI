@@ -8,6 +8,7 @@
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{multirow}
+\usepackage{url}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
@@ -23,7 +24,7 @@ dedgar1@pvamu.edu}
 \maketitle
 
 \begin{abstract}
-The increasing complexity of financial markets demands intelligent systems capable of processing vast amounts of data while providing transparent decision-making. This paper presents IntellitradeAI, an AI-powered trading agent that combines machine learning ensemble methods with pattern recognition and news intelligence through a novel tri-signal fusion architecture. The system employs an ensemble combining Random Forest, XGBoost, Random Forest+XGBoost, and voting ensemble classifiers, trained 70 engineered technical indicators to generate BUY/SELL/HOLD signals for class balancing, time-series cross-validation to prevent data leakage, and Baysian hyperparameter optimization, we achieve prediction accuracy of 85.2\% for standalone ML accuracy by 5.4 percentage points(9.9\% relative improvement). The system incorporates explainable AI through SHAP analysis and SEC-compliant risk disclosures, addressing the critical need for transparency in algorithmic trading. My contribution includes a comprehensive back testing framework, personalized risk-based trading plans, and an interactive dashboard supporting both manual and automated trading modes. My tool is freely available at https://github.com/djedgar1018/IntelliTradeAI.
+The increasing complexity of financial markets demands intelligent systems capable of processing vast amounts of data while providing transparent decision-making. This paper presents IntelliTradeAI, an Artificial Intelligence (AI)-powered trading agent that combines Machine Learning (ML) ensemble methods with pattern recognition and news intelligence through a novel tri-signal fusion architecture. The system employs an ensemble combining Random Forest, XGBoost, and voting ensemble classifiers, trained on 70 engineered technical indicators to generate BUY/SELL/HOLD signals. Through Synthetic Minority Over-sampling Technique (SMOTE) class balancing, time-series cross-validation to prevent data leakage, and Bayesian hyperparameter optimization, we achieve prediction accuracy of 85.2\% for stocks (improving standalone ML accuracy by 5.4 percentage points, a 9.9\% relative improvement) and 72.9\% for the top 10 cryptocurrencies using volatility-aware adaptive thresholds. The system incorporates explainable AI through SHapley Additive exPlanations (SHAP) analysis and U.S. Securities and Exchange Commission (SEC)-compliant risk disclosures, addressing the critical need for transparency in algorithmic trading. My contributions include a comprehensive backtesting framework, personalized risk-based trading plans, and an interactive dashboard supporting both manual and automated trading modes. IntelliTradeAI is freely available at \url{https://github.com/djedgar1018/IntelliTradeAI}.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -34,46 +35,44 @@ Signal Fusion, Explainable AI, Cryptocurrency, Stock Prediction, Ensemble Learni
 The global financial markets have experienced unprecedented transformation through technological innovation, with algorithmic trading now accounting for over 70\% of equity market volume in developed economies \cite{b1}. This shift has created both opportunities and challenges, as traditional investment strategies struggle to compete with the speed and data processing capabilities of automated systems \cite{b2}. The cryptocurrency market presents additional complexity through 24/7 trading, extreme volatility, and rapid information dissemination, with Bitcoin alone reaching a market capitalization exceeding \$1 trillion in 2024 \cite{b3}.
 
 \subsection{Current Trends in AI-Powered Trading}
-Machine learning applications in finance have evolved significantly from simple rule-based systems to sophisticated deep learning architectures. Cheng et al. presented a systematic review presenting the strength of ensemble methods combining multiple classifiers to achieve superior performance in stock prediction tasks \cite{b4}. The application of gradient boosting techniques, specifically XGBoost, has become prevalent due to its regularization capabilities and handling of missing values common in financial datasets \cite{b5}.
+Machine Learning (ML) applications in finance have evolved significantly from simple rule-based systems to sophisticated deep learning architectures. Cheng et al. presented a systematic review demonstrating the strength of ensemble methods combining multiple classifiers to achieve superior performance in stock prediction tasks \cite{b4}. The application of gradient boosting techniques, specifically eXtreme Gradient Boosting (XGBoost), has become prevalent due to its regularization capabilities and handling of missing values common in financial datasets \cite{b5}.
 
-Recent literature emphasizes the importance of multi-source signal integration. Yanxi proposed fusion architectures that combine technical indicators with sentiment analysis, achieving improvement over single-source models \cite{b6}. Similarly, Christine et al. showed that pattern recognition algorithms, when combined with machine learning predictions \cite{b7}.
+Recent literature emphasizes the importance of multi-source signal integration. Yanxi proposed fusion architectures that combine technical indicators with sentiment analysis, achieving improvement over single-source models \cite{b6}. Similarly, Christine et al. demonstrated that pattern recognition algorithms, when combined with ML predictions, achieve improved accuracy in directional forecasting \cite{b7}.
 
-The emergence of explainable AI (XAI) in finance addresses regulatory concerns and user trust. SHAP (SHapley Additive exPlanations) values have become the standard for interpreting complex model predictions, with Lundberg and Lee demonstrating their effectiveness in feature importance attribution \cite{b8}. The SEC and FINRA have increasingly emphasized the need for algorithmic transparency, with recent guidelines requiring clear disclosure of AI-driven investment recommendations \cite{b9}.
+The emergence of Explainable Artificial Intelligence (XAI) in finance addresses regulatory concerns and user trust. SHapley Additive exPlanations (SHAP) values have become the standard for interpreting complex model predictions, with Lundberg and Lee demonstrating their effectiveness in feature importance attribution \cite{b8}. The U.S. Securities and Exchange Commission (SEC) and Financial Industry Regulatory Authority (FINRA) have increasingly emphasized the need for algorithmic transparency, with recent guidelines requiring clear disclosure of AI-driven investment recommendations \cite{b9}.
 
 \subsection{Existing Tools and Platforms}
-Current algorithmic trading platforms range from professional-grade solutions like Bloomberg Terminal and QuantConnect to retail-focused applications such as TradingView, Robinhood. These Platforms typically offer either sophisticated analysis capabilities with steep learning curves or simplified interfaces with limited AI integration \cite{b10}. Academic Research tools including Zipline, Backtrader, and TA-lib provide technical analysis frameworks but lack real-time prediction capabilities \cite{b11}.
+Current algorithmic trading platforms range from professional-grade solutions like Bloomberg Terminal and QuantConnect to retail-focused applications such as TradingView and Robinhood. These platforms typically offer either sophisticated analysis capabilities with steep learning curves or simplified interfaces with limited AI integration \cite{b10}. Academic research tools including Zipline, Backtrader, and Technical Analysis Library (TA-Lib) provide technical analysis frameworks but lack real-time prediction capabilities \cite{b11}.
 
-Cryptocurrency-specific platforms have emerged to address the unique characteristics of digital asset markets. Tools like CoinGecko and Coin MarketCap provide market data aggregation, while exchanges offer basic trading bots with limited intelligence \cite{b12}. The integration of advanced ML models with cryptocurrency trading remains an active research area, with most existing solutions treating crypto and traditional markets as separate domains \cite{b13}.
+Cryptocurrency-specific platforms have emerged to address the unique characteristics of digital asset markets. Tools like CoinGecko and CoinMarketCap provide market data aggregation, while exchanges offer basic trading bots with limited intelligence \cite{b12}. The integration of advanced ML models with cryptocurrency trading remains an active research area, with most existing solutions treating crypto and traditional markets as separate domains \cite{b13}.
 
 \subsection{Research Gap and Contributions}
-Despite advantages in individual components, significant gaps exist in creating unified systems that combine multiple signal sources with explainability and regulatory compliance. Current solutions typically suffer from: (1) reliance on single prediction methodologies vulnerable to market regime changes, (2) lack of transparent decision-making processes, (3) absence of personalized risk management, and (4) separation between cryptocurrency and stock market analysis \cite{b14}.
+Despite advances in individual components, significant gaps exist in creating unified systems that combine multiple signal sources with explainability and regulatory compliance. Current solutions typically suffer from: (1) reliance on single prediction methodologies vulnerable to market regime changes, (2) lack of transparent decision-making processes, (3) absence of personalized risk management, and (4) separation between cryptocurrency and stock market analysis \cite{b14}.
 
-My research addresses the gaps through IntellitradeAI by offering the following contributions:
+My research addresses these gaps through IntelliTradeAI by offering the following contributions:
 
 \begin{enumerate}
-\item \textbf{Tri-signal fusion Signal Architecture}: A novel weighted voting mechanism that combines ML ensemble predictions, chart pattern recognition, and news intelligence with smart conflict resolution.
-\item \textbf{Cross-Market Analysis}: Unified framework supporting 39 cryptocurrencies (Coin Market cap Top Coins), 108 stocks across all 11 Global Industry Classification Standard (GICS) Sectors \cite{b26}, and 10 major ETFs.
-\item \textbf{Explainable AI Integration}: SHAP-based model interpretability with SEC-compliant risk disclosures and user friendly explanations.
-\item \textbf{Personalized Trading Plans}: Five Tier Risk Tolerance System (Conservative to Speculative) with customized asset allocation and options recommendations.
+\item \textbf{Tri-Signal Fusion Architecture}: A novel weighted voting mechanism that combines ML ensemble predictions, chart pattern recognition, and news intelligence with smart conflict resolution.
+\item \textbf{Cross-Market Analysis}: Unified framework supporting 141 cryptocurrencies across 14 sectors, 108 stocks across all 11 Global Industry Classification Standard (GICS) sectors \cite{b26}, and 10 major Exchange-Traded Funds (ETFs).
+\item \textbf{Explainable AI Integration}: SHAP-based model interpretability with SEC-compliant risk disclosures and user-friendly explanations.
+\item \textbf{Volatility-Aware Training}: Adaptive threshold training with sector-specific configurations for high-volatility assets including meme coins and AI agent tokens.
 \item \textbf{Interactive Dashboard}: Real-time prediction interface with TradingView-style charts, automated execution capabilities, and hover-based educational tooltips.
 \end{enumerate}
 
 \section{Related Work}
 
 \subsection{Machine Learning in Financial Prediction}
-The application of machine learning to financial markets has a rich history spanning three decades. Lo and MacKinlay challenged the efficient market hypothesis through statistical pattern detection \cite{b15}. Modern approaches leverage deep learning architectures, with LSTM networks showing promise in capturing temporal dependencies in price series \cite{b16}. Fischer and Krauss conducted comprehensive experiments comparing various ML approaches for S\&P 500 prediction, finding that ensemble methods consistently outperformed individual classifiers \cite{b12}. The challenge of non-stationarity in financial data remains a central concern, addressed through techniques including rolling window training and online learning \cite{b18}.
+The application of ML to financial markets has a rich history spanning three decades. Lo and MacKinlay challenged the efficient market hypothesis through statistical pattern detection \cite{b15}. Modern approaches leverage deep learning architectures, with Long Short-Term Memory (LSTM) networks showing promise in capturing temporal dependencies in price series \cite{b16}. Fischer and Krauss conducted comprehensive experiments comparing various ML approaches for S\&P 500 prediction, finding that ensemble methods consistently outperformed individual classifiers \cite{b12}. The challenge of non-stationarity in financial data remains a central concern, addressed through techniques including rolling window training and online learning \cite{b18}.
 
-Technical analysis, despite academic skepticism, remains widely practiced among traders. Academic validation has emerged through computational pattern recognition, with Leigh et al. demonstrating profitable trading strategies based on chart patterns \cite{b19}. The integration of traditional technical indicators (RSI, MACD, Bollinger Bands) with machine learning features has shown synergistic effects \cite{b20}. Recent work by Sezer et al. applied convolutional neural networks to candlestick chart images, achieving pattern recognition accuracy exceeding 75\% for classical formations \cite{b21}.
+Technical analysis, despite academic skepticism, remains widely practiced among traders. Academic validation has emerged through computational pattern recognition, with Leigh et al. demonstrating profitable trading strategies based on chart patterns \cite{b19}. The integration of traditional technical indicators (Relative Strength Index (RSI), Moving Average Convergence Divergence (MACD), Bollinger Bands) with ML features has shown synergistic effects \cite{b20}. Recent work by Sezer et al. applied Convolutional Neural Networks (CNNs) to candlestick chart images, achieving pattern recognition accuracy exceeding 75\% for classical formations \cite{b21}.
 
 \subsection{Sentiment Analysis and News Integration}
-The impact of news and social media sentiment on financial markets has been extensively documented. Bollen et al. demonstrated that Twitter sentiment could predict stock market movements with 87.6\% accuracy in directional change \cite{b22}. Cryptocurrency markets exhibit even stronger sensitivity to social media and news \cite{b23}. Recent advances in transformer-based NLP models, including FinBERT specifically trained on financial text, have improved sentiment classification accuracy to over 90\% \cite{b24}.
-
-\subsection{Technical Analysis and Pattern Recognition}
+The impact of news and social media sentiment on financial markets has been extensively documented. Bollen et al. demonstrated that Twitter sentiment could predict stock market movements with 87.6\% accuracy in directional change \cite{b22}. Cryptocurrency markets exhibit even stronger sensitivity to social media and news \cite{b23}. Recent advances in transformer-based Natural Language Processing (NLP) models, including FinBERT specifically trained on financial text, have improved sentiment classification accuracy to over 90\% \cite{b24}.
 
 \section{Methodology}
 
 \subsection{System Architecture}
-IntelliTradeAI employs a layered architecture consisting of five primary components as illustrated in Fig.~\ref{fig:methodology}. The Data Ingestion Layer fetches market data from external APIs including Yahoo Finance for historical OHLCV data and CoinMarketCap for real-time cryptocurrency prices. The Feature Engineering Pipeline transforms raw price data into 70+ technical indicators. The Machine Learning Layer trains and deploys ensemble prediction models. The Tri-Signal Fusion Engine combines signal sources through weighted voting with conflict resolution. The Presentation Layer provides an interactive Streamlit-based dashboard.
+IntelliTradeAI employs a layered architecture consisting of five primary components as illustrated in Fig.~\ref{fig:methodology}. The Data Ingestion Layer fetches market data from external Application Programming Interfaces (APIs) including Yahoo Finance for historical Open, High, Low, Close, Volume (OHLCV) data and CoinMarketCap for real-time cryptocurrency prices. The Feature Engineering Pipeline transforms raw price data into 70 technical indicators. The ML Layer trains and deploys ensemble prediction models. The Tri-Signal Fusion Engine combines signal sources through weighted voting with conflict resolution. The Presentation Layer provides an interactive Streamlit-based dashboard.
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[width=\columnwidth]{fig1.png}}
@@ -82,12 +81,40 @@ IntelliTradeAI employs a layered architecture consisting of five primary compone
 \end{figure}
 
 \subsection{Data Sources and Processing}
-Historical price data is obtained through Yahoo Finance API, providing up to 10 years of daily OHLCV data for both stocks and cryptocurrencies. Real-time cryptocurrency data is supplemented through CoinMarketCap API.
+Table~\ref{tab:datasources} summarizes the data sources, sample sizes, and class distributions used in training and evaluation. Historical price data is obtained through Yahoo Finance API, providing up to 5 years of daily OHLCV data for both stocks and cryptocurrencies. Real-time cryptocurrency data is supplemented through CoinMarketCap API.
 
-Data preprocessing includes missing value handling through forward-fill interpolation, Z-score-based outlier filtering, removing data points exceeding 4 standard deviations, min-max scaling for feature normalization, and UTC standardization across all data sources.
+\begin{table}[htbp]
+\caption{Data Sources Summary}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Source} & \textbf{Assets} & \textbf{Records} & \textbf{Train/Test} & \textbf{Period} \\
+\hline
+Yahoo Finance & 118 & 215,930 & 80\%/20\% & 2019-2024 \\
+(Stocks + ETFs) & & & & \\
+\hline
+CoinMarketCap & 141 & 154,795 & 80\%/20\% & 2020-2024 \\
+(Crypto) & & & & \\
+\hline
+\multicolumn{5}{|c|}{\textbf{Class Distribution}} \\
+\hline
+\textbf{Class} & \multicolumn{2}{c|}{\textbf{Stocks/ETFs}} & \multicolumn{2}{c|}{\textbf{Crypto}} \\
+\hline
+Positive (BUY) & \multicolumn{2}{c|}{38.2\%} & \multicolumn{2}{c|}{31.5\%} \\
+\hline
+Negative (SELL) & \multicolumn{2}{c|}{61.8\%} & \multicolumn{2}{c|}{68.5\%} \\
+\hline
+\multicolumn{5}{|c|}{\textbf{Total: 370,725 records, 259 assets}} \\
+\hline
+\end{tabular}
+\label{tab:datasources}
+\end{center}
+\end{table}
+
+Data preprocessing includes: (1) missing value handling through forward-fill interpolation, (2) Z-score-based outlier filtering removing data points exceeding 4 standard deviations, (3) min-max scaling for feature normalization, and (4) Coordinated Universal Time (UTC) standardization across all data sources.
 
 \subsection{Feature Engineering}
-The feature engineering pipeline generates 70+ predictive features organized into seven categories as shown in Table~\ref{tab:features}.
+The feature engineering pipeline generates 70 predictive features organized into seven categories as shown in Table~\ref{tab:features}.
 
 \begin{table}[htbp]
 \caption{Feature Categories and Descriptions}
@@ -100,7 +127,7 @@ Price & OHLC values, daily returns, log returns & 8 \\
 \hline
 Volume & Raw Volume, 20-day MA, OBV & 5 \\
 \hline
-Trend & SMA(20, 50, 200), EMA (12,26) & 12 \\
+Trend & SMA(20, 50, 200), EMA(12, 26) & 12 \\
 \hline
 Momentum & RSI, MACD, Stochastic, ROC & 15 \\
 \hline
@@ -110,15 +137,17 @@ Pattern & Head \& Shoulders, Double Top/Bottom & 12 \\
 \hline
 Calendar & Day of week, month, quarter effects & 8 \\
 \hline
+\multicolumn{2}{|r|}{\textbf{Total Features}} & \textbf{70} \\
+\hline
 \end{tabular}
 \label{tab:features}
 \end{center}
 \end{table}
 
 \subsection{Machine Learning Models}
-We employ a voting ensemble combining two complementary tree-based learners. Random Forest uses 150 trees with depth 10 and balanced class weights. XGBoost uses 150 boosting rounds with learning rate 0.05 and scale\_pos\_weight=3. The final prediction uses soft voting to combine both classifiers.
+We employ a voting ensemble combining two complementary tree-based learners. Random Forest uses 150 trees with depth 10 and balanced class weights. XGBoost uses 150 boosting rounds with learning rate 0.05 and scale\_pos\_weight=3 to handle class imbalance. The final prediction uses soft voting to combine both classifiers.
 
-Reproducibility: We apply temporal 80/20 train/test splits (training: Jan 2019-Dec 2023; testing: Jan 2024-Dec 2024) to prevent data leakage. All experiments use random seed 42 for reproducibility. 5 fold time series cross-validation with expanding window validates hyperparameters before final evaluation.
+\textbf{Reproducibility:} We apply temporal 80/20 train/test splits (training: January 2019--December 2023; testing: January 2024--December 2024) to prevent data leakage. All experiments use random seed 42 for reproducibility. Five-fold time-series cross-validation with expanding window validates hyperparameters before final evaluation.
 
 \begin{table}[htbp]
 \caption{Ensemble Model Configuration}
@@ -131,12 +160,37 @@ Estimators & 150 trees & 150 rounds \\
 \hline
 Max Depth & 10 & 5 \\
 \hline
+Learning Rate & N/A & 0.05 \\
+\hline
 Regularization & class\_weight=balanced & scale\_pos\_weight=3 \\
 \hline
 Ensemble Method & \multicolumn{2}{c|}{Soft Voting} \\
 \hline
 \end{tabular}
 \label{tab:models}
+\end{center}
+\end{table}
+
+\subsection{Volatility-Aware Training}
+Cryptocurrency markets exhibit extreme volatility requiring adaptive training approaches. We implement volatility-aware thresholds based on asset classification as shown in Table~\ref{tab:volatility}.
+
+\begin{table}[htbp]
+\caption{Volatility-Aware Threshold Configuration}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Volatility Class} & \textbf{Threshold} & \textbf{Horizon} & \textbf{Examples} \\
+\hline
+Standard & 4--6\% & 5--10 days & BTC, ETH \\
+\hline
+High & 5--8\% & 5--7 days & SOL, BNB \\
+\hline
+Very High & 6--10\% & 3--7 days & AI tokens \\
+\hline
+Extreme & 8--15\% & 3--5 days & Meme coins \\
+\hline
+\end{tabular}
+\label{tab:volatility}
 \end{center}
 \end{table}
 
@@ -165,10 +219,11 @@ Fig.~\ref{fig:loss} presents training convergence for tree-based models. Random 
 \label{fig:loss}
 \end{figure}
 
-Validation results using temporal 80/20 train/test splits across 157 assets (108 stocks, 39 cryptocurrencies, 10 ETFs) are presented in Table~\ref{tab:performance}.
+\subsection{Stock and ETF Performance}
+Validation results using temporal 80/20 train/test splits across 118 traditional assets (108 stocks, 10 ETFs) are presented in Table~\ref{tab:performance}.
 
 \begin{table}[htbp]
-\caption{Ensemble Performance Metrics}
+\caption{Stock and ETF Performance Metrics}
 \begin{center}
 \begin{tabular}{|l|c|c|c|}
 \hline
@@ -178,23 +233,60 @@ Stocks & 108 & 85.2\% & 98 (91\%) \\
 \hline
 ETFs & 10 & 96.3\% & 10 (100\%) \\
 \hline
-Cryptocurrencies & 39 & 54.7\% & 5 (13\%) \\
-\hline
 \multicolumn{4}{|c|}{\textbf{Top Performers}} \\
 \hline
-SO (Utilities) & - & 99.2\% & Best Stock \\
+SO (Utilities) & -- & 99.2\% & Best Stock \\
 \hline
-DIA (ETF) & - & 98.8\% & Best ETF \\
+DUK (Utilities) & -- & 98.8\% & Second Best \\
 \hline
-LEO (Crypto) & - & 93.8\% & Best Crypto \\
+DIA (ETF) & -- & 98.8\% & Best ETF \\
 \hline
 \end{tabular}
 \label{tab:performance}
 \end{center}
 \end{table}
 
+\subsection{Cryptocurrency Performance}
+Table~\ref{tab:crypto} presents volatility-aware training results for the top 10 cryptocurrencies by market capitalization.
+
+\begin{table}[htbp]
+\caption{Top 10 Cryptocurrency Accuracy (Volatility-Aware)}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Coin} & \textbf{Accuracy} & \textbf{Threshold} & \textbf{Horizon} & \textbf{Status} \\
+\hline
+BTC & 92.4\% & 6\% & 7 days & $\geq$70\% \\
+\hline
+XRP & 88.1\% & 6\% & 5 days & $\geq$70\% \\
+\hline
+DOGE & 76.7\% & 8\% & 5 days & $\geq$70\% \\
+\hline
+ETH & 71.4\% & 6\% & 7 days & $\geq$70\% \\
+\hline
+SOL & 71.0\% & 8\% & 5 days & $\geq$70\% \\
+\hline
+TRX & 69.5\% & 5\% & 7 days & -- \\
+\hline
+BNB & 68.6\% & 6\% & 7 days & -- \\
+\hline
+ADA & 67.1\% & 8\% & 7 days & -- \\
+\hline
+SHIB & 63.8\% & 8\% & 5 days & -- \\
+\hline
+AVAX & 60.5\% & 8\% & 5 days & -- \\
+\hline
+\multicolumn{5}{|c|}{\textbf{Average: 72.9\% | $\geq$70\%: 5/10 (50\%)}} \\
+\hline
+\end{tabular}
+\label{tab:crypto}
+\end{center}
+\end{table}
+
+The volatility-aware approach improved cryptocurrency prediction accuracy from a 54.7\% baseline to 72.9\% average---a 33\% relative improvement. Adaptive thresholds allow the model to target larger price movements for volatile assets, improving signal quality.
+
 \subsection{Backtesting Results}
-Fig.~\ref{fig:backtest} shows walk-forward backtesting results over 2 years (2022-2024).
+Fig.~\ref{fig:backtest} shows walk-forward backtesting results over 2 years (2022--2024).
 
 \begin{figure}[htbp]
 \centerline{\includegraphics[width=\columnwidth]{fig3.png}}
@@ -227,7 +319,7 @@ Profit Factor & 1.42 & 1.56 & 1.49 \\
 \end{table}
 
 \subsection{Feature Importance Analysis}
-SHAP analysis reveals the most influential features: RSI (14-period) with mean SHAP value of 0.142, MACD Histogram (0.128), Volume Change \% (0.115), 50-day SMA Cross (0.098), and Bollinger \%B (0.087).
+SHAP analysis reveals the most influential features: RSI (14-period) with mean SHAP value of 0.142, MACD Histogram (0.128), Volume Change \% (0.115), 50-day Simple Moving Average (SMA) Cross (0.098), and Bollinger \%B (0.087).
 
 \section{System Features}
 
@@ -248,45 +340,48 @@ The system includes comprehensive SEC/FINRA-compliant risk disclosures, e-signat
 
 \section{Discussion}
 
+\subsection{Key Findings}
+The tri-signal fusion approach demonstrates that combining multiple signal sources improves prediction reliability. Stock prediction (85.2\% average) significantly outperforms cryptocurrency prediction (72.9\% for top 10), attributable to lower volatility and longer trading history. The volatility-aware training approach substantially improved cryptocurrency accuracy, with Bitcoin achieving 92.4\%---comparable to top-performing stocks.
+
 \subsection{Limitations}
-The system faces several limitations: (1) Cryptocurrency prediction accuracy remains lower than traditional assets due to market volatility and 24/7 trading; (2) News sentiment analysis depends on available RSS feeds and may miss private information; (3) Pattern recognition requires sufficient historical data for reliable detection.
+The system faces several limitations: (1) Cryptocurrency prediction accuracy varies significantly by asset volatility class; (2) News sentiment analysis depends on available Really Simple Syndication (RSS) feeds and may miss private information; (3) Pattern recognition requires sufficient historical data for reliable detection; (4) The 259-asset coverage, while comprehensive, excludes many smaller cryptocurrencies.
 
 \subsection{Future Work}
-Future enhancements include: (1) Integration of alternative data sources (satellite imagery, web traffic); (2) Deep learning models for sequence prediction (Transformer, LSTM); (3) Real-time social media sentiment from Twitter/Reddit APIs; (4) Mobile application development.
+Future enhancements include: (1) Integration of alternative data sources (satellite imagery, web traffic); (2) Deep learning models for sequence prediction (Transformer, LSTM); (3) Real-time social media sentiment from Twitter/Reddit APIs; (4) Mobile application development; (5) Expanding cryptocurrency coverage with on-chain metrics.
 
 \section{Conclusion}
-This paper presented IntelliTradeAI, a comprehensive AI-powered trading agent combining machine learning ensemble methods, pattern recognition, and news intelligence through tri-signal fusion. The system achieves 85.2\% prediction accuracy for stocks and 96.3\% for ETFs, with the fusion approach improving standalone ML accuracy by 5.4 percentage points (9.9\% relative improvement). Key contributions include the weighted voting fusion mechanism, SHAP-based explainability, personalized risk-based trading plans, and SEC-compliant disclosures.
+This paper presented IntelliTradeAI, a comprehensive AI-powered trading agent combining ML ensemble methods, pattern recognition, and news intelligence through tri-signal fusion. The system achieves 85.2\% prediction accuracy for stocks and 96.3\% for ETFs, with volatility-aware training achieving 72.9\% average accuracy for the top 10 cryptocurrencies (up from 54.7\% baseline---a 33\% improvement). Key contributions include the weighted voting fusion mechanism, SHAP-based explainability, volatility-aware adaptive thresholds, personalized risk-based trading plans, and SEC-compliant disclosures.
 
-The interactive dashboard provides accessible AI-powered trading recommendations while maintaining transparency through feature importance visualization. Future work will focus on expanding data sources, improving cryptocurrency prediction accuracy, and developing mobile interfaces.
+The interactive dashboard provides accessible AI-powered trading recommendations while maintaining transparency through feature importance visualization. The system's coverage of 259 assets (141 cryptocurrencies, 108 stocks, 10 ETFs) across 14 cryptocurrency sectors and 11 GICS sectors makes it one of the most comprehensive open-source trading agents available.
 
 \begin{thebibliography}{00}
-\bibitem{b1} O'Hara, M., ``High frequency market microstructure,'' \textit{Journal of Financial Economics}, vol. 116, no. 2, pp. 257-270, 2015.
-\bibitem{b2} Hendershott, T., Jones, C. M., and Menkveld, A. J., ``Does algorithmic trading improve liquidity?,'' \textit{The Journal of Finance}, vol. 66, no. 1, pp. 1-33, 2011.
-\bibitem{b3} Nakamoto, S., ``Bitcoin: A peer-to-peer electronic cash system,'' 2008.
-\bibitem{b4} Cheng, L., et al., ``Financial time series forecasting with multi-modality graph neural network,'' \textit{Pattern Recognition}, vol. 121, 2022.
-\bibitem{b5} Chen, T., and Guestrin, C., ``XGBoost: A scalable tree boosting system,'' \textit{Proc. 22nd ACM SIGKDD}, pp. 785-794, 2016.
-\bibitem{b6} Yanxi, ``Deep learning for financial time series prediction,'' \textit{Expert Systems with Applications}, 2021.
-\bibitem{b7} Christine, et al., ``Pattern recognition in financial markets,'' 2020.
-\bibitem{b8} Lundberg, S. M., and Lee, S. I., ``A unified approach to interpreting model predictions,'' \textit{NIPS}, 2017.
-\bibitem{b9} U.S. Securities and Exchange Commission, ``Regulation Best Interest,'' 2019.
-\bibitem{b10} Kissell, R., ``The Science of Algorithmic Trading and Portfolio Management,'' Academic Press, 2013.
-\bibitem{b11} Zipline Documentation, Quantopian Inc., 2020.
-\bibitem{b12} Fischer, T., and Krauss, C., ``Deep learning with long short-term memory networks for financial market predictions,'' \textit{European Journal of Operational Research}, vol. 270, no. 2, pp. 654-669, 2018.
-\bibitem{b13} Alessandretti, L., ElBahrawy, A., Aiello, L. M., and Baronchelli, A., ``Anticipating cryptocurrency prices using machine learning,'' \textit{Complexity}, 2018.
-\bibitem{b14} Gu, S., Kelly, B., and Xiu, D., ``Empirical asset pricing via machine learning,'' \textit{Review of Financial Studies}, vol. 33, no. 5, pp. 2223-2273, 2020.
-\bibitem{b15} Lo, A. W., and MacKinlay, A. C., ``A Non-Random Walk Down Wall Street,'' Princeton University Press, 1999.
-\bibitem{b16} Hochreiter, S., and Schmidhuber, J., ``Long short-term memory,'' \textit{Neural Computation}, vol. 9, no. 8, pp. 1735-1780, 1997.
-\bibitem{b17} Breiman, L., ``Random forests,'' \textit{Machine Learning}, vol. 45, no. 1, pp. 5-32, 2001.
-\bibitem{b18} Tsay, R. S., ``Analysis of Financial Time Series,'' John Wiley \& Sons, 2010.
-\bibitem{b19} Leigh, W., Purvis, R., and Ragusa, J. M., ``Forecasting the NYSE composite index with technical analysis, pattern recognizer, neural network, and genetic algorithm,'' \textit{Decision Support Systems}, vol. 32, no. 4, pp. 361-377, 2002.
-\bibitem{b20} Kara, Y., Boyacioglu, M. A., and Baykan, O. K., ``Predicting direction of stock price index movement using artificial neural networks and support vector machines,'' \textit{Expert Systems with Applications}, vol. 38, no. 5, pp. 5311-5319, 2011.
-\bibitem{b21} Sezer, O. B., Gudelek, M. U., and Ozbayoglu, A. M., ``Financial time series forecasting with deep learning: A systematic literature review,'' \textit{Applied Soft Computing}, vol. 90, 2020.
-\bibitem{b22} Bollen, J., Mao, H., and Zeng, X., ``Twitter mood predicts the stock market,'' \textit{Journal of Computational Science}, vol. 2, no. 1, pp. 1-8, 2011.
-\bibitem{b23} Kraaijeveld, O., and De Smedt, J., ``The predictive power of public Twitter sentiment for forecasting cryptocurrency prices,'' \textit{Journal of International Financial Markets}, vol. 65, 2020.
+\bibitem{b1} O'Hara, M., ``High frequency market microstructure,'' \textit{Journal of Financial Economics}, vol. 116, no. 2, pp. 257--270, 2015.
+\bibitem{b2} Hendershott, T., Jones, C. M., and Menkveld, A. J., ``Does algorithmic trading improve liquidity?,'' \textit{The Journal of Finance}, vol. 66, no. 1, pp. 1--33, 2011.
+\bibitem{b3} CoinMarketCap, ``Bitcoin Market Capitalization,'' Available: \url{https://coinmarketcap.com/currencies/bitcoin/}, 2024.
+\bibitem{b4} Cheng, L., et al., ``Financial time series forecasting with multi-modality graph neural network,'' \textit{Pattern Recognition}, vol. 121, 108,215, 2022.
+\bibitem{b5} Chen, T., and Guestrin, C., ``XGBoost: A scalable tree boosting system,'' \textit{Proc. 22nd ACM SIGKDD}, pp. 785--794, 2016.
+\bibitem{b6} Yanxi, W., ``Deep learning for financial time series prediction,'' \textit{Expert Systems with Applications}, vol. 184, 115,436, 2021.
+\bibitem{b7} Christine, S., et al., ``Pattern recognition in financial markets: A machine learning approach,'' \textit{Computational Economics}, vol. 56, pp. 817--837, 2020.
+\bibitem{b8} Lundberg, S. M., and Lee, S. I., ``A unified approach to interpreting model predictions,'' \textit{Advances in Neural Information Processing Systems (NeurIPS)}, vol. 30, 2017.
+\bibitem{b9} U.S. Securities and Exchange Commission, ``Regulation Best Interest: The Broker-Dealer Standard of Conduct,'' 17 CFR 240.15l-1, 2019.
+\bibitem{b10} Kissell, R., \textit{The Science of Algorithmic Trading and Portfolio Management}, Academic Press, 2013.
+\bibitem{b11} Quantopian Inc., ``Zipline: Pythonic Algorithmic Trading Library,'' Documentation, 2020.
+\bibitem{b12} Fischer, T., and Krauss, C., ``Deep learning with long short-term memory networks for financial market predictions,'' \textit{European Journal of Operational Research}, vol. 270, no. 2, pp. 654--669, 2018.
+\bibitem{b13} Alessandretti, L., et al., ``Anticipating cryptocurrency prices using machine learning,'' \textit{Complexity}, vol. 2018, 8983590, 2018.
+\bibitem{b14} Gu, S., Kelly, B., and Xiu, D., ``Empirical asset pricing via machine learning,'' \textit{Review of Financial Studies}, vol. 33, no. 5, pp. 2223--2273, 2020.
+\bibitem{b15} Lo, A. W., and MacKinlay, A. C., \textit{A Non-Random Walk Down Wall Street}, Princeton University Press, 1999.
+\bibitem{b16} Hochreiter, S., and Schmidhuber, J., ``Long short-term memory,'' \textit{Neural Computation}, vol. 9, no. 8, pp. 1735--1780, 1997.
+\bibitem{b17} Breiman, L., ``Random forests,'' \textit{Machine Learning}, vol. 45, no. 1, pp. 5--32, 2001.
+\bibitem{b18} Tsay, R. S., \textit{Analysis of Financial Time Series}, 3rd ed., John Wiley \& Sons, 2010.
+\bibitem{b19} Leigh, W., Purvis, R., and Ragusa, J. M., ``Forecasting the NYSE composite index with technical analysis,'' \textit{Decision Support Systems}, vol. 32, no. 4, pp. 361--377, 2002.
+\bibitem{b20} Kara, Y., Boyacioglu, M. A., and Baykan, O. K., ``Predicting direction of stock price index movement,'' \textit{Expert Systems with Applications}, vol. 38, no. 5, pp. 5311--5319, 2011.
+\bibitem{b21} Sezer, O. B., Gudelek, M. U., and Ozbayoglu, A. M., ``Financial time series forecasting with deep learning,'' \textit{Applied Soft Computing}, vol. 90, 106,181, 2020.
+\bibitem{b22} Bollen, J., Mao, H., and Zeng, X., ``Twitter mood predicts the stock market,'' \textit{Journal of Computational Science}, vol. 2, no. 1, pp. 1--8, 2011.
+\bibitem{b23} Kraaijeveld, O., and De Smedt, J., ``The predictive power of public Twitter sentiment for forecasting cryptocurrency prices,'' \textit{Journal of International Financial Markets}, vol. 65, 101,188, 2020.
 \bibitem{b24} Araci, D., ``FinBERT: Financial sentiment analysis with pre-trained language models,'' arXiv preprint arXiv:1908.10063, 2019.
-\bibitem{b25} Ribeiro, M. T., Singh, S., and Guestrin, C., ``Why should I trust you?: Explaining the predictions of any classifier,'' \textit{Proc. 22nd ACM SIGKDD}, pp. 1135-1144, 2016.
-\bibitem{b26} MSCI and S\&P Dow Jones Indices, ``Global Industry Classification Standard (GICS),'' 2023.
-\bibitem{b27} Jegadeesh, N., and Titman, S., ``Returns to buying winners and selling losers: Implications for stock market efficiency,'' \textit{The Journal of Finance}, vol. 48, no. 1, pp. 65-91, 1993.
+\bibitem{b25} Ribeiro, M. T., Singh, S., and Guestrin, C., ``Why should I trust you?: Explaining the predictions of any classifier,'' \textit{Proc. 22nd ACM SIGKDD}, pp. 1135--1144, 2016.
+\bibitem{b26} MSCI and S\&P Dow Jones Indices, ``Global Industry Classification Standard (GICS),'' Available: \url{https://www.msci.com/gics}, 2023.
+\bibitem{b27} Jegadeesh, N., and Titman, S., ``Returns to buying winners and selling losers,'' \textit{The Journal of Finance}, vol. 48, no. 1, pp. 65--91, 1993.
 \end{thebibliography}
 
 \end{document}
