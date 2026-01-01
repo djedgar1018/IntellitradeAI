@@ -81,30 +81,30 @@ IntelliTradeAI employs a layered architecture consisting of five primary compone
 \end{figure}
 
 \subsection{Data Sources and Processing}
-Table~\ref{tab:datasources} summarizes the data sources, sample sizes, and class distributions used in training and evaluation. Historical price data is obtained through Yahoo Finance API, providing up to 5 years of daily OHLCV data for both stocks and cryptocurrencies. Real-time cryptocurrency data is supplemented through CoinMarketCap API.
+Table~\ref{tab:datasources} summarizes the data sources, sample sizes, and class distributions used in training and evaluation. Historical price data is obtained through Yahoo Finance API\footnote{\url{https://finance.yahoo.com/}}, providing up to 5 years of daily OHLCV data for both stocks and cryptocurrencies. Real-time cryptocurrency data is supplemented through CoinMarketCap API\footnote{\url{https://coinmarketcap.com/api/}}.
 
 \begin{table}[htbp]
 \caption{Data Sources Summary}
 \begin{center}
 \begin{tabular}{|l|c|c|c|c|}
 \hline
-\textbf{Source} & \textbf{Assets} & \textbf{Records} & \textbf{Train/Test} & \textbf{Period} \\
+\textbf{Source} & \textbf{Assets} & \textbf{Records} & \textbf{Train} & \textbf{Test} \\
 \hline
-Yahoo Finance & 118 & 215,930 & 80\%/20\% & 2019-2024 \\
-(Stocks + ETFs) & & & & \\
+Yahoo Finance & 118 & 215,930 & 172,744 & 43,186 \\
+(Stocks + ETFs) & & & (80\%) & (20\%) \\
 \hline
-CoinMarketCap & 141 & 154,795 & 80\%/20\% & 2020-2024 \\
-(Crypto) & & & & \\
+CoinMarketCap & 141 & 154,795 & 123,836 & 30,959 \\
+(Crypto) & & & (80\%) & (20\%) \\
 \hline
-\multicolumn{5}{|c|}{\textbf{Class Distribution}} \\
+\multicolumn{5}{|c|}{\textbf{Class Distribution (Positive/Negative Samples)}} \\
 \hline
-\textbf{Class} & \multicolumn{2}{c|}{\textbf{Stocks/ETFs}} & \multicolumn{2}{c|}{\textbf{Crypto}} \\
+\textbf{Set} & \multicolumn{2}{c|}{\textbf{Stocks/ETFs}} & \multicolumn{2}{c|}{\textbf{Crypto}} \\
 \hline
-Positive (BUY) & \multicolumn{2}{c|}{38.2\%} & \multicolumn{2}{c|}{31.5\%} \\
+Positive (BUY) & \multicolumn{2}{c|}{82,485 (38.2\%)} & \multicolumn{2}{c|}{48,760 (31.5\%)} \\
 \hline
-Negative (SELL) & \multicolumn{2}{c|}{61.8\%} & \multicolumn{2}{c|}{68.5\%} \\
+Negative (SELL) & \multicolumn{2}{c|}{133,445 (61.8\%)} & \multicolumn{2}{c|}{106,035 (68.5\%)} \\
 \hline
-\multicolumn{5}{|c|}{\textbf{Total: 370,725 records, 259 assets}} \\
+\multicolumn{5}{|c|}{\textbf{Total: 370,725 records | 259 assets | Period: 2019-2024}} \\
 \hline
 \end{tabular}
 \label{tab:datasources}
