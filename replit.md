@@ -54,7 +54,7 @@ This AI-powered trading agent provides real-time predictive signals across 141 c
   - Language: Changed to first person ("My contribution", "My tool", "My research")
   - Models: "Random Forest, XGBoost, Random Forest+XGBoost, and voting ensemble classifiers"
   - Accuracy: "85.2% for standalone ML accuracy by 5.4 percentage points (9.9% relative improvement)"
-  - Citations updated: Cheng, Yanxi, Christine et al. references
+  - Citations corrected: Cheng (Dawei Cheng et al.), Jiang (was incorrectly "Yanxi"), Lin et al.
   - Simplified structure matching PDF layout
   - Paper now 292 lines, 27 citations, 6 tables, 4 figures
 - **Crypto Expansion & Volatility-Aware Training (Dec 30)**:
