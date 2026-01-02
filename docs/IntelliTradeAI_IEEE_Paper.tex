@@ -39,7 +39,7 @@ Machine Learning (ML) applications in finance have evolved significantly from si
 
 Recent literature emphasizes the importance of multi-source signal integration. Yanxi proposed fusion architectures that combine technical indicators with sentiment analysis, achieving improvement over single-source models \cite{b6}. Similarly, Christine et al. demonstrated that pattern recognition algorithms, when combined with ML predictions, achieve improved accuracy in directional forecasting \cite{b7}.
 
-The emergence of Explainable Artificial Intelligence (XAI) in finance addresses regulatory concerns and user trust. SHapley Additive exPlanations (SHAP) values have become the standard for interpreting complex model predictions, with Lundberg and Lee demonstrating their effectiveness in feature importance attribution \cite{b8}. The U.S. Securities and Exchange Commission (SEC) and Financial Industry Regulatory Authority (FINRA) have increasingly emphasized the need for algorithmic transparency, with recent guidelines requiring clear disclosure of AI-driven investment recommendations \cite{b9}.
+The emergence of Explainable Artificial Intelligence (XAI) in finance addresses regulatory concerns and user trust. SHapley Additive exPlanations (SHAP) values have become the standard for interpreting complex model predictions, with Lundberg and Lee demonstrating their effectiveness in feature importance attribution \cite{b8}. Other approaches such as Local Interpretable Model-agnostic Explanations (LIME) provide alternative interpretability methods~\cite{b25}. The U.S. Securities and Exchange Commission (SEC) and Financial Industry Regulatory Authority (FINRA) have increasingly emphasized the need for algorithmic transparency, with recent guidelines requiring clear disclosure of AI-driven investment recommendations \cite{b9}.
 
 \subsection{Existing Tools and Platforms}
 Current algorithmic trading platforms range from professional-grade solutions like Bloomberg Terminal and QuantConnect to retail-focused applications such as TradingView and Robinhood. These platforms typically offer either sophisticated analysis capabilities with steep learning curves or simplified interfaces with limited AI integration \cite{b10}. Academic research tools including Zipline, Backtrader, and Technical Analysis Library (TA-Lib) provide technical analysis frameworks but lack real-time prediction capabilities \cite{b11}.
@@ -129,7 +129,7 @@ Volume & Raw Volume, 20-day MA, OBV & 5 \\
 \hline
 Trend & SMA(20, 50, 200), EMA(12, 26) & 12 \\
 \hline
-Momentum & RSI, MACD, Stochastic, ROC & 15 \\
+Momentum~\cite{b27} & RSI, MACD, Stochastic, ROC & 15 \\
 \hline
 Volatility & Bollinger Bands, ATR, Keltner & 10 \\
 \hline
@@ -145,7 +145,7 @@ Calendar & Day of week, month, quarter effects & 8 \\
 \end{table}
 
 \subsection{Model Training and Evaluation}
-We employ a voting ensemble combining two complementary tree-based learners. Random Forest uses 150 trees with depth 10 and balanced class weights. XGBoost uses 150 boosting rounds with learning rate 0.05 and scale\_pos\_weight=3 to handle class imbalance. The final prediction uses soft voting to combine both classifiers. Table~\ref{tab:models} shows a snapshot of individual and ensemble models with corresponding parameters.
+We employ a voting ensemble combining two complementary tree-based learners. Random Forest~\cite{b17} uses 150 trees with depth 10 and balanced class weights. XGBoost uses 150 boosting rounds with learning rate 0.05 and scale\_pos\_weight=3 to handle class imbalance. The final prediction uses soft voting to combine both classifiers. Table~\ref{tab:models} shows a snapshot of individual and ensemble models with corresponding parameters.
 
 \textbf{Training Configuration:} We train our models using binary cross-entropy loss as defined in Equation~\ref{eq:bce}:
 \begin{equation}
