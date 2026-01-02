@@ -1,0 +1,21 @@
+Please see the updated Overleaf below (PDF is also attached):
+
+https://www.overleaf.com/read/vxwtjhchwgrv#f071e5
+
+Additionally, please reply via email for the following comments I have:
+
+Changes in the figure. Please make the following changes and email me the figures
+a. For Fig.1.
+Remove the figure title on the top
+Make the font bigger to match the text's font style. You have enough space within the boxes. See if you can make it smaller in height so that we can have the manuscript in 6 pages for the first submission. If we need an extra page to address reviewers' comments, then we can extend. However, if it is not possible, leave it as it is. I may probably see if I can shrink it.
+b. For Fig. 2:
+Please confirm that the curve is based on the training dataset
+Remove the figure title on the top and email me
+Can you explain what did you mean by "asset classes"? I thought it is a binary classification problem having only two classes. Can you fix the following statement "Fig. 2  illustrates the training and validation loss curves of the individual model of our ensemble framework across asset classes"  Please email me the text.
+
+For the random forest model, you mentioned "Random Forest [17] uses 150
+trees with depth 10 and balanced class weights". I can see in your model_trainer.py, it is set to 100 and depth of 20, is this just the fallback state? Could you refer me to the code where you set the network parameters?
+Please confirm that the model parameters you mentioned in the manuscript match the code.
+Under the "A. Test Set Performance on Cryptocurrencies" section, you mentioned a number 54.7%, how this is obtained, I am unable to obtain this quantity from any references in the paper, or percentage calculation. 
+I was not able find this reference "S. Christine, M. Lopez, and R. Johnson, ``Pattern recognition in financial markets: A machine learning approach". Please email me the correct reference, which is also consistent with the statement in the manuscript.
+Finally, please confirm you have double-checked all the numbers in the manuscript, validated, and checked for their correctness.
