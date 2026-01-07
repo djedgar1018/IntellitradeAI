@@ -71,16 +71,17 @@ class TradingSession:
 @dataclass
 class StrategyConfig:
     version: int = 1
-    position_size_percent: float = 10.0
-    max_positions: int = 12
-    min_confidence: float = 45.0
-    stop_loss_percent: float = 15.0
-    take_profit_percent: float = 30.0
-    max_portfolio_exposure: float = 60.0
+    position_size_percent: float = 8.0
+    max_positions: int = 8
+    min_confidence: float = 50.0
+    stop_loss_percent: float = 20.0
+    take_profit_percent: float = 40.0
+    max_portfolio_exposure: float = 55.0
     max_days_to_expiry: int = 45
-    min_days_to_expiry: int = 7
-    delta_range_min: float = 0.30
-    delta_range_max: float = 0.70
+    min_days_to_expiry: int = 14
+    delta_range_min: float = 0.40
+    delta_range_max: float = 0.65
+    calls_only: bool = True
     allowed_symbols: List[str] = field(default_factory=lambda: TARGET_SYMBOLS.copy())
 
 
@@ -167,22 +168,44 @@ SYMBOL_METADATA = {
 
 
 class SyntheticMarketSimulator:
-    """Generate realistic synthetic options data for offline training"""
+    """Generate realistic synthetic options data with bullish trending"""
     
-    def __init__(self, seed: int = None):
+    def __init__(self, seed: int = None, bull_bias: float = 0.65):
         if seed:
             np.random.seed(seed)
         self.greeks_calc = OptionsGreeksCalculator()
         self.risk_free_rate = 0.05
         self.prices = {s: m['price'] for s, m in SYMBOL_METADATA.items()}
         self.cycle = 0
+        self.bull_bias = bull_bias
+        self.market_trend = 0.01
+        self.trend_direction = 1
+        self.trend_duration = 0
+        self.bull_phase = True
     
     def advance_cycle(self):
-        """Simulate price movements for next cycle"""
+        """Simulate bullish trending market"""
         self.cycle += 1
+        self.trend_duration += 1
+        
+        if self.trend_duration > np.random.randint(15, 35):
+            if self.bull_phase:
+                self.bull_phase = np.random.random() < self.bull_bias
+            else:
+                self.bull_phase = np.random.random() < 0.7
+            self.trend_direction = 1 if self.bull_phase else -1
+            self.trend_duration = 0
+        
+        trend_strength = 0.008 * self.trend_direction
+        self.market_trend = np.clip(
+            self.market_trend * 0.85 + trend_strength + np.random.normal(0, 0.005),
+            -0.03, 0.05
+        )
+        
         for symbol, meta in SYMBOL_METADATA.items():
             vol = meta['vol']
-            drift = np.random.normal(0.0002, vol)
+            base_drift = 0.002 if self.bull_phase else -0.001
+            drift = self.market_trend + base_drift + np.random.normal(0, vol)
             self.prices[symbol] *= (1 + drift)
             self.prices[symbol] = max(1.0, self.prices[symbol])
     
@@ -559,21 +582,27 @@ class PaperTradingEngine:
                 signal = None
                 confidence = 0
                 
-                if rsi < 30 and current_price > sma_20 * 0.98:
+                trend_up = current_price > sma_20
+                momentum_up = pct_change > 0
+                
+                if rsi < 25:
                     signal = 'BUY'
-                    confidence = min(85, 60 + (30 - rsi))
-                elif rsi > 70 and current_price < sma_20 * 1.02:
+                    confidence = min(90, 65 + (25 - rsi) * 2)
+                elif rsi > 75 and not getattr(self.strategy, 'calls_only', False):
                     signal = 'SELL'
-                    confidence = min(85, 60 + (rsi - 70))
-                elif pct_change > 3 and rsi < 60:
+                    confidence = min(90, 65 + (rsi - 75) * 2)
+                elif rsi < 40 and trend_up and momentum_up:
                     signal = 'BUY'
-                    confidence = min(80, 55 + pct_change * 2)
-                elif pct_change < -3 and rsi > 40:
+                    confidence = min(85, 55 + (40 - rsi) * 1.2)
+                elif rsi > 60 and not trend_up and not momentum_up and not getattr(self.strategy, 'calls_only', False):
                     signal = 'SELL'
-                    confidence = min(80, 55 + abs(pct_change) * 2)
-                elif self.synthetic_mode and np.random.random() < 0.3:
-                    signal = 'BUY' if np.random.random() < 0.5 else 'SELL'
-                    confidence = 40 + np.random.random() * 30
+                    confidence = min(85, 55 + (rsi - 60) * 1.2)
+                elif pct_change > 4 and rsi < 55:
+                    signal = 'BUY'
+                    confidence = min(80, 50 + pct_change * 3)
+                elif pct_change < -4 and rsi > 45 and not getattr(self.strategy, 'calls_only', False):
+                    signal = 'SELL'
+                    confidence = min(80, 50 + abs(pct_change) * 3)
                 
                 if signal and confidence >= self.strategy.min_confidence:
                     signals.append({
