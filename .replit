@@ -54,4 +54,4 @@ localPort = 8000
 externalPort = 8000
 
 [agent]
-integrations = ["discord:1.0.0"]
+integrations = ["discord:1.0.0", "google-mail:1.0.0"]
