@@ -60,6 +60,29 @@ This AI-powered trading agent provides real-time predictive signals across 141 c
   - Backend-only feature for model improvement
   - Files: trading/paper_trading_engine.py, data/options_cache/
 
+- **Crypto Paper Trading Mode (Jan 7)**: Aggressive crypto trading simulator
+  - Top 20 cryptos: BTC, ETH, XRP, SOL, DOGE, ADA, AVAX, SHIB, DOT, LINK, MATIC, UNI, ATOM, LTC, XLM, NEAR, APT, ARB, OP, INJ
+  - Starting balance: $100,000, Target: $200,000 (100% return goal)
+  - Max drawdown limit: 30% with automatic halt and improvement loop
+  - Supports both LONG and SHORT positions with leverage up to 3x
+  - AI signals: RSI, SMA, 24h/7d momentum
+  - **Aggressive Strategy Settings**:
+    - Position size: 10%
+    - Confidence threshold: 45%
+    - Max positions: 10, Max exposure: 70%
+    - Stop-loss: 8%, Take-profit: 15%
+    - Max leverage: 3x
+  - **Synthetic Crypto Market**: Offline training with Geometric Brownian Motion
+    - 20 crypto symbols with sector-specific volatility profiles
+    - Market trend simulation for correlated movements
+    - 100-period price history tracking
+  - **Improvement Loop**: Adapts after drawdown breaches
+    - Reduces position size and leverage
+    - Raises confidence threshold
+    - Excludes underperforming symbols
+  - Backend-only feature for model improvement
+  - Files: trading/crypto_paper_trading.py, data/crypto_cache/
+
 ## Previous Changes (December 2025)
 - **Top 10 Crypto Validation (Dec 30)**: Volatility-aware training completed
   - BTC 92.4%, XRP 88.1%, DOGE 76.7%, ETH 71.4%, SOL 71.0%
