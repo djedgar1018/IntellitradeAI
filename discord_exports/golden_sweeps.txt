@@ -1,0 +1,15 @@
+
+HoneyDrip Bot — Today at 10:30 AM
+NVDA 150C 1/17 call option bullish sweep
+
+TraderX — Today at 11:15 AM
+SPY 600P 1/10 put sweep bearish
+
+AlertBot — Today at 12:00 PM  
+TSLA 450C 1/24 golden sweep call entry $8.50
+
+Sweeps Bot — Today at 1:00 PM
+AAPL 180C 1/31 bullish call flow
+
+Options Flow — Today at 2:00 PM
+AMD 160C 2/7 unusual sweep buy call

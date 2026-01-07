@@ -1,0 +1,14 @@
+
+HoneyDrip Bot — Today at 10:30 AM
+NVDA 150C 1/17 
+Volume: 5,000 contracts
+Premium: $2.5M bullish call option
+
+TraderX — Today at 11:15 AM
+SPY 600P 1/10
+Unusual sweep detected put
+Premium: $1.2M
+
+AlertBot — Today at 12:00 PM
+TSLA 450C 1/24
+Golden sweep entry $8.50 call
