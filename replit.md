@@ -57,3 +57,18 @@ File-based storage is used for caching cryptocurrency and stock data in JSON for
 
 ### Other Integrations
 - **Web3.py**: For blockchain wallet management.
+- **Discord Integration**: Analyze trading conversations from Discord servers (Honey Drip Network, TJRTrades)
+- **Email Newsletter Integration**: Extract trading signals from TLDR AI, Barchart, Investing.com, Webull newsletters via Gmail IMAP
+
+## Recent Changes (January 2026)
+- **Email Newsletter Integration (Jan 7)**: Extract trading signals from email newsletters
+  - Gmail IMAP client with App Password authentication
+  - Newsletter parser for TLDR AI, Barchart, Investing.com, Webull
+  - Symbol intelligence with bullish/bearish bias detection
+  - Files: email_integration/ (imap_client.py, newsletter_parser.py, email_service.py)
+
+- **Discord Integration (Jan 7)**: Analyze trading conversations from Discord
+  - Trade message parser for crypto, stocks, options
+  - Trade history analyzer for pattern detection
+  - Database persistence for learned patterns
+  - Files: discord_integration/ (client.py, trade_parser.py, trade_analyzer.py, discord_service.py)
