@@ -1,141 +1,7 @@
 # AI-Powered Trading Agent (IntelliTradeAI)
 
 ## Overview
-This AI-powered trading agent provides real-time predictive signals across 141 cryptocurrencies (including meme coins, NFT projects, AI agent tokens), 108 stocks (all 11 GICS sectors), and 10 major ETFs. It leverages multiple machine learning models (Random Forest, XGBoost ensemble, LSTM, Transformer), explainable AI features, and comprehensive backtesting capabilities to generate trading signals. The system integrates real-time news intelligence, social sentiment analysis, on-chain metrics, and sophisticated tri-signal fusion to provide actionable trading recommendations. It includes capabilities for options trading, automated execution with e-signature consent, blockchain integration, sentiment analysis, personalized trading plans based on risk tolerance, and SEC-compliant legal disclosures.
-
-## Validated Model Performance (December 30, 2025)
-**Prediction Target:** Significant price movement with adaptive thresholds
-
-### Stock Market & ETFs (December 28, 2025)
-- **Stock Market (108 assets):** 85.2% average, 99.2% best (SO) - 98/108 stocks >= 70% (91%)
-- **ETFs (10 assets):** 96.3% average, 98.8% best (DIA) - 10/10 >= 70% (100%)
-- **Top Stock Performers:** SO 99.2%, DUK 98.8%, PG 98.4%, TJX 98.4%, AVB 98.4%, MCD 98.0%
-- **Top ETFs:** DIA 98.8%, XLV 98.0%, SPY 97.2%, XLF 97.6%
-
-### Top 10 Cryptocurrency (December 30, 2025 - Volatility-Aware Training)
-| Coin | Accuracy | Threshold | Horizon | Status |
-|------|----------|-----------|---------|--------|
-| BTC | **92.4%** | 6% move | 7 days | >=70% |
-| XRP | **88.1%** | 6% move | 5 days | >=70% |
-| DOGE | **76.7%** | 8% move | 5 days | >=70% |
-| ETH | **71.4%** | 6% move | 7 days | >=70% |
-| SOL | **71.0%** | 8% move | 5 days | >=70% |
-| TRX | 69.5% | 5% move | 7 days | |
-| BNB | 68.6% | 6% move | 7 days | |
-| ADA | 67.1% | 8% move | 7 days | |
-| SHIB | 63.8% | 8% move | 5 days | |
-| AVAX | 60.5% | 8% move | 5 days | |
-
-- **Top 10 Crypto Average:** 72.9% (up from 54.7% baseline - 33% improvement)
-- **Assets >= 70%:** 5/10 (50%)
-- **Crypto Coverage:** 141 unique tokens across 14 sectors
-
-### Overall Performance
-- **Total Assets:** 259 (141 crypto + 108 stocks + 10 ETFs)
-- Detailed results: `model_results/december_2025_results.json`, `model_results/top10_crypto_results.json`
-
-## Recent Changes (January 2026)
-- **Enhanced Options Paper Trading Mode (Jan 7)**: Aggressive backend training simulator - **TARGET $200K ACHIEVED**
-  - **Best Result**: 100% win rate (26W/0L), +76% return
-  - Target stocks: GOOGL, TSM, NVDA, AMD, META, GEV, HOOD, V, MU, WDC, PLTR, LLY (12 stocks)
-  - Starting balance: $100,000, Target: $200,000 (100% return goal)
-  - Max drawdown limit: 30% with automatic halt and improvement loop
-  - Black-Scholes Greeks calculator (delta, gamma, theta, vega)
-  - AI signal generation using RSI, SMA, and momentum with trend confirmation
-  - Calls-only trend-following strategy in bull markets
-  - **Optimized Strategy Settings**:
-    - Position size: 8%
-    - Confidence threshold: 50%
-    - Max positions: 8, Max exposure: 55%
-    - Stop-loss: 20%, Take-profit: 40%
-    - Calls-only mode: Enabled
-    - Delta range: 0.40-0.65
-  - **Synthetic Market Simulator**: Bull-biased trending with 65% bull bias
-    - Symbol metadata for 12 stocks with price/IV/volatility profiles
-    - Delta-driven option repricing with Black-Scholes
-    - Trend duration 15-35 cycles with mean reversion
-  - **Enhanced Improvement Loop**: Progressive risk reduction after drawdowns
-    - Reduces position size by 15% per breach
-    - Widens take-profit, tightens stop-loss
-    - Excludes underperforming symbols
-  - **Persistent Caching**: 60-minute cache with disk persistence
-  - Backend-only feature for model improvement
-  - Files: trading/paper_trading_engine.py, data/options_cache/
-
-- **Crypto Paper Trading Mode (Jan 7)**: Aggressive crypto trading simulator - **TARGET $200K ACHIEVED**
-  - **Best Result**: Peak $201,010 (+101% return), 90.9% win rate (20W/2L)
-  - Top 20 cryptos: BTC, ETH, XRP, SOL, DOGE, ADA, AVAX, SHIB, DOT, LINK, MATIC, UNI, ATOM, LTC, XLM, NEAR, APT, ARB, OP, INJ
-  - Starting balance: $100,000, Target: $200,000 (100% return goal)
-  - Max drawdown limit: 30% with automatic halt and improvement loop
-  - Long-only trend-following strategy in bull markets
-  - AI signals: RSI, SMA, 24h/7d momentum with trend confirmation
-  - **Optimized Strategy Settings**:
-    - Position size: 6%
-    - Confidence threshold: 55%
-    - Max positions: 6, Max exposure: 50%
-    - Stop-loss: 18%, Take-profit: 35%
-    - Max leverage: 2x
-    - Long-only mode: Enabled
-  - **Synthetic Crypto Market**: Bull-biased trending with Geometric Brownian Motion
-    - 20 crypto symbols with sector-specific volatility profiles
-    - 60% bull bias with trend duration 20-50 cycles
-    - Market trend simulation for correlated movements
-  - **Improvement Loop**: Adapts after drawdown breaches
-    - Reduces position size
-    - Raises confidence threshold
-    - Excludes underperforming symbols
-  - Backend-only feature for model improvement
-  - Files: trading/crypto_paper_trading.py, data/crypto_cache/
-
-## Previous Changes (December 2025)
-- **Top 10 Crypto Validation (Dec 30)**: Volatility-aware training completed
-  - BTC 92.4%, XRP 88.1%, DOGE 76.7%, ETH 71.4%, SOL 71.0%
-  - Average improved from 54.7% to 72.9% (33% improvement)
-  - 5/10 top coins now achieve >=70% accuracy
-- **TensorFlow/NumPy Compatibility Fix (Dec 30)**: Resolved deep learning import issues
-  - Downgraded NumPy to 1.26.4 for TensorFlow 2.14.0 compatibility
-  - LSTM and Transformer models now fully operational (HAS_TF = True)
-  - Graceful fallback implemented for environments without TensorFlow
-- **Model Training Optimization (Dec 28)**: Created comprehensive training pipeline with validated accuracy
-  - Implemented 70 technical indicators with feature selection
-  - Added SMOTE class balancing and temporal train/test splits
-  - Final ensemble: RandomForest + XGBoost voting classifier
-  - Walk-forward validation for proper time-series evaluation
-- **IEEE Paper Revisions (Dec 30)**: Updated TEX file to match final PDF submission
-  - Author: Danario Edgar II, Prairie View A&M University (dedgar1@pvamu.edu)
-  - Abstract: Uses "novel tri-signal fusion", "Baysian hyperparameter optimization"
-  - Language: Changed to first person ("My contribution", "My tool", "My research")
-  - Models: "Random Forest, XGBoost, Random Forest+XGBoost, and voting ensemble classifiers"
-  - Accuracy: "85.2% for standalone ML accuracy by 5.4 percentage points (9.9% relative improvement)"
-  - Citations corrected: Cheng (Dawei Cheng et al.), Jiang (was incorrectly "Yanxi"), Lin et al.
-  - Simplified structure matching PDF layout
-  - Paper now 292 lines, 27 citations, 6 tables, 4 figures
-- **Crypto Expansion & Volatility-Aware Training (Dec 30)**:
-  - Expanded crypto assets from 39 to 141 unique tokens (deduplicated across 14 sectors)
-  - Added new sectors: NFT Projects (12 assets), AI Agent Tokens (14 assets)
-  - Expanded Meme Coins to 24 assets (BRETT, POPCAT, MOG, TURBO, NEIRO, etc.)
-  - AI Tokens: 12 infrastructure (FET, RNDR, TAO, etc.) + 14 agent tokens (VIRTUAL, AI16Z, GOAT, etc.)
-  - Implemented volatility-aware feature engineering (47 new features)
-  - Added adaptive threshold training: 8-15% for meme coins vs 4-5% for large-cap
-  - Created VolatilityConfig class with sector-specific model configurations
-  - Integrated on-chain metrics module (whale activity, exchange flows)
-  - Added social sentiment aggregator (Fear & Greed, price/volume sentiment)
-  - Implemented LSTM deep learning model for sequence-based prediction
-  - Created Transformer architecture for market regime detection
-  - New training pipeline: train_volatility_aware.py
-- **GitHub Preparation**: Created README.md, requirements.txt, LICENSE, .gitignore
-- Added SEC/FINRA legal compliance module with risk disclosures and e-signature authorization
-- Created hover-based tooltip definitions (3-second delay) replacing standalone dictionary tab
-- Implemented user onboarding survey with 5 risk tolerance levels
-- Expanded crypto coverage to top 100 coins with 12 sector categorizations
-- Added all 11 GICS stock sectors with industries and 30+ ETF indices
-- Created personalized trading plan system from Conservative to Speculative
-- Added database tables for user profiles and e-signature records
-- Added sector & ETF rankings table with AI scores in trading plan
-- Added popup charts with optimal levels (support/resistance/entry/exit) for assets
-- Implemented price alerts functionality for recommended assets
-- Enhanced options trading plan with tier-specific call/put suggestions
-- Fixed options analysis to suggest both calls and puts for all strategies
+IntelliTradeAI is an AI-powered trading agent providing real-time predictive signals across 141 cryptocurrencies, 108 stocks, and 10 major ETFs. It leverages multiple machine learning models (Random Forest, XGBoost, LSTM, Transformer), explainable AI, and comprehensive backtesting to generate trading signals. The system integrates real-time news intelligence, social sentiment analysis, on-chain metrics, and sophisticated tri-signal fusion for actionable recommendations. Key capabilities include options trading, automated execution, blockchain integration, sentiment analysis, personalized trading plans based on risk tolerance, and SEC-compliant legal disclosures. The project aims to deliver highly accurate, explainable, and adaptable trading intelligence to users.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -143,24 +9,24 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
-A Streamlit-based dashboard provides an interactive web UI with real-time data visualization, a multi-page layout for trading, backtesting, model comparison, analytics, and options analysis, all designed responsively with a wide layout and expandable sidebar. The UI includes comprehensive data visualization with 6 charts, interactive price charts with visual key levels, and actionable price levels for HOLD signals.
+A Streamlit-based interactive web UI provides a multi-page layout for trading, backtesting, model comparison, analytics, and options analysis. It features real-time data visualization with 6 charts, interactive price charts with visual key levels, and actionable price levels for HOLD signals, all designed responsively with a wide layout and expandable sidebar.
 
 ### Backend Architecture
-The backend features a modular design separating data fetching, model training, backtesting, and analysis. It includes a centralized configuration system, a standardized model pipeline supporting multiple ML models, and a robust data processing pipeline for cleaning and technical indicator calculation. The system also incorporates a "TRI-SIGNAL FUSION ENGINE" that combines ML model predictions, pattern recognition, and news intelligence with weighted voting and smart conflict resolution.
+The backend is modular, separating data fetching, model training, backtesting, and analysis. It includes a centralized configuration system, a standardized model pipeline supporting multiple ML models, and a robust data processing pipeline. A "TRI-SIGNAL FUSION ENGINE" combines ML predictions, pattern recognition, and news intelligence using weighted voting and smart conflict resolution.
 
 ### Data Storage Solutions
-File-based storage is used for caching cryptocurrency and stock data in JSON format, with in-memory processing using pandas DataFrames. Model persistence is handled via Joblib serialization, and Streamlit session state maintains application state. Database integration with PostgreSQL is used for trades, positions, portfolio, trade alerts, options chains, and crypto wallets.
+File-based storage is used for caching cryptocurrency and stock data in JSON format, with in-memory processing via pandas DataFrames. Model persistence utilizes Joblib serialization, and Streamlit session state maintains application state. PostgreSQL is integrated for trades, positions, portfolio, trade alerts, options chains, and crypto wallets.
 
 ### Key Components
-- **Data Ingestion Layer**: Integrates CoinMarketCap API (cryptocurrency) and Yahoo Finance (stocks) with JSON-based caching, dynamic top coin discovery, and comprehensive data validation. Supports 141 crypto symbols with custom Yahoo Finance mappings.
-- **Machine Learning Models**: Employs RandomForest + XGBoost voting ensemble with 70+ technical indicators, 47 volatility-aware features, and SMOTE class balancing. LSTM and Transformer deep learning models available for sequence prediction.
-- **Volatility-Aware Training**: Adaptive threshold training based on asset volatility class (extreme: 8-15%, very_high: 6-10%, high: 5-8%, standard: 4-6%). Sector-specific model configurations.
-- **Alternative Data Sources**: On-chain metrics (whale activity, exchange flows, holder distribution) and social sentiment (Fear & Greed Index, price/volume sentiment).
-- **Technical Analysis Engine**: Calculates RSI, MACD, Bollinger Bands, EMA, and performs automated feature engineering and cross-market correlation analysis.
-- **Explainability and Transparency**: Integrates SHAP for model interpretability, logs trading decisions, and visualizes predictions and explanations.
-- **Backtesting Engine**: Provides custom backtesting with configurable parameters, performance metrics (Sharpe ratio, max drawdown), and built-in risk management (stop-loss, take-profit).
-- **Options Trading**: Includes an Options Chain Data Fetcher with real-time calls/puts data, Greeks, and implied volatility.
-- **Automated Execution**: Features a Trading Mode Manager for manual or automatic AI execution, and a Trade Executor supporting stocks, options, and crypto with paper trading capabilities.
+- **Data Ingestion**: Integrates CoinMarketCap API and Yahoo Finance with JSON caching, dynamic top coin discovery, and comprehensive data validation for 141 crypto symbols and stocks.
+- **Machine Learning Models**: Employs a RandomForest + XGBoost voting ensemble with 70+ technical indicators, 47 volatility-aware features, and SMOTE class balancing. LSTM and Transformer models are available for sequence prediction.
+- **Volatility-Aware Training**: Features adaptive threshold training based on asset volatility classes and sector-specific model configurations.
+- **Alternative Data Sources**: Incorporates on-chain metrics (whale activity, exchange flows) and social sentiment (Fear & Greed Index, price/volume sentiment).
+- **Technical Analysis Engine**: Calculates key indicators like RSI, MACD, Bollinger Bands, EMA, and performs automated feature engineering and cross-market correlation analysis.
+- **Explainability**: Integrates SHAP for model interpretability, logging trading decisions, and visualizing predictions.
+- **Backtesting Engine**: Provides custom backtesting with configurable parameters, performance metrics (Sharpe ratio, max drawdown), and built-in risk management.
+- **Options Trading**: Includes an Options Chain Data Fetcher for real-time calls/puts data, Greeks, and implied volatility.
+- **Automated Execution**: Features a Trading Mode Manager for manual or automatic AI execution and a Trade Executor supporting stocks, options, and crypto with paper trading.
 - **Blockchain Integration**: Utilizes a Blockchain Wallet Manager (Web3.py) for crypto transactions and wallet tracking.
 - **Sentiment Analysis**: Incorporates Twitter/X sentiment analysis and a Fear & Greed Index display.
 - **Trade Logging & P&L**: Tracks trades, positions, and performance analytics.

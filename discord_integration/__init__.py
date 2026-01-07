@@ -4,6 +4,7 @@ from discord_integration.client import DiscordClient
 from discord_integration.trade_parser import TradeMessageParser, ParsedTrade
 from discord_integration.trade_analyzer import TradeHistoryAnalyzer, TraderProfile, TradingPattern
 from discord_integration.discord_service import DiscordTradingService, create_discord_service
+from discord_integration.db_persistence import DiscordDBPersistence
 
 __all__ = [
     'DiscordClient', 
@@ -13,5 +14,6 @@ __all__ = [
     'TraderProfile',
     'TradingPattern',
     'DiscordTradingService',
-    'create_discord_service'
+    'create_discord_service',
+    'DiscordDBPersistence'
 ]

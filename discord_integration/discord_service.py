@@ -9,6 +9,7 @@ from pathlib import Path
 from discord_integration.client import DiscordClient
 from discord_integration.trade_parser import TradeMessageParser, ParsedTrade
 from discord_integration.trade_analyzer import TradeHistoryAnalyzer, TraderProfile
+from discord_integration.db_persistence import DiscordDBPersistence
 
 
 class DiscordTradingService:
@@ -18,20 +19,31 @@ class DiscordTradingService:
         self.client = DiscordClient()
         self.parser = TradeMessageParser()
         self.analyzer = TradeHistoryAnalyzer()
+        self.db = DiscordDBPersistence()
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         
         self._configured_channel_id: Optional[str] = None
         self._configured_guild_id: Optional[str] = None
         
-    def configure_channel(self, guild_id: str, channel_id: str):
+        db_config = self.db.get_channel_config()
+        if db_config:
+            self._configured_guild_id = db_config.get('guild_id')
+            self._configured_channel_id = db_config.get('channel_id')
+        
+    def configure_channel(self, guild_id: str, channel_id: str, 
+                         guild_name: str = None, channel_name: str = None):
         """Configure which channel/thread to analyze."""
         self._configured_guild_id = guild_id
         self._configured_channel_id = channel_id
         
+        self.db.save_channel_config(guild_id, channel_id, guild_name, channel_name)
+        
         config = {
             'guild_id': guild_id,
             'channel_id': channel_id,
+            'guild_name': guild_name,
+            'channel_name': channel_name,
             'configured_at': datetime.now().isoformat()
         }
         
@@ -81,12 +93,29 @@ class DiscordTradingService:
         trades = self.parser.parse_messages(messages)
         print(f"Parsed {len(trades)} trades from messages")
         
+        saved_count = self.db.save_trades(trades, channel_id, self._configured_guild_id)
+        print(f"Saved {saved_count} new trades to database")
+        
         self.analyzer.clear_trades()
         self.analyzer.add_trades(trades)
         
         profile = self.analyzer.analyze()
+        profile_id = None
+        
+        if profile:
+            profile_id = self.db.save_trader_profile(
+                profile, channel_id, self._configured_guild_id
+            )
+            
+            for pattern in profile.patterns:
+                self.db.save_pattern(pattern, channel_id)
         
         strategy = self.analyzer.generate_replication_strategy()
+        
+        if profile_id and strategy:
+            self.db.save_replication_strategy(strategy, profile_id)
+        
+        self.db.update_sync_stats(channel_id, len(messages), len(trades))
         
         analysis_path = self.cache_dir / f'analysis_{channel_id}_{datetime.now().strftime("%Y%m%d")}.json'
         self.analyzer.save_analysis(str(analysis_path))
@@ -94,6 +123,7 @@ class DiscordTradingService:
         return {
             'messages_fetched': len(messages),
             'trades_parsed': len(trades),
+            'trades_saved_to_db': saved_count,
             'profile': profile.to_dict() if profile else None,
             'replication_strategy': strategy,
             'analysis_saved_to': str(analysis_path)
@@ -141,6 +171,21 @@ class DiscordTradingService:
     
     def get_signal_bias(self, symbol: str) -> Dict:
         """Get trading bias for a symbol based on historical Discord trades."""
+        db_bias = self.db.get_symbol_bias(symbol)
+        if db_bias:
+            return {
+                'symbol': symbol,
+                'bias': db_bias.get('bias', 'neutral'),
+                'confidence': float(db_bias.get('confidence', 0)),
+                'trade_count': db_bias.get('trade_count', 0),
+                'win_rate': float(db_bias.get('win_rate', 0)),
+                'long_trades': db_bias.get('long_trades', 0),
+                'short_trades': db_bias.get('short_trades', 0),
+                'long_win_rate': float(db_bias.get('long_win_rate', 0)),
+                'short_win_rate': float(db_bias.get('short_win_rate', 0)),
+                'source': 'database'
+            }
+        
         if not self.analyzer.trades:
             cached = self.load_cached_messages(self._configured_channel_id or '')
             if cached:
@@ -154,11 +199,11 @@ class DiscordTradingService:
                 'symbol': symbol,
                 'bias': 'neutral',
                 'confidence': 0,
-                'trade_count': 0
+                'trade_count': 0,
+                'source': 'no_data'
             }
         
         wins = [t for t in symbol_trades if t.outcome == 'win']
-        losses = [t for t in symbol_trades if t.outcome == 'loss']
         
         long_trades = [t for t in symbol_trades if t.action in ['buy', 'call']]
         short_trades = [t for t in symbol_trades if t.action in ['sell', 'put']]
@@ -179,7 +224,7 @@ class DiscordTradingService:
             bias = 'neutral'
             confidence = max(long_win_rate, short_win_rate)
         
-        return {
+        bias_data = {
             'symbol': symbol,
             'bias': bias,
             'confidence': round(confidence, 1),
@@ -188,8 +233,14 @@ class DiscordTradingService:
             'long_trades': len(long_trades),
             'short_trades': len(short_trades),
             'long_win_rate': round(long_win_rate, 1),
-            'short_win_rate': round(short_win_rate, 1)
+            'short_win_rate': round(short_win_rate, 1),
+            'source': 'cache'
         }
+        
+        if self._configured_channel_id:
+            self.db.save_symbol_bias(symbol, self._configured_channel_id, bias_data)
+        
+        return bias_data
     
     def get_current_methodology(self) -> Dict:
         """Get the current learned trading methodology."""
