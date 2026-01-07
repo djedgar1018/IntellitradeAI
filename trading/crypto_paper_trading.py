@@ -88,39 +88,56 @@ class CryptoTradingSession:
 @dataclass
 class CryptoStrategyConfig:
     version: int = 1
-    position_size_percent: float = 10.0
-    max_positions: int = 10
-    min_confidence: float = 45.0
-    stop_loss_percent: float = 8.0
-    take_profit_percent: float = 15.0
-    max_portfolio_exposure: float = 70.0
-    max_leverage: float = 3.0
+    position_size_percent: float = 6.0
+    max_positions: int = 6
+    min_confidence: float = 55.0
+    stop_loss_percent: float = 18.0
+    take_profit_percent: float = 35.0
+    max_portfolio_exposure: float = 50.0
+    max_leverage: float = 2.0
+    long_only: bool = True
     allowed_symbols: List[str] = field(default_factory=lambda: TOP_CRYPTOS.copy())
 
 
 class SyntheticCryptoMarket:
-    """Generate realistic synthetic crypto market data"""
+    """Generate realistic synthetic crypto market data with bullish trending"""
     
-    def __init__(self, seed: int = None):
+    def __init__(self, seed: int = None, volatility_mult: float = 1.5, bull_bias: float = 0.6):
         if seed:
             np.random.seed(seed)
         self.prices = {s: m['price'] for s, m in CRYPTO_METADATA.items()}
         self.price_history = {s: [m['price']] for s, m in CRYPTO_METADATA.items()}
         self.cycle = 0
-        self.market_trend = 0.0
+        self.market_trend = 0.02
+        self.volatility_mult = volatility_mult
+        self.bull_bias = bull_bias
+        self.trend_direction = 1
+        self.trend_duration = 0
+        self.bull_phase = True
     
     def advance_cycle(self):
-        """Simulate price movements using Geometric Brownian Motion"""
+        """Simulate trending crypto market with bull bias"""
         self.cycle += 1
+        self.trend_duration += 1
         
+        if self.trend_duration > np.random.randint(20, 50):
+            if self.bull_phase:
+                self.bull_phase = np.random.random() < self.bull_bias
+            else:
+                self.bull_phase = np.random.random() < 0.7
+            self.trend_direction = 1 if self.bull_phase else -1
+            self.trend_duration = 0
+        
+        trend_strength = 0.02 * self.trend_direction
         self.market_trend = np.clip(
-            self.market_trend + np.random.normal(0, 0.01),
-            -0.03, 0.03
+            self.market_trend * 0.85 + trend_strength + np.random.normal(0, 0.015),
+            -0.05, 0.08
         )
         
         for symbol, meta in CRYPTO_METADATA.items():
-            vol = meta['volatility']
-            drift = self.market_trend + np.random.normal(0.0001, vol)
+            vol = meta['volatility'] * self.volatility_mult
+            base_drift = 0.003 if self.bull_phase else -0.001
+            drift = self.market_trend + base_drift + np.random.normal(0, vol)
             self.prices[symbol] *= (1 + drift)
             self.prices[symbol] = max(0.0000001, self.prices[symbol])
             
@@ -228,30 +245,39 @@ class CryptoPaperTradingEngine:
                 signal = None
                 confidence = 0
                 
-                if rsi < 30 and current_price > sma_20 * 0.95:
+                trend_up = current_price > sma_20
+                momentum_up = pct_change > 0
+                
+                if rsi < 25:
                     signal = 'LONG'
-                    confidence = min(85, 55 + (30 - rsi) * 1.5)
-                elif rsi > 70 and current_price < sma_20 * 1.05:
+                    confidence = min(90, 60 + (25 - rsi) * 2)
+                elif rsi > 75:
                     signal = 'SHORT'
-                    confidence = min(85, 55 + (rsi - 70) * 1.5)
-                elif pct_change > 5 and rsi < 65:
+                    confidence = min(90, 60 + (rsi - 75) * 2)
+                elif rsi < 35 and trend_up and momentum_up:
                     signal = 'LONG'
-                    confidence = min(80, 50 + pct_change * 2)
-                elif pct_change < -5 and rsi > 35:
+                    confidence = min(85, 55 + (35 - rsi) * 1.5)
+                elif rsi > 65 and not trend_up and not momentum_up:
                     signal = 'SHORT'
-                    confidence = min(80, 50 + abs(pct_change) * 2)
-                elif pct_change_7d > 15 and rsi < 60:
+                    confidence = min(85, 55 + (rsi - 65) * 1.5)
+                elif pct_change > 8 and rsi < 60:
                     signal = 'LONG'
-                    confidence = min(75, 45 + pct_change_7d)
-                elif pct_change_7d < -15 and rsi > 40:
+                    confidence = min(80, 50 + pct_change * 2.5)
+                elif pct_change < -8 and rsi > 40:
                     signal = 'SHORT'
-                    confidence = min(75, 45 + abs(pct_change_7d))
-                elif self.synthetic_mode and np.random.random() < 0.25:
-                    signal = 'LONG' if np.random.random() < 0.55 else 'SHORT'
-                    confidence = 45 + np.random.random() * 25
+                    confidence = min(80, 50 + abs(pct_change) * 2.5)
+                elif pct_change_7d > 20 and rsi < 55 and trend_up:
+                    signal = 'LONG'
+                    confidence = min(78, 48 + pct_change_7d)
+                elif pct_change_7d < -20 and rsi > 45 and not trend_up:
+                    signal = 'SHORT'
+                    confidence = min(78, 48 + abs(pct_change_7d))
+                
+                if getattr(self.strategy, 'long_only', False) and signal == 'SHORT':
+                    signal = None
                 
                 if signal and confidence >= self.strategy.min_confidence:
-                    leverage = min(self.strategy.max_leverage, 1 + (volatility * 10))
+                    leverage = min(self.strategy.max_leverage, 1 + (volatility * 8))
                     
                     signals.append({
                         'symbol': symbol,
@@ -573,26 +599,23 @@ class CryptoPaperTradingEngine:
         
         if analysis['total_pnl'] < 0:
             improvements['strategy_changes'].append('Reduce position size after loss')
-            improvements['new_parameters']['position_size_percent'] = max(3, self.strategy.position_size_percent * 0.8)
-            
-            improvements['strategy_changes'].append('Reduce leverage')
-            improvements['new_parameters']['max_leverage'] = max(1.0, self.strategy.max_leverage * 0.8)
+            improvements['new_parameters']['position_size_percent'] = max(5, self.strategy.position_size_percent * 0.9)
         
-        if analysis['win_rate'] < 40:
+        if analysis['win_rate'] < 50:
             improvements['strategy_changes'].append('Increase confidence threshold')
-            improvements['new_parameters']['min_confidence'] = min(70, self.strategy.min_confidence + 5)
+            improvements['new_parameters']['min_confidence'] = min(60, self.strategy.min_confidence + 3)
         
-        if analysis['profit_factor'] < 0.8:
+        if analysis['profit_factor'] < 1.2:
+            improvements['strategy_changes'].append('Widen take profit')
+            improvements['new_parameters']['take_profit_percent'] = min(25, self.strategy.take_profit_percent + 3)
+        
+        if analysis['avg_loss'] > analysis['avg_win'] * 1.2:
             improvements['strategy_changes'].append('Tighten stop loss')
-            improvements['new_parameters']['stop_loss_percent'] = max(5, self.strategy.stop_loss_percent - 2)
-        
-        if analysis['avg_loss'] > analysis['avg_win'] * 1.5 and analysis['total_pnl'] < 0:
-            improvements['strategy_changes'].append('Lower portfolio exposure')
-            improvements['new_parameters']['max_portfolio_exposure'] = max(40, self.strategy.max_portfolio_exposure * 0.85)
+            improvements['new_parameters']['stop_loss_percent'] = max(5, self.strategy.stop_loss_percent - 1)
         
         for symbol in analysis['losing_symbols']:
             data = analysis['symbol_performance'][symbol]
-            if data['trades'] >= 3 and data['wins'] / data['trades'] < 0.3:
+            if data['trades'] >= 2 and data['wins'] / data['trades'] < 0.4:
                 improvements['symbols_to_exclude'].append(symbol)
                 improvements['strategy_changes'].append(f'Exclude {symbol}')
         

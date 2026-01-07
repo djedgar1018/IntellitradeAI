@@ -909,26 +909,23 @@ class PaperTradingEngine:
         
         if analysis['total_pnl'] < 0:
             improvements['strategy_changes'].append('Reduce position size after loss')
-            improvements['new_parameters']['position_size_percent'] = max(3, self.strategy.position_size_percent * 0.8)
-            
-            improvements['strategy_changes'].append('Reduce max positions')
-            improvements['new_parameters']['max_positions'] = max(5, self.strategy.max_positions - 2)
+            improvements['new_parameters']['position_size_percent'] = max(5, self.strategy.position_size_percent * 0.85)
         
-        if analysis['win_rate'] < 40:
+        if analysis['win_rate'] < 45:
             improvements['strategy_changes'].append('Increase confidence threshold')
-            improvements['new_parameters']['min_confidence'] = min(75, self.strategy.min_confidence + 8)
+            improvements['new_parameters']['min_confidence'] = min(65, self.strategy.min_confidence + 5)
         
-        if analysis['profit_factor'] < 0.8:
+        if analysis['profit_factor'] < 1.0:
+            improvements['strategy_changes'].append('Widen take profit')
+            improvements['new_parameters']['take_profit_percent'] = min(50, self.strategy.take_profit_percent + 5)
+        
+        if analysis['avg_loss'] > analysis['avg_win'] * 1.3:
             improvements['strategy_changes'].append('Tighten stop loss')
-            improvements['new_parameters']['stop_loss_percent'] = max(10, self.strategy.stop_loss_percent - 3)
-        
-        if analysis['avg_loss'] > analysis['avg_win'] * 1.5 and analysis['total_pnl'] < 0:
-            improvements['strategy_changes'].append('Lower portfolio exposure')
-            improvements['new_parameters']['max_portfolio_exposure'] = max(30, getattr(self.strategy, 'max_portfolio_exposure', 60) * 0.85)
+            improvements['new_parameters']['stop_loss_percent'] = max(8, self.strategy.stop_loss_percent - 2)
         
         for symbol in analysis['losing_symbols']:
             data = analysis['symbol_performance'][symbol]
-            if data['trades'] >= 3 and data['wins'] / data['trades'] < 0.3:
+            if data['trades'] >= 2 and data['wins'] / data['trades'] < 0.35:
                 improvements['symbols_to_exclude'].append(symbol)
                 improvements['strategy_changes'].append(f'Exclude {symbol}')
         
