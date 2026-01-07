@@ -34,7 +34,19 @@ This AI-powered trading agent provides real-time predictive signals across 141 c
 - **Total Assets:** 259 (141 crypto + 108 stocks + 10 ETFs)
 - Detailed results: `model_results/december_2025_results.json`, `model_results/top10_crypto_results.json`
 
-## Recent Changes (December 2025)
+## Recent Changes (January 2026)
+- **Options Paper Trading Mode (Jan 7)**: Full paper trading simulator for options
+  - Target stocks: GOOGL, TSM, NVDA, AMD, META, GEV, HOOD, V, MU, WDC, PLTR, LLY (12 stocks)
+  - Starting balance: $100,000, Target: $200,000 (100% return goal)
+  - Max drawdown limit: 30% with automatic halt and improvement loop
+  - Black-Scholes Greeks calculator (delta, gamma, theta, vega)
+  - AI signal generation using RSI, SMA, and momentum indicators
+  - Database tables: paper_trading_sessions, paper_options_positions, paper_trades, paper_trading_snapshots
+  - Streamlit dashboard with real-time portfolio tracking and performance analytics
+  - Strategy optimization after drawdown breach (adjusts confidence, stop-loss, position sizing)
+  - Files: trading/paper_trading_engine.py, app/pages/paper_trading.py
+
+## Previous Changes (December 2025)
 - **Top 10 Crypto Validation (Dec 30)**: Volatility-aware training completed
   - BTC 92.4%, XRP 88.1%, DOGE 76.7%, ETH 71.4%, SOL 71.0%
   - Average improved from 54.7% to 72.9% (33% improvement)
