@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import List, Dict, Optional, Any
 from pathlib import Path
 
-from email_integration.gmail_client import GmailClient
+from email_integration.imap_client import IMAPClient
 from email_integration.newsletter_parser import NewsletterParser, EmailSignal
 
 
@@ -13,7 +13,7 @@ class EmailTradingService:
     """Service for fetching and analyzing trading signals from emails."""
     
     def __init__(self):
-        self.client = GmailClient()
+        self.client = IMAPClient()
         self.parser = NewsletterParser()
         self.cache_dir = Path("email_cache")
         self.cache_dir.mkdir(exist_ok=True)
