@@ -71,11 +71,12 @@ class TradingSession:
 @dataclass
 class StrategyConfig:
     version: int = 1
-    position_size_percent: float = 5.0
-    max_positions: int = 10
-    min_confidence: float = 55.0
-    stop_loss_percent: float = 25.0
-    take_profit_percent: float = 50.0
+    position_size_percent: float = 10.0
+    max_positions: int = 12
+    min_confidence: float = 45.0
+    stop_loss_percent: float = 15.0
+    take_profit_percent: float = 30.0
+    max_portfolio_exposure: float = 60.0
     max_days_to_expiry: int = 45
     min_days_to_expiry: int = 7
     delta_range_min: float = 0.30
@@ -149,26 +150,192 @@ class OptionsGreeksCalculator:
         return S * norm.pdf(d1) * math.sqrt(T) / 100
 
 
-class OptionsDataService:
-    """Fetch options data and calculate Greeks"""
+SYMBOL_METADATA = {
+    'GOOGL': {'price': 195.0, 'iv': 0.28, 'vol': 0.02},
+    'TSM': {'price': 205.0, 'iv': 0.32, 'vol': 0.025},
+    'NVDA': {'price': 140.0, 'iv': 0.45, 'vol': 0.035},
+    'AMD': {'price': 120.0, 'iv': 0.40, 'vol': 0.03},
+    'META': {'price': 610.0, 'iv': 0.30, 'vol': 0.022},
+    'GEV': {'price': 380.0, 'iv': 0.35, 'vol': 0.028},
+    'HOOD': {'price': 48.0, 'iv': 0.55, 'vol': 0.04},
+    'V': {'price': 320.0, 'iv': 0.22, 'vol': 0.015},
+    'MU': {'price': 105.0, 'iv': 0.38, 'vol': 0.028},
+    'WDC': {'price': 55.0, 'iv': 0.42, 'vol': 0.032},
+    'PLTR': {'price': 75.0, 'iv': 0.50, 'vol': 0.038},
+    'LLY': {'price': 780.0, 'iv': 0.25, 'vol': 0.018},
+}
+
+
+class SyntheticMarketSimulator:
+    """Generate realistic synthetic options data for offline training"""
     
-    def __init__(self):
+    def __init__(self, seed: int = None):
+        if seed:
+            np.random.seed(seed)
+        self.greeks_calc = OptionsGreeksCalculator()
+        self.risk_free_rate = 0.05
+        self.prices = {s: m['price'] for s, m in SYMBOL_METADATA.items()}
+        self.cycle = 0
+    
+    def advance_cycle(self):
+        """Simulate price movements for next cycle"""
+        self.cycle += 1
+        for symbol, meta in SYMBOL_METADATA.items():
+            vol = meta['vol']
+            drift = np.random.normal(0.0002, vol)
+            self.prices[symbol] *= (1 + drift)
+            self.prices[symbol] = max(1.0, self.prices[symbol])
+    
+    def get_stock_price(self, symbol: str) -> float:
+        return self.prices.get(symbol, 100.0)
+    
+    def generate_options_chain(self, symbol: str, target_dte: int = 30) -> Dict[str, Any]:
+        stock_price = self.get_stock_price(symbol)
+        meta = SYMBOL_METADATA.get(symbol, {'iv': 0.35})
+        base_iv = meta['iv']
+        
+        exp_date = (datetime.now() + timedelta(days=target_dte)).strftime('%Y-%m-%d')
+        T = target_dte / 365
+        
+        strikes = []
+        step = max(1, round(stock_price * 0.025))
+        for pct in range(-8, 9):
+            strike = round(stock_price + pct * step)
+            if strike > 0:
+                strikes.append(float(strike))
+        
+        calls = []
+        puts = []
+        
+        for strike in strikes:
+            moneyness = stock_price / strike
+            iv = base_iv * (1 + 0.1 * (1 - moneyness))
+            iv = max(0.15, min(0.80, iv))
+            
+            call_price = self.greeks_calc.call_price(stock_price, strike, T, self.risk_free_rate, iv)
+            put_price = self.greeks_calc.put_price(stock_price, strike, T, self.risk_free_rate, iv)
+            
+            spread = 0.02 + 0.01 * abs(1 - moneyness)
+            
+            calls.append({
+                'strike': strike,
+                'lastPrice': round(call_price, 2),
+                'bid': round(call_price * (1 - spread/2), 2),
+                'ask': round(call_price * (1 + spread/2), 2),
+                'volume': int(np.random.exponential(500)),
+                'openInterest': int(np.random.exponential(2000)),
+                'impliedVolatility': iv,
+                'delta': self.greeks_calc.delta(stock_price, strike, T, self.risk_free_rate, iv, 'call'),
+                'gamma': self.greeks_calc.gamma(stock_price, strike, T, self.risk_free_rate, iv),
+                'theta': self.greeks_calc.theta(stock_price, strike, T, self.risk_free_rate, iv, 'call'),
+                'vega': self.greeks_calc.vega(stock_price, strike, T, self.risk_free_rate, iv),
+                'inTheMoney': stock_price > strike
+            })
+            
+            puts.append({
+                'strike': strike,
+                'lastPrice': round(put_price, 2),
+                'bid': round(put_price * (1 - spread/2), 2),
+                'ask': round(put_price * (1 + spread/2), 2),
+                'volume': int(np.random.exponential(400)),
+                'openInterest': int(np.random.exponential(1500)),
+                'impliedVolatility': iv,
+                'delta': self.greeks_calc.delta(stock_price, strike, T, self.risk_free_rate, iv, 'put'),
+                'gamma': self.greeks_calc.gamma(stock_price, strike, T, self.risk_free_rate, iv),
+                'theta': self.greeks_calc.theta(stock_price, strike, T, self.risk_free_rate, iv, 'put'),
+                'vega': self.greeks_calc.vega(stock_price, strike, T, self.risk_free_rate, iv),
+                'inTheMoney': stock_price < strike
+            })
+        
+        return {
+            'calls': calls,
+            'puts': puts,
+            'expiration': exp_date,
+            'stock_price': stock_price
+        }
+
+
+class OptionsDataService:
+    """Fetch options data and calculate Greeks with persistent caching"""
+    
+    CACHE_DIR = "data/options_cache"
+    CACHE_TTL_MINUTES = 60
+    
+    def __init__(self, offline_mode: bool = False, synthetic_mode: bool = False):
         self.greeks_calc = OptionsGreeksCalculator()
         self.risk_free_rate = 0.05
         self.cache = {}
         self.cache_expiry = {}
+        self.offline_mode = offline_mode
+        self.synthetic_mode = synthetic_mode
+        self.synthetic_sim = SyntheticMarketSimulator() if synthetic_mode else None
+        self.last_api_call = 0
+        self.min_call_interval = 1.0
+        os.makedirs(self.CACHE_DIR, exist_ok=True)
+        self._load_persistent_cache()
+    
+    def _get_cache_path(self, symbol: str) -> str:
+        return os.path.join(self.CACHE_DIR, f"{symbol}.json")
+    
+    def _load_persistent_cache(self):
+        """Load cached data from disk"""
+        for filename in os.listdir(self.CACHE_DIR) if os.path.exists(self.CACHE_DIR) else []:
+            if filename.endswith('.json'):
+                symbol = filename[:-5]
+                try:
+                    with open(os.path.join(self.CACHE_DIR, filename), 'r') as f:
+                        data = json.load(f)
+                        cache_key = f"{symbol}_30"
+                        self.cache[cache_key] = data.get('data', {})
+                        cached_time = datetime.fromisoformat(data.get('timestamp', '2020-01-01'))
+                        self.cache_expiry[cache_key] = cached_time + timedelta(minutes=self.CACHE_TTL_MINUTES)
+                except Exception:
+                    pass
+    
+    def _save_to_disk(self, symbol: str, data: Dict):
+        """Persist cache to disk"""
+        try:
+            cache_path = self._get_cache_path(symbol)
+            with open(cache_path, 'w') as f:
+                json.dump({'data': data, 'timestamp': datetime.now().isoformat()}, f)
+        except Exception:
+            pass
+    
+    def _rate_limit(self):
+        """Simple rate limiting - 1 call per second"""
+        import time
+        elapsed = time.time() - self.last_api_call
+        if elapsed < self.min_call_interval:
+            time.sleep(self.min_call_interval - elapsed)
+        self.last_api_call = time.time()
     
     def get_stock_price(self, symbol: str) -> float:
+        if self.synthetic_mode and self.synthetic_sim:
+            return self.synthetic_sim.get_stock_price(symbol)
+        
+        cache_key = f"{symbol}_30"
+        if cache_key in self.cache and self.cache[cache_key].get('stock_price'):
+            return self.cache[cache_key]['stock_price']
+        
+        if self.offline_mode:
+            return SYMBOL_METADATA.get(symbol, {}).get('price', 100.0)
+        
         try:
+            self._rate_limit()
             ticker = yf.Ticker(symbol)
             data = ticker.history(period='1d')
             if not data.empty:
                 return float(data['Close'].iloc[-1])
         except Exception as e:
-            print(f"Error fetching price for {symbol}: {e}")
-        return 0.0
+            if '429' in str(e) or 'Rate' in str(e):
+                if cache_key in self.cache:
+                    return self.cache[cache_key].get('stock_price', 100.0)
+        return 100.0
     
     def get_options_chain(self, symbol: str, target_dte: int = 30) -> Dict[str, Any]:
+        if self.synthetic_mode and self.synthetic_sim:
+            return self.synthetic_sim.generate_options_chain(symbol, target_dte)
+        
         cache_key = f"{symbol}_{target_dte}"
         now = datetime.now()
         
@@ -176,16 +343,23 @@ class OptionsDataService:
             if now < self.cache_expiry[cache_key]:
                 return self.cache[cache_key]
         
+        if self.offline_mode and cache_key in self.cache:
+            return self.cache[cache_key]
+        
         try:
+            self._rate_limit()
             ticker = yf.Ticker(symbol)
             expirations = ticker.options
             
             if not expirations:
+                if cache_key in self.cache:
+                    return self.cache[cache_key]
                 return {'calls': [], 'puts': [], 'expiration': None, 'stock_price': 0}
             
             target_date = now + timedelta(days=target_dte)
             best_exp = min(expirations, key=lambda x: abs((datetime.strptime(x, '%Y-%m-%d') - target_date).days))
             
+            self._rate_limit()
             chain = ticker.option_chain(best_exp)
             stock_price = self.get_stock_price(symbol)
             
@@ -200,12 +374,14 @@ class OptionsDataService:
             }
             
             self.cache[cache_key] = result
-            self.cache_expiry[cache_key] = now + timedelta(minutes=5)
+            self.cache_expiry[cache_key] = now + timedelta(minutes=self.CACHE_TTL_MINUTES)
+            self._save_to_disk(symbol, result)
             
             return result
             
         except Exception as e:
-            print(f"Error fetching options chain for {symbol}: {e}")
+            if cache_key in self.cache:
+                return self.cache[cache_key]
             return {'calls': [], 'puts': [], 'expiration': None, 'stock_price': 0}
     
     def _process_options(self, options_df, stock_price: float, expiration: str, option_type: str) -> List[Dict]:
@@ -302,14 +478,37 @@ class PaperTradingEngine:
     
     def __init__(self, starting_balance: float = 100000.0, 
                  target_balance: float = 200000.0,
-                 max_drawdown: float = 30.0):
-        self.options_service = OptionsDataService()
+                 max_drawdown: float = 30.0,
+                 offline_mode: bool = False,
+                 synthetic_mode: bool = False):
+        self.synthetic_mode = synthetic_mode
+        self.options_service = OptionsDataService(offline_mode=offline_mode, synthetic_mode=synthetic_mode)
         self.strategy = StrategyConfig()
         self.session: Optional[TradingSession] = None
         self.starting_balance = starting_balance
         self.target_balance = target_balance
         self.max_drawdown = max_drawdown
         self.is_running = False
+        self.cache_warmed = False
+    
+    def warmup_cache(self) -> int:
+        """Pre-fetch data for all symbols to avoid rate limits during training"""
+        import time
+        fetched = 0
+        print("Warming up cache for all symbols...")
+        for symbol in self.strategy.allowed_symbols:
+            try:
+                chain = self.options_service.get_options_chain(symbol)
+                if chain.get('calls'):
+                    fetched += 1
+                    print(f"  Cached {symbol}: {len(chain['calls'])} calls, ${chain['stock_price']:.2f}")
+                time.sleep(2)
+            except Exception as e:
+                print(f"  Failed {symbol}: {e}")
+        self.cache_warmed = True
+        self.options_service.offline_mode = True
+        print(f"Cache warmup complete: {fetched}/{len(self.strategy.allowed_symbols)} symbols")
+        return fetched
         
     def start_session(self) -> TradingSession:
         session_id = str(uuid.uuid4())
@@ -334,20 +533,28 @@ class PaperTradingEngine:
         signals = []
         for symbol in self.strategy.allowed_symbols:
             try:
-                ticker = yf.Ticker(symbol)
-                hist = ticker.history(period='30d')
-                
-                if hist.empty or len(hist) < 14:
-                    continue
-                
-                close_prices = hist['Close'].values
-                delta = close_prices[-1] - close_prices[-5]
-                pct_change = (delta / close_prices[-5]) * 100 if close_prices[-5] > 0 else 0
-                
-                rsi = self._calculate_rsi(close_prices, 14)
-                
-                sma_20 = np.mean(close_prices[-20:]) if len(close_prices) >= 20 else np.mean(close_prices)
-                current_price = close_prices[-1]
+                if self.synthetic_mode and self.options_service.synthetic_sim:
+                    current_price = self.options_service.synthetic_sim.get_stock_price(symbol)
+                    base_price = SYMBOL_METADATA.get(symbol, {}).get('price', 100.0)
+                    pct_change = ((current_price - base_price) / base_price) * 100
+                    rsi = 50 + np.random.normal(0, 15)
+                    rsi = max(10, min(90, rsi))
+                    sma_20 = base_price * (1 + np.random.normal(0, 0.02))
+                else:
+                    ticker = yf.Ticker(symbol)
+                    hist = ticker.history(period='30d')
+                    
+                    if hist.empty or len(hist) < 14:
+                        continue
+                    
+                    close_prices = hist['Close'].values
+                    delta = close_prices[-1] - close_prices[-5]
+                    pct_change = (delta / close_prices[-5]) * 100 if close_prices[-5] > 0 else 0
+                    
+                    rsi = self._calculate_rsi(close_prices, 14)
+                    
+                    sma_20 = np.mean(close_prices[-20:]) if len(close_prices) >= 20 else np.mean(close_prices)
+                    current_price = close_prices[-1]
                 
                 signal = None
                 confidence = 0
@@ -364,6 +571,9 @@ class PaperTradingEngine:
                 elif pct_change < -3 and rsi > 40:
                     signal = 'SELL'
                     confidence = min(80, 55 + abs(pct_change) * 2)
+                elif self.synthetic_mode and np.random.random() < 0.3:
+                    signal = 'BUY' if np.random.random() < 0.5 else 'SELL'
+                    confidence = 40 + np.random.random() * 30
                 
                 if signal and confidence >= self.strategy.min_confidence:
                     signals.append({
@@ -406,6 +616,15 @@ class PaperTradingEngine:
         
         if len([p for p in self.session.positions if p.status == 'open']) >= self.strategy.max_positions:
             return {'success': False, 'reason': 'Max positions reached'}
+        
+        open_positions = [p for p in self.session.positions if p.status == 'open']
+        current_exposure = sum(p.entry_price * p.contracts * 100 for p in open_positions)
+        positions_value = sum(p.current_price * p.contracts * 100 for p in open_positions)
+        current_equity = self.session.current_balance + positions_value
+        exposure_pct = (current_exposure / current_equity) * 100 if current_equity > 0 else 100
+        max_exposure = getattr(self.strategy, 'max_portfolio_exposure', 60)
+        if exposure_pct >= max_exposure:
+            return {'success': False, 'reason': f'Portfolio exposure at {exposure_pct:.0f}%'}
         
         option = self.options_service.select_optimal_option(
             signal['symbol'], 
@@ -515,8 +734,14 @@ class PaperTradingEngine:
             if position.current_price <= 0:
                 position.current_price = position.entry_price
             
-            random_move = np.random.normal(0, 0.03)
-            position.current_price = position.current_price * (1 + random_move)
+            if self.synthetic_mode and self.options_service.synthetic_sim:
+                stock_price = self.options_service.synthetic_sim.get_stock_price(position.symbol)
+                base_price = SYMBOL_METADATA.get(position.symbol, {}).get('price', stock_price)
+                stock_move = (stock_price - base_price) / base_price
+                delta_impact = stock_move * abs(position.current_delta) * 0.5
+                theta_decay = position.current_theta / position.entry_price if position.entry_price > 0 else 0
+                price_change = delta_impact + theta_decay
+                position.current_price = position.entry_price * (1 + price_change)
             position.current_price = max(0.01, position.current_price)
             
             current_value = position.current_price * position.contracts * 100
@@ -682,25 +907,30 @@ class PaperTradingEngine:
             'version': self.strategy.version + 1
         }
         
-        if analysis['win_rate'] < 50:
-            improvements['strategy_changes'].append('Increase minimum confidence threshold')
-            improvements['new_parameters']['min_confidence'] = min(85, self.strategy.min_confidence + 5)
+        if analysis['total_pnl'] < 0:
+            improvements['strategy_changes'].append('Reduce position size after loss')
+            improvements['new_parameters']['position_size_percent'] = max(3, self.strategy.position_size_percent * 0.8)
+            
+            improvements['strategy_changes'].append('Reduce max positions')
+            improvements['new_parameters']['max_positions'] = max(5, self.strategy.max_positions - 2)
         
-        if analysis['profit_factor'] < 1.0:
+        if analysis['win_rate'] < 40:
+            improvements['strategy_changes'].append('Increase confidence threshold')
+            improvements['new_parameters']['min_confidence'] = min(75, self.strategy.min_confidence + 8)
+        
+        if analysis['profit_factor'] < 0.8:
             improvements['strategy_changes'].append('Tighten stop loss')
-            improvements['new_parameters']['stop_loss_percent'] = max(15, self.strategy.stop_loss_percent - 5)
-            improvements['strategy_changes'].append('Increase take profit target')
-            improvements['new_parameters']['take_profit_percent'] = self.strategy.take_profit_percent + 10
+            improvements['new_parameters']['stop_loss_percent'] = max(10, self.strategy.stop_loss_percent - 3)
         
-        if analysis['avg_loss'] > analysis['avg_win'] * 1.5:
-            improvements['strategy_changes'].append('Reduce position size')
-            improvements['new_parameters']['position_size_percent'] = max(2, self.strategy.position_size_percent - 1)
+        if analysis['avg_loss'] > analysis['avg_win'] * 1.5 and analysis['total_pnl'] < 0:
+            improvements['strategy_changes'].append('Lower portfolio exposure')
+            improvements['new_parameters']['max_portfolio_exposure'] = max(30, getattr(self.strategy, 'max_portfolio_exposure', 60) * 0.85)
         
         for symbol in analysis['losing_symbols']:
             data = analysis['symbol_performance'][symbol]
-            if data['trades'] >= 3 and data['wins'] / data['trades'] < 0.4:
+            if data['trades'] >= 3 and data['wins'] / data['trades'] < 0.3:
                 improvements['symbols_to_exclude'].append(symbol)
-                improvements['strategy_changes'].append(f'Exclude underperforming symbol: {symbol}')
+                improvements['strategy_changes'].append(f'Exclude {symbol}')
         
         return improvements
     
@@ -798,6 +1028,9 @@ class PaperTradingEngine:
     def run_trading_cycle(self) -> Dict[str, Any]:
         if not self.session or self.session.status != 'active':
             return {'error': 'No active session'}
+        
+        if self.synthetic_mode and self.options_service.synthetic_sim:
+            self.options_service.synthetic_sim.advance_cycle()
         
         status = self.check_session_status()
         if status['status'] != 'active':

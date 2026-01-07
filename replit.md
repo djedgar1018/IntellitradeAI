@@ -35,16 +35,30 @@ This AI-powered trading agent provides real-time predictive signals across 141 c
 - Detailed results: `model_results/december_2025_results.json`, `model_results/top10_crypto_results.json`
 
 ## Recent Changes (January 2026)
-- **Options Paper Trading Mode (Jan 7)**: Full paper trading simulator for options
+- **Enhanced Options Paper Trading Mode (Jan 7)**: Aggressive backend training simulator
   - Target stocks: GOOGL, TSM, NVDA, AMD, META, GEV, HOOD, V, MU, WDC, PLTR, LLY (12 stocks)
   - Starting balance: $100,000, Target: $200,000 (100% return goal)
   - Max drawdown limit: 30% with automatic halt and improvement loop
   - Black-Scholes Greeks calculator (delta, gamma, theta, vega)
   - AI signal generation using RSI, SMA, and momentum indicators
   - Database tables: paper_trading_sessions, paper_options_positions, paper_trades, paper_trading_snapshots
-  - Streamlit dashboard with real-time portfolio tracking and performance analytics
-  - Strategy optimization after drawdown breach (adjusts confidence, stop-loss, position sizing)
-  - Files: trading/paper_trading_engine.py, app/pages/paper_trading.py
+  - **Aggressive Strategy Settings**:
+    - Position size: 10% (increased from 5%)
+    - Confidence threshold: 45% (lowered from 55%)
+    - Max positions: 12, Max exposure: 60%
+    - Stop-loss: 15%, Take-profit: 30%
+  - **Synthetic Market Simulator**: Fully offline training mode with realistic options pricing
+    - Symbol metadata for 12 stocks with price/IV/volatility profiles
+    - Delta-driven option repricing (replaces random noise)
+    - Geometric Brownian motion price simulation
+  - **Enhanced Improvement Loop**: Progressive risk reduction after drawdowns
+    - Reduces position size by 20% per breach
+    - Raises confidence threshold, lowers max positions
+    - Excludes underperforming symbols
+  - **Persistent Caching**: 60-minute cache with disk persistence
+  - **Rate Limiting**: 1 request/second to Yahoo Finance with fallback to cached/synthetic data
+  - Backend-only feature for model improvement
+  - Files: trading/paper_trading_engine.py, data/options_cache/
 
 ## Previous Changes (December 2025)
 - **Top 10 Crypto Validation (Dec 30)**: Volatility-aware training completed
