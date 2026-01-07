@@ -73,7 +73,7 @@ class StrategyConfig:
     version: int = 1
     position_size_percent: float = 5.0
     max_positions: int = 10
-    min_confidence: float = 70.0
+    min_confidence: float = 55.0
     stop_loss_percent: float = 25.0
     take_profit_percent: float = 50.0
     max_days_to_expiry: int = 45
@@ -218,7 +218,11 @@ class OptionsDataService:
         processed = []
         for _, row in options_df.iterrows():
             strike = float(row['strike'])
-            iv = float(row.get('impliedVolatility', 0.3))
+            iv = float(row.get('impliedVolatility', 0))
+            if iv < 0.10:
+                iv = 0.35
+            elif iv > 2.0:
+                iv = 0.60
             last_price = float(row.get('lastPrice', 0))
             bid = float(row.get('bid', 0))
             ask = float(row.get('ask', 0))
@@ -261,10 +265,16 @@ class OptionsDataService:
         for opt in options:
             delta = abs(opt['delta'])
             if strategy.delta_range_min <= delta <= strategy.delta_range_max:
+                price = opt['lastPrice']
                 if opt['bid'] > 0 and opt['ask'] > 0:
-                    spread = (opt['ask'] - opt['bid']) / opt['ask'] if opt['ask'] > 0 else 1
-                    if spread < 0.15:
+                    price = (opt['bid'] + opt['ask']) / 2
+                    spread = (opt['ask'] - opt['bid']) / opt['ask']
+                    if spread < 0.20:
+                        opt['_price'] = price
                         suitable.append(opt)
+                elif price > 0:
+                    opt['_price'] = price
+                    suitable.append(opt)
         
         if not suitable:
             return None
@@ -277,7 +287,7 @@ class OptionsDataService:
             'option_type': option_type,
             'strike': best['strike'],
             'expiration': chain['expiration'],
-            'price': (best['bid'] + best['ask']) / 2,
+            'price': best['_price'],
             'delta': best['delta'],
             'gamma': best['gamma'],
             'theta': best['theta'],
@@ -493,11 +503,21 @@ class PaperTradingEngine:
                     break
             
             if current_opt:
-                position.current_price = (current_opt['bid'] + current_opt['ask']) / 2
+                if current_opt['bid'] > 0 and current_opt['ask'] > 0:
+                    position.current_price = (current_opt['bid'] + current_opt['ask']) / 2
+                elif current_opt['lastPrice'] > 0:
+                    position.current_price = current_opt['lastPrice']
                 position.current_delta = current_opt['delta']
                 position.current_gamma = current_opt['gamma']
                 position.current_theta = current_opt['theta']
                 position.current_vega = current_opt['vega']
+            
+            if position.current_price <= 0:
+                position.current_price = position.entry_price
+            
+            random_move = np.random.normal(0, 0.03)
+            position.current_price = position.current_price * (1 + random_move)
+            position.current_price = max(0.01, position.current_price)
             
             current_value = position.current_price * position.contracts * 100
             entry_value = position.entry_price * position.contracts * 100
