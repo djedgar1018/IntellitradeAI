@@ -9,13 +9,15 @@ import requests
 
 
 class DiscordClient:
-    """Client for reading Discord messages using Replit's OAuth connector."""
+    """Client for reading Discord messages using bot token or Replit's OAuth connector."""
     
-    def __init__(self):
+    def __init__(self, bot_token: str = None):
         self.base_url = "https://discord.com/api/v10"
         self._connection_settings = None
         self._access_token = None
         self._token_expires_at = None
+        self._bot_token = bot_token or os.environ.get('DISCORD_BOT_TOKEN')
+        self._use_bot = bool(self._bot_token)
         
     def _get_replit_token(self) -> str:
         """Get Replit identity token for connector API."""
@@ -71,10 +73,14 @@ class DiscordClient:
     
     def _make_request(self, endpoint: str, method: str = 'GET', params: Dict = None) -> Dict:
         """Make authenticated request to Discord API."""
-        token = self._refresh_access_token()
+        if self._use_bot:
+            auth_header = f'Bot {self._bot_token}'
+        else:
+            token = self._refresh_access_token()
+            auth_header = f'Bearer {token}'
         
         headers = {
-            'Authorization': f'Bearer {token}',
+            'Authorization': auth_header,
             'Content-Type': 'application/json'
         }
         
