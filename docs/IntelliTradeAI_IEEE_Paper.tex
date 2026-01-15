@@ -153,14 +153,23 @@ We employ a voting ensemble combining two complementary tree-based learners. Ran
 \mathcal{L}_{BCE} = -\frac{1}{N}\sum_{i=1}^{N}[y_i \log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)]
 \label{eq:bce}
 \end{equation}
-where $y_i$ is the true label and $\hat{y}_i$ is the predicted probability. We implement early stopping with patience of 10 rounds to prevent overfitting, monitoring validation loss during training. We apply SMOTE to address class imbalance in the training set, generating synthetic samples for the minority class. All experiments use random seed 42 for reproducibility.
+where $y_i$ is the true label and $\hat{y}_i$ is the predicted probability. We implement early stopping with patience of 10 rounds to prevent overfitting, monitoring validation loss during training. We apply SMOTE to address class imbalance in the training set, generating synthetic samples for the minority class. Importantly, SMOTE is applied only to training data after the temporal split, ensuring test data remains 100\% original. Our analysis of SMOTE-generated samples confirms they create true interpolations rather than copies: across all assets, 0\% of synthetic samples are exact duplicates, and over 93\% have meaningful Euclidean distance ($>$0.1 in normalized space) from original samples. All experiments use random seed 42 for reproducibility.
 
-\textbf{Evaluation Metrics:} We evaluate model performance using prediction accuracy as defined in Equation~\ref{eq:accuracy}:
+\textbf{Evaluation Metrics:} We evaluate model performance using accuracy, precision, recall, and F1 score. Accuracy is defined in Equation~\ref{eq:accuracy}:
 \begin{equation}
 \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
 \label{eq:accuracy}
 \end{equation}
-where TP, TN, FP, and FN represent true positives, true negatives, false positives, and false negatives respectively.
+where TP, TN, FP, and FN represent true positives, true negatives, false positives, and false negatives respectively. We also compute precision, recall, and F1 as defined in Equations~\ref{eq:precision}--\ref{eq:f1}:
+\begin{equation}
+\text{Precision} = \frac{TP}{TP + FP}, \quad \text{Recall} = \frac{TP}{TP + FN}
+\label{eq:precision}
+\end{equation}
+\begin{equation}
+\text{F1} = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+\label{eq:f1}
+\end{equation}
+These metrics are critical for imbalanced datasets where accuracy alone can be misleading.
 
 \textbf{Temporal Split Strategy:} We apply temporal 80/20 train/test splits to prevent data leakage (training: January 2019--December 2023; testing: January 2024--December 2024). We use five-fold time-series cross-validation with expanding window during hyperparameter tuning, ensuring no future data influences past predictions. The validation fold within training helps us select optimal hyperparameters before final evaluation on the held-out test set. All results reported in Section IV are computed on the test set.
 
@@ -234,6 +243,56 @@ where $R_p$ is the portfolio return, $R_f$ is the risk-free rate, and $\sigma_p$
 
 \section{Results}
 All results in this section are computed on the held-out test set (January 2024--December 2024) after model training is complete.
+
+\subsection{Comprehensive Performance Metrics}
+To address the limitations of accuracy-only evaluation, Table~\ref{tab:comprehensive} presents comprehensive metrics for representative assets. These results reveal important insights about class imbalance: while accuracy may appear high (e.g., AAPL at 68.09\%), some models predict only the majority class, resulting in 0\% precision/recall/F1 for the minority class. BTC-USD achieves the best minority class detection with 42.55\% F1 score.
+
+\begin{table}[htbp]
+\caption{Comprehensive Metrics (Test Set, RandomForest)}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Asset} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+\hline
+AAPL & 68.09\% & 0.00\% & 0.00\% & 0.00\% \\
+\hline
+MSFT & 80.85\% & 30.77\% & 18.18\% & 22.86\% \\
+\hline
+GOOGL & 47.52\% & 47.06\% & 10.96\% & 17.78\% \\
+\hline
+BTC-USD & 74.29\% & 55.56\% & 34.48\% & 42.55\% \\
+\hline
+ETH-USD & 61.90\% & 55.00\% & 26.19\% & 35.48\% \\
+\hline
+\end{tabular}
+\label{tab:comprehensive}
+\end{center}
+\end{table}
+
+\subsection{SMOTE Impact Analysis}
+We trained models with and without SMOTE to quantify its effect. Table~\ref{tab:smote} shows that SMOTE provides mixed, asset-dependent results: it generally improves F1 score (+5--7\%) by increasing recall, but may slightly reduce accuracy ($-$2 to $-$4\%) due to increased false positives.
+
+\begin{table}[htbp]
+\caption{SMOTE Impact on Performance (Average Across Models)}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Asset} & \textbf{$\Delta$Acc} & \textbf{$\Delta$Prec} & \textbf{$\Delta$Recall} & \textbf{$\Delta$F1} \\
+\hline
+AAPL & +0.95\% & $-$2.78\% & +2.96\% & +5.14\% \\
+\hline
+GOOGL & $-$1.89\% & $-$25.97\% & +5.94\% & +6.79\% \\
+\hline
+MSFT & +3.07\% & $-$0.92\% & $-$7.58\% & $-$1.39\% \\
+\hline
+BTC-USD & $-$3.81\% & $-$4.94\% & +9.77\% & +5.65\% \\
+\hline
+ETH-USD & $-$1.59\% & $-$5.24\% & +5.56\% & +5.03\% \\
+\hline
+\end{tabular}
+\label{tab:smote}
+\end{center}
+\end{table}
 
 \subsection{Test Set Performance on Stocks and ETFs}
 Fig.~\ref{fig:loss} presents the accuracy distribution for our ensemble models across asset classes. Random Forest achieved stable performance with minimal overfitting due to ensemble averaging. XGBoost demonstrated controlled convergence through early stopping.
@@ -408,6 +467,28 @@ We conduct ablation experiments on the test set to understand the contribution o
 
 \textbf{Feature Ablation:} We compute SHAP values across all test set predictions to identify the most influential features. RSI (14-period) shows the highest mean SHAP value (0.142), followed by MACD Histogram (0.128), Volume Change \% (0.115), 50-day SMA Cross (0.098), and Bollinger \%B (0.087). Momentum indicators contribute most significantly, aligning with financial literature on technical analysis effectiveness for short-term prediction.
 
+Table~\ref{tab:feature_ablation} presents asset-specific feature ablation results, showing that feature importance varies by asset type. MSFT shows the strongest dependence on momentum features (+7.09\% accuracy drop when removed), while ETH-USD depends more on trend features (+1.43\% drop). These findings suggest that optimal feature selection should be asset-specific.
+
+\begin{table}[htbp]
+\caption{Feature Ablation: Accuracy Drop When Removing Feature Groups}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Asset} & \textbf{w/o Mom.} & \textbf{w/o Trend} & \textbf{w/o Vol.} & \textbf{w/o Volume} \\
+\hline
+AAPL & 0.00\% & $-$0.71\% & 0.00\% & 0.00\% \\
+\hline
+MSFT & \textbf{+7.09\%} & $-$2.84\% & $-$0.71\% & 0.00\% \\
+\hline
+BTC-USD & +0.95\% & +0.95\% & +0.95\% & $-$2.38\% \\
+\hline
+ETH-USD & +0.48\% & \textbf{+1.43\%} & $-$0.95\% & 0.00\% \\
+\hline
+\end{tabular}
+\label{tab:feature_ablation}
+\end{center}
+\end{table}
+
 \section{System Features}
 
 \subsection{Interactive Dashboard}
@@ -429,6 +510,8 @@ Our system includes comprehensive SEC/FINRA-compliant risk disclosures, e-signat
 
 \subsection{Key Findings}
 Our tri-signal fusion approach demonstrates that combining multiple signal sources improves prediction reliability compared to single-source methods. Stock prediction significantly outperforms cryptocurrency prediction, attributable to lower volatility and longer trading history. Our volatility-aware training approach substantially improved cryptocurrency accuracy, with Bitcoin achieving performance comparable to top-performing stocks.
+
+Regarding SMOTE, our with/without analysis reveals asset-dependent effects: while SMOTE generally improves recall and F1 (+5--7\%) by better detecting minority class signals, it may reduce precision and accuracy for some assets (e.g., MSFT shows $-$1.39\% F1 with SMOTE). This suggests SMOTE benefits should be evaluated per-asset rather than applied uniformly.
 
 \subsection{Limitations}
 Our system faces several limitations: (1) Cryptocurrency prediction accuracy varies significantly by asset volatility class; (2) News sentiment analysis depends on available Really Simple Syndication (RSS) feeds and may miss private information; (3) Pattern recognition requires sufficient historical data for reliable detection; (4) Our 259-asset coverage, while comprehensive, excludes many smaller cryptocurrencies.
