@@ -38,7 +38,7 @@
 - BTC-USD has the best F1 (42.55%) and recall (34.48%)
 - Accuracy alone is misleading for imbalanced datasets
 
-**Code Reference:** `professor_feedback_analysis.py`, function `comprehensive_metrics_report()`
+**Code Reference:** `analysis_script.py`, function `comprehensive_metrics_report()`
 
 ---
 
@@ -175,7 +175,7 @@ X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
 
 | File | Description |
 |------|-------------|
-| `professor_feedback_analysis.py` | Analysis script |
+| `analysis_script.py` | Analysis script |
 | `feedback_analysis_results/feedback_analysis_20260115_050515.json` | Raw results (source of all tables above) |
 | `docs/Professor_Feedback_Response_Jan2026.md` | This document |
 
