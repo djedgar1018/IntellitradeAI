@@ -896,7 +896,19 @@ def render_ai_analysis_page():
                 unified_signal = st.session_state.ai_analysis_results[symbol]
                 
                 with st.expander(f"📈 {symbol} Analysis", expanded=True):
-                    rec = unified_signal['recommendation']
+                    # Get recommendation with fallback for different signal formats
+                    if 'recommendation' in unified_signal:
+                        rec = unified_signal['recommendation']
+                    else:
+                        # Build recommendation from available signal data
+                        signal = unified_signal.get('final_signal', 'HOLD')
+                        confidence = unified_signal.get('confidence', 50)
+                        rec = {
+                            'decision': signal,
+                            'action_explanation': unified_signal.get('reasoning', f'{signal} signal based on AI analysis'),
+                            'confidence_level': f"{confidence}%",
+                            'risk_level': 'Medium' if confidence < 70 else 'Low' if confidence >= 80 else 'Medium-High'
+                        }
                     
                     # Display unified recommendation prominently
                     decision_colors = {
