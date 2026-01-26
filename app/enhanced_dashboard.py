@@ -152,7 +152,7 @@ except ImportError as e:
         def __init__(self):
             # Realistic base prices for common assets (as of Jan 2026)
             self.base_prices = {
-                'BTC-USD': 95000, 'ETH-USD': 3200, 'XRP-USD': 2.40, 'SOL-USD': 180,
+                'BTC-USD': 95000, 'ETH-USD': 3200, 'XRP-USD': 1.90, 'SOL-USD': 180,
                 'DOGE-USD': 0.32, 'ADA-USD': 0.95, 'AVAX-USD': 38, 'DOT-USD': 7.5,
                 'MATIC-USD': 0.55, 'LINK-USD': 22, 'SHIB-USD': 0.000022, 'BNB-USD': 650,
                 'TRX-USD': 0.24, 'ATOM-USD': 9.5, 'UNI-USD': 14, 'NEAR-USD': 5.2,
