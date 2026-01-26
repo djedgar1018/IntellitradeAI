@@ -150,23 +150,44 @@ except ImportError as e:
     # Create dummy data module
     class DataIngestion:
         def __init__(self):
-            pass
+            # Realistic base prices for common assets (as of Jan 2026)
+            self.base_prices = {
+                'BTC-USD': 95000, 'ETH-USD': 3200, 'XRP-USD': 2.40, 'SOL-USD': 180,
+                'DOGE-USD': 0.32, 'ADA-USD': 0.95, 'AVAX-USD': 38, 'DOT-USD': 7.5,
+                'MATIC-USD': 0.55, 'LINK-USD': 22, 'SHIB-USD': 0.000022, 'BNB-USD': 650,
+                'TRX-USD': 0.24, 'ATOM-USD': 9.5, 'UNI-USD': 14, 'NEAR-USD': 5.2,
+                'AAPL': 185, 'GOOGL': 175, 'MSFT': 420, 'AMZN': 195, 'NVDA': 135,
+                'TSLA': 250, 'META': 580, 'AMD': 125, 'INTC': 22, 'NFLX': 920,
+                'SPY': 590, 'QQQ': 515, 'DIA': 430, 'IWM': 225, 'VTI': 280
+            }
             
         def fetch_mixed_data(self, crypto_symbols=None, stock_symbols=None, period='1y', interval='1d'):
-            # Return sample data
-            dates = pd.date_range(start='2024-01-01', periods=100, freq='D')
-            sample_data = pd.DataFrame({
-                'open': np.random.randn(100).cumsum() + 100,
-                'high': np.random.randn(100).cumsum() + 102,
-                'low': np.random.randn(100).cumsum() + 98,
-                'close': np.random.randn(100).cumsum() + 100,
-                'volume': np.random.randint(1000, 10000, 100)
-            }, index=dates)
-            
+            dates = pd.date_range(end=pd.Timestamp.today(), periods=100, freq='D')
             result = {}
             all_symbols = (crypto_symbols or []) + (stock_symbols or [])
+            
             for symbol in all_symbols:
-                result[symbol] = sample_data
+                # Get realistic base price for the asset
+                base_price = self.base_prices.get(symbol, 100)
+                volatility = 0.02 if base_price > 1000 else 0.03 if base_price > 100 else 0.04
+                
+                # Generate realistic price movements
+                returns = np.random.normal(0.0002, volatility, 100)
+                close_prices = base_price * np.cumprod(1 + returns)
+                
+                # Create proper OHLC with realistic relationships
+                daily_range = close_prices * np.random.uniform(0.005, 0.025, 100)
+                open_prices = close_prices * (1 + np.random.uniform(-0.01, 0.01, 100))
+                high_prices = np.maximum(open_prices, close_prices) + daily_range * 0.5
+                low_prices = np.minimum(open_prices, close_prices) - daily_range * 0.5
+                
+                result[symbol] = pd.DataFrame({
+                    'open': open_prices,
+                    'high': high_prices,
+                    'low': low_prices,
+                    'close': close_prices,
+                    'volume': np.random.randint(1000000, 50000000, 100)
+                }, index=dates)
             return result
         
         def fetch_crypto_data(self, symbols, period='1y', interval='1d'):
