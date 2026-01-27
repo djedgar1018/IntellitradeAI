@@ -1,0 +1,259 @@
+{
+  "version": 20,
+  "strategy": "EXTREME_GROWTH",
+  "period_days": 30,
+  "run_date": "2026-01-27T19:03:43.611825",
+  "baseline_v19": 115.72,
+  "targets": {
+    "5x": "+400%",
+    "10x": "+900%",
+    "20x": "+1900%"
+  },
+  "results": {
+    "5x": {
+      "target": 5,
+      "target_return": 400,
+      "achieved_return": 365.33,
+      "achieved_growth": 4.65,
+      "hit_target": "False",
+      "details": {
+        "stocks": {
+          "account": "STOCKS 5X",
+          "asset_class": "stocks",
+          "initial": 10000,
+          "final": 46548.55,
+          "return_pct": 365.49,
+          "growth_x": 4.65,
+          "trades": 88,
+          "wins": 52,
+          "losses": 36,
+          "win_rate": 59.09,
+          "profit_factor": 15.55,
+          "max_dd": 6.35,
+          "best_streak": 13
+        },
+        "crypto": {
+          "account": "CRYPTO 5X",
+          "asset_class": "crypto",
+          "initial": 10000,
+          "final": 78457.26,
+          "return_pct": 684.57,
+          "growth_x": 7.85,
+          "trades": 98,
+          "wins": 68,
+          "losses": 30,
+          "win_rate": 69.39,
+          "profit_factor": 3.44,
+          "max_dd": 28.09,
+          "best_streak": 15
+        },
+        "forex": {
+          "account": "FOREX 5X",
+          "asset_class": "forex",
+          "initial": 10000,
+          "final": 23986.67,
+          "return_pct": 139.87,
+          "growth_x": 2.4,
+          "trades": 75,
+          "wins": 50,
+          "losses": 25,
+          "win_rate": 66.67,
+          "profit_factor": 34.22,
+          "max_dd": 0,
+          "best_streak": 8
+        },
+        "options": {
+          "account": "OPTIONS 5X",
+          "asset_class": "options",
+          "initial": 10000,
+          "final": 37139.8,
+          "return_pct": 271.4,
+          "growth_x": 3.71,
+          "trades": 86,
+          "wins": 76,
+          "losses": 10,
+          "win_rate": 88.37,
+          "profit_factor": 23.99,
+          "max_dd": 6.73,
+          "best_streak": 27
+        }
+      }
+    },
+    "10x": {
+      "target": 10,
+      "target_return": 900,
+      "achieved_return": 332.07,
+      "achieved_growth": 4.32,
+      "hit_target": "False",
+      "details": {
+        "stocks": {
+          "account": "STOCKS 10X",
+          "asset_class": "stocks",
+          "initial": 10000,
+          "final": 69702.82,
+          "return_pct": 597.03,
+          "growth_x": 6.97,
+          "trades": 95,
+          "wins": 59,
+          "losses": 36,
+          "win_rate": 62.11,
+          "profit_factor": 10.17,
+          "max_dd": 20.61,
+          "best_streak": 8
+        },
+        "crypto": {
+          "account": "CRYPTO 10X",
+          "asset_class": "crypto",
+          "initial": 10000,
+          "final": 56487.6,
+          "return_pct": 464.88,
+          "growth_x": 5.65,
+          "trades": 97,
+          "wins": 59,
+          "losses": 38,
+          "win_rate": 60.82,
+          "profit_factor": 1.76,
+          "max_dd": 34.31,
+          "best_streak": 9
+        },
+        "forex": {
+          "account": "FOREX 10X",
+          "asset_class": "forex",
+          "initial": 10000,
+          "final": 39432.42,
+          "return_pct": 294.32,
+          "growth_x": 3.94,
+          "trades": 69,
+          "wins": 52,
+          "losses": 17,
+          "win_rate": 75.36,
+          "profit_factor": 192.61,
+          "max_dd": 3.87,
+          "best_streak": 17
+        },
+        "options": {
+          "account": "OPTIONS 10X",
+          "asset_class": "options",
+          "initial": 10000,
+          "final": 7206.13,
+          "return_pct": -27.94,
+          "growth_x": 0.72,
+          "trades": 70,
+          "wins": 50,
+          "losses": 20,
+          "win_rate": 71.43,
+          "profit_factor": 0.73,
+          "max_dd": 42.35,
+          "best_streak": 7
+        }
+      }
+    },
+    "20x": {
+      "target": 20,
+      "target_return": 1900,
+      "achieved_return": 442.24,
+      "achieved_growth": 5.42,
+      "hit_target": "False",
+      "details": {
+        "stocks": {
+          "account": "STOCKS 20X",
+          "asset_class": "stocks",
+          "initial": 10000,
+          "final": 94650.87,
+          "return_pct": 846.51,
+          "growth_x": 9.47,
+          "trades": 95,
+          "wins": 63,
+          "losses": 32,
+          "win_rate": 66.32,
+          "profit_factor": 26.4,
+          "max_dd": 12.01,
+          "best_streak": 16
+        },
+        "crypto": {
+          "account": "CRYPTO 20X",
+          "asset_class": "crypto",
+          "initial": 10000,
+          "final": 9522.29,
+          "return_pct": -4.78,
+          "growth_x": 0.95,
+          "trades": 78,
+          "wins": 42,
+          "losses": 36,
+          "win_rate": 53.85,
+          "profit_factor": 0.99,
+          "max_dd": 73.34,
+          "best_streak": 6
+        },
+        "forex": {
+          "account": "FOREX 20X",
+          "asset_class": "forex",
+          "initial": 10000,
+          "final": 110634.92,
+          "return_pct": 1006.35,
+          "growth_x": 11.06,
+          "trades": 81,
+          "wins": 52,
+          "losses": 29,
+          "win_rate": 64.2,
+          "profit_factor": 36.72,
+          "max_dd": 6.45,
+          "best_streak": 8
+        },
+        "options": {
+          "account": "OPTIONS 20X",
+          "asset_class": "options",
+          "initial": 10000,
+          "final": 2087.22,
+          "return_pct": -79.13,
+          "growth_x": 0.21,
+          "trades": 57,
+          "wins": 41,
+          "losses": 16,
+          "win_rate": 71.93,
+          "profit_factor": 0.26,
+          "max_dd": 83.32,
+          "best_streak": 6
+        }
+      }
+    }
+  },
+  "required_changes": {
+    "5x": {
+      "volatility": "9-12% daily range",
+      "risk_per_trade": "25-30% of equity",
+      "max_positions": "10-12 concurrent",
+      "stop_loss": "0.3-0.6% tight stops",
+      "profit_target": "6-12% targets",
+      "hold_period": "1-2 days max",
+      "streak_mult": "Up to 2.5x on 6+ wins",
+      "pyramid": "Add 70% on 0.2%+ profit",
+      "compounding": "Every winning trade"
+    },
+    "10x": {
+      "volatility": "12-15% daily range",
+      "risk_per_trade": "35-45% of equity",
+      "max_positions": "12-15 concurrent",
+      "stop_loss": "0.2-0.4% ultra-tight",
+      "profit_target": "10-15% aggressive",
+      "hold_period": "1 day max",
+      "streak_mult": "Up to 3.0x on 8+ wins",
+      "pyramid": "Add 80% on any profit",
+      "compounding": "Immediate reinvestment",
+      "leverage": "2-3x margin required"
+    },
+    "20x": {
+      "volatility": "15-20% daily range",
+      "risk_per_trade": "50-70% of equity",
+      "max_positions": "15-20 concurrent",
+      "stop_loss": "0.15-0.3% micro-stops",
+      "profit_target": "15-25% moonshot",
+      "hold_period": "Intraday preferred",
+      "streak_mult": "Up to 4.0x on 10+ wins",
+      "pyramid": "Maximum leverage pyramiding",
+      "compounding": "Real-time compounding",
+      "leverage": "4-5x margin or options",
+      "market_condition": "Perfect bull market required"
+    }
+  }
+}
