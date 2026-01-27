@@ -357,7 +357,7 @@ def render_explanation_box(title: str, content: str, box_type: str = "info"):
 def render_step_progress(current_step: int, total_steps: int, step_labels: List[str]):
     """Render a step progress indicator"""
     
-    steps_html = ""
+    step_parts = []
     for i, label in enumerate(step_labels):
         step_num = i + 1
         is_completed = step_num < current_step
@@ -373,20 +373,18 @@ def render_step_progress(current_step: int, total_steps: int, step_labels: List[
         if is_completed:
             line_class += " completed"
         
-        steps_html += f"""
-        <div class="{circle_class}">{step_num if not is_completed else "✓"}</div>
-        """
+        content = "✓" if is_completed else str(step_num)
+        step_parts.append(f'<div class="{circle_class}">{content}</div>')
+        
         if i < len(step_labels) - 1:
-            steps_html += f'<div class="{line_class}"></div>'
+            step_parts.append(f'<div class="{line_class}"></div>')
     
-    st.markdown(f"""
-    <div class="step-indicator">
-        {steps_html}
-    </div>
-    <div style="display: flex; justify-content: space-between; padding: 0 20px;">
-        {"".join(f'<span style="font-size: 0.85em; color: rgba(255,255,255,0.7);">{label}</span>' for label in step_labels)}
-    </div>
-    """, unsafe_allow_html=True)
+    steps_html = "".join(step_parts)
+    labels_html = "".join([f'<span style="font-size: 0.75em; color: rgba(255,255,255,0.7); text-align: center; flex: 1;">{label}</span>' for label in step_labels])
+    
+    full_html = f'''<div class="step-indicator">{steps_html}</div><div style="display: flex; justify-content: space-between; padding: 0 10px; margin-top: 8px;">{labels_html}</div>'''
+    
+    st.markdown(full_html, unsafe_allow_html=True)
 
 
 def render_metric_row(metrics: List[Dict[str, Any]]):
