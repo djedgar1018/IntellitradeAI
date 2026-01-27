@@ -2,6 +2,7 @@
 Trade Executor for IntelliTradeAI
 Handles trade execution for stocks, options, and cryptocurrencies
 Supports both paper trading and alert-based execution
+V22 Optimized for 5x/10x Growth Targets
 """
 
 from typing import Dict, Optional, Any
@@ -9,6 +10,12 @@ from datetime import datetime
 import uuid
 from database.db_manager import DatabaseManager
 from trading.mode_manager import TradingMode, TradingModeManager
+
+try:
+    from trading.v22_scalp_config import V22ScalpConfig
+    V22_AVAILABLE = True
+except ImportError:
+    V22_AVAILABLE = False
 
 
 class TradeExecutor:
@@ -139,8 +146,14 @@ class TradeExecutor:
                 else:
                     new_cash = cash_balance
             
-            stop_loss_percent = execution_params.get('stop_loss_percent', 5.0)
-            take_profit_percent = execution_params.get('take_profit_percent', 15.0)
+            # V22: Get asset-specific stop/target from config
+            if V22_AVAILABLE:
+                v22_config = V22ScalpConfig.get_config(asset_type if asset_type != 'stock' else 'stocks')
+                stop_loss_percent = execution_params.get('stop_loss_percent', v22_config.stop_loss_pct)
+                take_profit_percent = execution_params.get('take_profit_percent', v22_config.target_pct)
+            else:
+                stop_loss_percent = execution_params.get('stop_loss_percent', 0.35)
+                take_profit_percent = execution_params.get('take_profit_percent', 9.5)
             
             if action == 'BUY':
                 stop_loss_price = current_price * (1 - stop_loss_percent / 100)

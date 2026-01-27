@@ -1,11 +1,18 @@
 """
 Trading Mode Manager for IntelliTradeAI
 Handles Manual and Automatic trading modes with different execution logic
+V22 Optimized for 5x/10x Growth Targets
 """
 
 from enum import Enum
 from typing import Dict, Optional, Any
 from datetime import datetime
+
+try:
+    from trading.v22_scalp_config import V22ScalpConfig
+    V22_AVAILABLE = True
+except ImportError:
+    V22_AVAILABLE = False
 
 
 class TradingMode(Enum):
@@ -20,21 +27,36 @@ class TradingModeManager:
     
     Manual Mode: AI provides recommendations, user makes final decision
     Automatic Mode: AI executes trades autonomously based on signals
+    
+    V22 Integration: Uses optimized scalping parameters for 5x/10x growth
     """
     
     def __init__(self, initial_mode: TradingMode = TradingMode.MANUAL):
         self.current_mode = initial_mode
         self.mode_history = [(datetime.now(), initial_mode)]
+        self.strategy_version = 22
+        
+        # V22 Optimized Auto Trading Config
         self.auto_trade_config = {
             'enabled': False,
-            'min_confidence': 70.0,
-            'max_position_size_percent': 10.0,
-            'stop_loss_percent': 5.0,
-            'take_profit_percent': 15.0,
-            'max_daily_trades': 10,
-            'max_loss_per_day': 500.0,
-            'allowed_asset_types': ['stock', 'crypto', 'option'],
-            'enabled_assets': []
+            'strategy_version': 22,
+            'min_confidence': 45.0,  # V22: Lower threshold for more trades
+            'max_position_size_percent': 85.0,  # V22: Aggressive positioning
+            'stop_loss_percent': 0.35,  # V22: Tight scalping stops
+            'take_profit_percent': 9.5,  # V22: Quick profit targets
+            'max_daily_trades': 50,  # V22: High frequency scalping
+            'max_loss_per_day': 1500.0,  # V22: Higher risk tolerance
+            'allowed_asset_types': ['stock', 'crypto', 'option', 'forex'],
+            'enabled_assets': [],
+            # V22 Scalping additions
+            'max_hold_days': 2,
+            'pyramid_enabled': True,
+            'pyramid_max': 5,
+            'pyramid_add_percent': 75.0,
+            'win_streak_multiplier_enabled': True,
+            'win_streak_multiplier_max': 3.8,
+            'volatility_bonus_enabled': True,
+            'volatility_bonus_max': 1.35
         }
         self.manual_trade_config = {
             'require_confirmation': True,
@@ -45,8 +67,70 @@ class TradingModeManager:
         self.asset_modes = {
             'crypto': 'manual',
             'stocks': 'manual',
-            'options': 'manual'
+            'options': 'manual',
+            'forex': 'manual'
         }
+        # Track win streaks for position sizing
+        self.win_streak = 0
+        self.consecutive_losses = 0
+        self.best_streak = 0
+    
+    def get_v22_config(self, asset_class: str = 'stocks') -> Dict[str, Any]:
+        """Get V22 asset-specific configuration"""
+        if V22_AVAILABLE:
+            config = V22ScalpConfig.get_config(asset_class)
+            return {
+                'max_positions': config.max_positions,
+                'base_risk_pct': config.base_risk_pct,
+                'max_position_pct': config.max_position_pct,
+                'stop_loss_pct': config.stop_loss_pct,
+                'target_pct': config.target_pct,
+                'max_hold_days': config.max_hold_days
+            }
+        # Fallback defaults
+        return {
+            'max_positions': 8,
+            'base_risk_pct': 28.0,
+            'max_position_pct': 82.0,
+            'stop_loss_pct': 0.35,
+            'target_pct': 9.5,
+            'max_hold_days': 2
+        }
+    
+    def calculate_position_multiplier(self, signal_strength: int, atr_pct: float = 0) -> float:
+        """Calculate position size multiplier based on V22 rules"""
+        if V22_AVAILABLE:
+            return V22ScalpConfig.calculate_position_multiplier(
+                signal_strength, self.win_streak, atr_pct, self.consecutive_losses
+            )
+        # Fallback calculation
+        mult = 1.0
+        if signal_strength >= 80:
+            mult = 4.8
+        elif signal_strength >= 60:
+            mult = 3.4
+        elif signal_strength >= 40:
+            mult = 2.3
+        
+        if self.win_streak >= 10:
+            mult *= 2.8
+        elif self.win_streak >= 6:
+            mult *= 2.0
+        elif self.win_streak >= 3:
+            mult *= 1.32
+        
+        return mult
+    
+    def record_trade_result(self, won: bool):
+        """Record trade result for win streak tracking"""
+        if won:
+            self.win_streak += 1
+            self.consecutive_losses = 0
+            if self.win_streak > self.best_streak:
+                self.best_streak = self.win_streak
+        else:
+            self.win_streak = 0
+            self.consecutive_losses += 1
     
     def switch_mode(self, new_mode: TradingMode) -> Dict[str, Any]:
         """
