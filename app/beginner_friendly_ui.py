@@ -258,17 +258,29 @@ def render_quick_start_cards():
             st.rerun()
     
     with col2:
-        st.markdown("""
-        <div class="action-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
-            <div class="big-icon">🤖</div>
-            <h4>Start Auto-Trading</h4>
-            <p style="font-size: 0.9em; opacity: 0.9;">Let AI trade for you</p>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button("Start Trading", key="quick_auto", use_container_width=True):
-            st.session_state['show_trading_wizard'] = True
-            st.session_state['wizard_step'] = 1
-            st.rerun()
+        if st.session_state.get('auto_trading_active', False):
+            st.markdown("""
+            <div class="action-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <div class="big-icon">📡</div>
+                <h4>Live Trades</h4>
+                <p style="font-size: 0.9em; opacity: 0.9;">See your AI trades</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("View Trades", key="quick_auto", use_container_width=True):
+                st.session_state['quick_nav'] = '📡 Live Trades'
+                st.rerun()
+        else:
+            st.markdown("""
+            <div class="action-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <div class="big-icon">🤖</div>
+                <h4>Start Auto-Trading</h4>
+                <p style="font-size: 0.9em; opacity: 0.9;">Let AI trade for you</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if st.button("Start Trading", key="quick_auto", use_container_width=True):
+                st.session_state['show_trading_wizard'] = True
+                st.session_state['wizard_step'] = 1
+                st.rerun()
     
     with col3:
         st.markdown("""

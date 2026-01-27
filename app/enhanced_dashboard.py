@@ -454,7 +454,7 @@ def render_main_dashboard():
         st.markdown(f"### 👋 Hello, {st.session_state.user['username']}")
         st.markdown("---")
         
-        nav_options = ["🏠 Dashboard Overview", "🎓 Learning Hub", "📋 My Trading Plan", "💼 Stock Portfolio", "₿ Crypto Portfolio", 
+        nav_options = ["🏠 Dashboard Overview", "📡 Live Trades", "🎓 Learning Hub", "📋 My Trading Plan", "💼 Stock Portfolio", "₿ Crypto Portfolio", 
              "🔍 AI Analysis", "📊 Pattern Recognition", "💳 Wallet Management",
              "📈 Options Analysis", "📝 Trade Log & P&L", "😊 Market Sentiment",
              "📧 Email Subscriptions", "⚖️ Legal & Compliance", 
@@ -504,6 +504,8 @@ def render_main_dashboard():
     # Main content based on selected page
     if page == "🏠 Dashboard Overview":
         render_dashboard_overview()
+    elif page == "📡 Live Trades":
+        render_live_trades_page()
     elif page == "🎓 Learning Hub":
         try:
             from app.beginner_learning import render_learning_hub
@@ -568,6 +570,10 @@ def render_dashboard_overview():
             <div style="font-size: 24px;">✅</div>
         </div>
         """, unsafe_allow_html=True)
+        
+        if st.button("📡 View Live Trades", type="primary", use_container_width=True):
+            st.session_state['quick_nav'] = '📡 Live Trades'
+            st.rerun()
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -1880,6 +1886,66 @@ def render_options_analysis_page():
     except Exception as e:
         st.error(f"Error loading Options Analysis: {str(e)}")
         st.info("Options Analysis module is being set up. Please check back soon!")
+
+
+def render_live_trades_page():
+    """Render Live Trade Feed showing real-time trade notifications"""
+    try:
+        from app.live_trade_feed import render_live_trade_feed, inject_trade_feed_styles
+        inject_trade_feed_styles()
+        render_live_trade_feed()
+    except ImportError as e:
+        st.title("📡 Live Trade Feed")
+        st.error(f"Live trade feed module loading: {e}")
+        
+        if st.session_state.get('auto_trading_active', False):
+            st.success("🤖 Auto-trading is ACTIVE")
+            st.info("Your trades will appear here as they are executed by the AI.")
+            
+            if 'demo_trades' not in st.session_state:
+                st.session_state['demo_trades'] = []
+            
+            if st.button("🔄 Simulate Demo Trade"):
+                import random
+                symbols = ['AAPL', 'NVDA', 'TSLA', 'BTC-USD', 'ETH-USD', 'MSFT', 'GOOGL']
+                actions = ['BUY', 'SELL']
+                
+                demo_trade = {
+                    'symbol': random.choice(symbols),
+                    'action': random.choice(actions),
+                    'entry_price': round(random.uniform(50, 500), 2),
+                    'quantity': random.randint(1, 10),
+                    'confidence': random.randint(65, 95),
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'status': 'open'
+                }
+                demo_trade['stop_loss'] = round(demo_trade['entry_price'] * 0.97, 2)
+                demo_trade['take_profit'] = round(demo_trade['entry_price'] * 1.06, 2)
+                demo_trade['current_price'] = demo_trade['entry_price']
+                
+                st.session_state['demo_trades'].insert(0, demo_trade)
+                st.rerun()
+            
+            if st.session_state.get('demo_trades'):
+                st.markdown("### Recent Trades")
+                for trade in st.session_state['demo_trades'][:5]:
+                    color = "🟢" if trade['action'] == 'BUY' else "🔴"
+                    st.markdown(f"""
+                    **{color} {trade['action']} {trade['symbol']}** @ ${trade['entry_price']:,.2f}
+                    - Quantity: {trade['quantity']}
+                    - Stop Loss: ${trade['stop_loss']:,.2f}
+                    - Take Profit: ${trade['take_profit']:,.2f}
+                    - Confidence: {trade['confidence']}%
+                    - Time: {trade['timestamp']}
+                    ---
+                    """)
+        else:
+            st.warning("⚠️ Auto-trading is not active")
+            st.info("Start auto-trading to see live trade notifications here.")
+            if st.button("🤖 Start Auto-Trading", type="primary"):
+                st.session_state['show_trading_wizard'] = True
+                st.session_state['wizard_step'] = 1
+                st.rerun()
 
 
 def render_trade_log_page():
