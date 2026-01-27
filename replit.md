@@ -62,6 +62,16 @@ File-based storage is used for caching cryptocurrency and stock data in JSON for
 
 ## Recent Changes (January 2026)
 
+- **Live Trade Feed (Jan 27)**: Real-time trade visibility system
+  - Visual trade cards showing each trade as it executes
+  - AI reasoning explanation for every trade decision
+  - Entry price, current price, unrealized P&L displayed in real-time
+  - Stop loss and take profit levels with risk/reward amounts
+  - Confidence percentage and timestamp for each trade
+  - Ability to close positions and track realized P&L
+  - Demo trade simulation for testing the interface
+  - Files: app/live_trade_feed.py, app/enhanced_dashboard.py
+
 - **Beginner-Friendly UI Overhaul (Jan 27)**: Major user experience improvements
   - Modern design system with gradient cards, visual icons, and clear hierarchy
   - 7-step Automated Trading Wizard for any timeframe and asset class
