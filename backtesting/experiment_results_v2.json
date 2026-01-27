@@ -1,0 +1,72 @@
+{
+  "version": 2,
+  "run_date": "2026-01-27T00:41:06.323075",
+  "period": {
+    "start": "2025-07-31T00:40:59.078151",
+    "end": "2026-01-27T00:40:59.078151"
+  },
+  "improvements": [
+    "Trend filter (SMA 50)",
+    "Higher confidence thresholds",
+    "Dynamic ATR-based stops",
+    "Trailing stops",
+    "Volume confirmation",
+    "Reduced trading frequency"
+  ],
+  "results": {
+    "stocks": {
+      "account_name": "Stocks Portfolio V2",
+      "asset_class": "stocks",
+      "initial_balance": 10000,
+      "final_equity": 10025.6,
+      "total_return_pct": 0.26,
+      "total_trades": 17,
+      "winning_trades": 6,
+      "losing_trades": 11,
+      "win_rate_pct": 35.29,
+      "avg_win": 103.39,
+      "avg_loss": 54.07,
+      "profit_factor": 1.04,
+      "max_drawdown_pct": 3.12,
+      "sharpe_ratio": 0.12,
+      "failed": false,
+      "fail_reason": null
+    },
+    "crypto": {
+      "account_name": "Crypto Portfolio V2",
+      "asset_class": "crypto",
+      "initial_balance": 10000,
+      "final_equity": 9332.28,
+      "total_return_pct": -6.68,
+      "total_trades": 11,
+      "winning_trades": 1,
+      "losing_trades": 10,
+      "win_rate_pct": 9.09,
+      "avg_win": 36.17,
+      "avg_loss": 70.39,
+      "profit_factor": 0.05,
+      "max_drawdown_pct": 7.51,
+      "sharpe_ratio": -2.81,
+      "failed": false,
+      "fail_reason": null
+    },
+    "forex": {
+      "account_name": "Forex Portfolio V2",
+      "asset_class": "forex",
+      "initial_balance": 10000,
+      "final_equity": 10096.07,
+      "total_return_pct": 0.96,
+      "total_trades": 4,
+      "winning_trades": 3,
+      "losing_trades": 1,
+      "win_rate_pct": 75.0,
+      "avg_win": 44.61,
+      "avg_loss": 37.74,
+      "profit_factor": 3.55,
+      "max_drawdown_pct": 0.42,
+      "sharpe_ratio": 1.47,
+      "failed": false,
+      "fail_reason": null
+    }
+  }
+}
