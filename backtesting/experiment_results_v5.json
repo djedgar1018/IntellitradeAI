@@ -1,0 +1,100 @@
+{
+  "version": 5,
+  "run_date": "2026-01-27T16:51:41.907459",
+  "results": {
+    "stocks": {
+      "account": "Stocks V5",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 9877.3,
+      "return_pct": -1.23,
+      "trades": 36,
+      "wins": 20,
+      "losses": 16,
+      "win_rate": 55.56,
+      "avg_win": 30.96,
+      "avg_loss": 46.37,
+      "profit_factor": 0.83,
+      "max_dd": 5.01,
+      "sharpe": -0.44
+    },
+    "crypto": {
+      "account": "Crypto V5",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 9618.55,
+      "return_pct": -3.81,
+      "trades": 27,
+      "wins": 18,
+      "losses": 9,
+      "win_rate": 66.67,
+      "avg_win": 15.8,
+      "avg_loss": 73.98,
+      "profit_factor": 0.43,
+      "max_dd": 5.54,
+      "sharpe": -1.4
+    },
+    "forex": {
+      "account": "Forex V5",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 9986.31,
+      "return_pct": -0.14,
+      "trades": 21,
+      "wins": 10,
+      "losses": 11,
+      "win_rate": 47.62,
+      "avg_win": 11.43,
+      "avg_loss": 11.63,
+      "profit_factor": 0.89,
+      "max_dd": 0.73,
+      "sharpe": -0.22
+    },
+    "options": {
+      "account": "Options V5",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 10688.61,
+      "return_pct": 6.89,
+      "trades": 12,
+      "wins": 11,
+      "losses": 1,
+      "win_rate": 91.67,
+      "avg_win": 66.21,
+      "avg_loss": 39.74,
+      "profit_factor": 18.33,
+      "max_dd": 0.92,
+      "sharpe": 3.9
+    }
+  },
+  "profitable_count": 1,
+  "goal_met": false,
+  "comparison": {
+    "v1": {
+      "return": -13.93,
+      "trades": 202,
+      "assets": 3
+    },
+    "v2": {
+      "return": -1.82,
+      "trades": 32,
+      "assets": 3
+    },
+    "v3": {
+      "return": -26.66,
+      "trades": 28,
+      "assets": 3
+    },
+    "v4": {
+      "return": -0.04,
+      "trades": 2,
+      "assets": 4
+    },
+    "v5": {
+      "return": 0.43,
+      "trades": 96,
+      "assets": 4,
+      "profitable": 1
+    }
+  }
+}

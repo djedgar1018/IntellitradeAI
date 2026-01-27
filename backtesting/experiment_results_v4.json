@@ -1,0 +1,98 @@
+{
+  "version": 4,
+  "run_date": "2026-01-27T16:47:48.251760",
+  "results": {
+    "stocks": {
+      "account": "Stocks V4",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 9982.88,
+      "return_pct": -0.17,
+      "trades": 2,
+      "wins": 1,
+      "losses": 1,
+      "win_rate": 50.0,
+      "avg_win": 13.5,
+      "avg_loss": 30.63,
+      "profit_factor": 0.44,
+      "max_dd": 1.54,
+      "sharpe": -0.09,
+      "failed": false
+    },
+    "crypto": {
+      "account": "Crypto V4",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 10000,
+      "return_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0,
+      "avg_win": 0,
+      "avg_loss": 0,
+      "profit_factor": "N/A",
+      "max_dd": 0,
+      "sharpe": 0,
+      "failed": false
+    },
+    "forex": {
+      "account": "Forex V4",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 10000,
+      "return_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0,
+      "avg_win": 0,
+      "avg_loss": 0,
+      "profit_factor": "N/A",
+      "max_dd": 0,
+      "sharpe": 0,
+      "failed": false
+    },
+    "options": {
+      "account": "Options V4",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 10000,
+      "return_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0,
+      "avg_win": 0,
+      "avg_loss": 0,
+      "profit_factor": "N/A",
+      "max_dd": 0,
+      "sharpe": 0,
+      "failed": false
+    }
+  },
+  "profitable_count": 0,
+  "comparison": {
+    "v1": {
+      "return": -13.93,
+      "trades": 202,
+      "assets": 3
+    },
+    "v2": {
+      "return": -1.82,
+      "trades": 32,
+      "assets": 3
+    },
+    "v3": {
+      "return": -26.66,
+      "trades": 28,
+      "assets": 3
+    },
+    "v4": {
+      "return": -0.04,
+      "trades": 2,
+      "assets": 4,
+      "profitable": 0
+    }
+  }
+}

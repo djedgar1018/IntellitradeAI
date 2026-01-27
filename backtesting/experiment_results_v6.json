@@ -1,0 +1,92 @@
+{
+  "version": 6,
+  "run_date": "2026-01-27T16:53:38.970446",
+  "results": {
+    "stocks": {
+      "account": "Stocks V6",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 10062.48,
+      "return_pct": 0.62,
+      "trades": 28,
+      "wins": 18,
+      "losses": 10,
+      "win_rate": 64.29,
+      "avg_win": 24.33,
+      "avg_loss": 37.54,
+      "profit_factor": 1.17,
+      "max_dd": 2.16,
+      "sharpe": 0.35
+    },
+    "crypto": {
+      "account": "Crypto V6",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 9956.75,
+      "return_pct": -0.43,
+      "trades": 9,
+      "wins": 5,
+      "losses": 4,
+      "win_rate": 55.56,
+      "avg_win": 32.47,
+      "avg_loss": 51.4,
+      "profit_factor": 0.79,
+      "max_dd": 1.25,
+      "sharpe": -0.33
+    },
+    "forex": {
+      "account": "Forex V6",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 10205.08,
+      "return_pct": 2.05,
+      "trades": 23,
+      "wins": 14,
+      "losses": 9,
+      "win_rate": 60.87,
+      "avg_win": 20.87,
+      "avg_loss": 9.67,
+      "profit_factor": 3.36,
+      "max_dd": 0.42,
+      "sharpe": 2.6
+    },
+    "options": {
+      "account": "Options V6",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 10818.29,
+      "return_pct": 8.18,
+      "trades": 16,
+      "wins": 14,
+      "losses": 2,
+      "win_rate": 87.5,
+      "avg_win": 59.23,
+      "avg_loss": 5.49,
+      "profit_factor": 75.53,
+      "max_dd": 1.06,
+      "sharpe": 4.39
+    }
+  },
+  "profitable_count": 3,
+  "goal_met": false,
+  "comparison": {
+    "v1": {
+      "return": -13.93,
+      "trades": 202
+    },
+    "v2": {
+      "return": -1.82,
+      "trades": 32
+    },
+    "v5": {
+      "return": 0.43,
+      "trades": 96,
+      "profitable": 1
+    },
+    "v6": {
+      "return": 2.61,
+      "trades": 76,
+      "profitable": 3
+    }
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "version": 8,
+  "run_date": "2026-01-27T16:57:43.877786",
+  "results": {
+    "stocks": {
+      "account": "Stocks V8",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 9892.08,
+      "return_pct": -1.08,
+      "trades": 28,
+      "wins": 18,
+      "losses": 10,
+      "win_rate": 64.29,
+      "avg_win": 16.91,
+      "avg_loss": 41.23,
+      "profit_factor": 0.74,
+      "max_dd": 2.77,
+      "sharpe": -0.6
+    },
+    "crypto": {
+      "account": "Crypto V8",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 10000,
+      "return_pct": 0.0,
+      "trades": 0,
+      "wins": 0,
+      "losses": 0,
+      "win_rate": 0,
+      "avg_win": 0,
+      "avg_loss": 0,
+      "profit_factor": "N/A",
+      "max_dd": 0,
+      "sharpe": 0
+    },
+    "forex": {
+      "account": "Forex V8",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 10209.91,
+      "return_pct": 2.1,
+      "trades": 19,
+      "wins": 13,
+      "losses": 6,
+      "win_rate": 68.42,
+      "avg_win": 21.29,
+      "avg_loss": 11.15,
+      "profit_factor": 4.14,
+      "max_dd": 0.48,
+      "sharpe": 2.85
+    },
+    "options": {
+      "account": "Options V8",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 11048.05,
+      "return_pct": 10.48,
+      "trades": 16,
+      "wins": 16,
+      "losses": 0,
+      "win_rate": 100.0,
+      "avg_win": 65.5,
+      "avg_loss": 0,
+      "profit_factor": "N/A",
+      "max_dd": 0.62,
+      "sharpe": 5.46
+    }
+  },
+  "profitable_count": 3,
+  "goal_met": false,
+  "comparison": {
+    "v1": {
+      "return": -13.93,
+      "trades": 202,
+      "profitable": 0
+    },
+    "v2": {
+      "return": -1.82,
+      "trades": 32,
+      "profitable": 1
+    },
+    "v6": {
+      "return": 2.61,
+      "trades": 76,
+      "profitable": 3
+    },
+    "v7": {
+      "return": 2.85,
+      "trades": 71,
+      "profitable": 2
+    },
+    "v8": {
+      "return": 2.88,
+      "trades": 63,
+      "profitable": 3
+    }
+  }
+}

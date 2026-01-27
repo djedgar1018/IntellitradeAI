@@ -1,0 +1,97 @@
+{
+  "version": 7,
+  "run_date": "2026-01-27T16:55:43.794828",
+  "results": {
+    "stocks": {
+      "account": "Stocks V7",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 9903.18,
+      "return_pct": -0.97,
+      "trades": 29,
+      "wins": 16,
+      "losses": 13,
+      "win_rate": 55.17,
+      "avg_win": 18.83,
+      "avg_loss": 30.62,
+      "profit_factor": 0.76,
+      "max_dd": 2.83,
+      "sharpe": -0.59
+    },
+    "crypto": {
+      "account": "Crypto V7",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 9934.98,
+      "return_pct": -0.65,
+      "trades": 4,
+      "wins": 2,
+      "losses": 2,
+      "win_rate": 50.0,
+      "avg_win": 5.68,
+      "avg_loss": 38.19,
+      "profit_factor": 0.15,
+      "max_dd": 0.67,
+      "sharpe": -1.95
+    },
+    "forex": {
+      "account": "Forex V7",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 10131.25,
+      "return_pct": 1.31,
+      "trades": 22,
+      "wins": 14,
+      "losses": 8,
+      "win_rate": 63.64,
+      "avg_win": 14.87,
+      "avg_loss": 9.61,
+      "profit_factor": 2.71,
+      "max_dd": 0.48,
+      "sharpe": 2.25
+    },
+    "options": {
+      "account": "Options V7",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 11170.76,
+      "return_pct": 11.71,
+      "trades": 16,
+      "wins": 16,
+      "losses": 0,
+      "win_rate": 100.0,
+      "avg_win": 73.17,
+      "avg_loss": 0,
+      "profit_factor": "N/A",
+      "max_dd": 0.79,
+      "sharpe": 6.04
+    }
+  },
+  "profitable_count": 2,
+  "goal_met": false,
+  "comparison": {
+    "v1": {
+      "return": -13.93,
+      "trades": 202
+    },
+    "v2": {
+      "return": -1.82,
+      "trades": 32
+    },
+    "v5": {
+      "return": 0.43,
+      "trades": 96,
+      "profitable": 1
+    },
+    "v6": {
+      "return": 2.61,
+      "trades": 76,
+      "profitable": 3
+    },
+    "v7": {
+      "return": 2.85,
+      "trades": 71,
+      "profitable": 2
+    }
+  }
+}
