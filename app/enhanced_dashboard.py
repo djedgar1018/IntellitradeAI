@@ -1045,12 +1045,16 @@ def render_ai_analysis_page():
                         
                         st.markdown("---")
                     
-                    # Key metrics
+                    # Key metrics - get price from asset_data if not in unified_signal
+                    current_price = unified_signal.get('current_price', asset_data['close'].iloc[-1] if len(asset_data) > 0 else 0)
+                    price_change = unified_signal.get('price_change_24h', 
+                        ((asset_data['close'].iloc[-1] / asset_data['close'].iloc[-2] - 1) * 100) if len(asset_data) > 1 else 0)
+                    
                     col_m1, col_m2, col_m3 = st.columns(3)
                     with col_m1:
-                        st.metric("Current Price", f"${unified_signal['current_price']:,.2f}")
+                        st.metric("Current Price", f"${current_price:,.2f}")
                     with col_m2:
-                        st.metric("24h Change", f"{unified_signal['price_change_24h']:+.1f}%")
+                        st.metric("24h Change", f"{price_change:+.1f}%")
                     with col_m3:
                         st.metric("AI Confidence", rec['confidence_level'])
                     
