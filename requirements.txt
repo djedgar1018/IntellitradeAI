@@ -62,3 +62,4 @@ docx
 imbalanced-learn
 lightgbm
 numpy<2
+yfinance

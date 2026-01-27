@@ -1,0 +1,68 @@
+{
+  "run_date": "2026-01-27T00:31:18.187467",
+  "period": {
+    "start": "2025-07-31T00:31:13.070989",
+    "end": "2026-01-27T00:31:13.070989"
+  },
+  "results": {
+    "stocks": {
+      "account_name": "Stocks Portfolio",
+      "initial_balance": 10000,
+      "final_equity": 10071.12,
+      "total_return_pct": 0.71,
+      "total_trades": 62,
+      "winning_trades": 25,
+      "losing_trades": 37,
+      "win_rate_pct": 40.32,
+      "avg_win": 45.6,
+      "avg_loss": 28.89,
+      "profit_factor": 1.07,
+      "max_drawdown_pct": 3.78,
+      "sharpe_ratio": 0.23,
+      "failed": false,
+      "fail_reason": null
+    },
+    "crypto": {
+      "account_name": "Crypto Portfolio",
+      "initial_balance": 10000,
+      "final_equity": 7772.72,
+      "total_return_pct": -22.27,
+      "total_trades": 104,
+      "winning_trades": 22,
+      "losing_trades": 82,
+      "win_rate_pct": 21.15,
+      "avg_win": 64.96,
+      "avg_loss": 44.59,
+      "profit_factor": 0.39,
+      "max_drawdown_pct": 24.24,
+      "sharpe_ratio": -2.08,
+      "failed": false,
+      "fail_reason": null
+    },
+    "forex": {
+      "account_name": "Forex Portfolio",
+      "initial_balance": 10000,
+      "final_equity": 7977.73,
+      "total_return_pct": -20.22,
+      "total_trades": 36,
+      "winning_trades": 16,
+      "losing_trades": 20,
+      "win_rate_pct": 44.44,
+      "avg_win": 7.19,
+      "avg_loss": 8.82,
+      "profit_factor": 0.65,
+      "max_drawdown_pct": 20.26,
+      "sharpe_ratio": -1.46,
+      "failed": false,
+      "fail_reason": null
+    }
+  },
+  "improvements": [
+    "- STOCKS: Low win rate (40.3%) - Consider tightening entry criteria",
+    "- STOCKS: Low profit factor (1.07) - Improve risk/reward ratio",
+    "- CRYPTO: Low win rate (21.1%) - Consider tightening entry criteria",
+    "- CRYPTO: Low profit factor (0.39) - Improve risk/reward ratio",
+    "- FOREX: Low win rate (44.4%) - Consider tightening entry criteria",
+    "- FOREX: Low profit factor (0.65) - Improve risk/reward ratio"
+  ]
+}
