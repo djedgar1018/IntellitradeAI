@@ -340,6 +340,7 @@ def create_advanced_chart(
         row_heights=row_heights
     )
     
+    # TradingView-style candlestick chart
     fig.add_trace(
         go.Candlestick(
             x=df.index,
@@ -348,10 +349,32 @@ def create_advanced_chart(
             low=df['low'],
             close=df['close'],
             name=symbol,
-            increasing_line_color='#16C784',
-            decreasing_line_color='#EA3943'
+            increasing_line_color='#26A69A',
+            increasing_fillcolor='#26A69A',
+            decreasing_line_color='#EF5350',
+            decreasing_fillcolor='#EF5350',
+            line=dict(width=1)
         ),
         row=1, col=1
+    )
+    
+    # Add current price annotation on right side (TradingView style)
+    current_price = df['close'].iloc[-1]
+    fig.add_annotation(
+        x=df.index[-1],
+        y=current_price,
+        text=f"${current_price:,.2f}",
+        showarrow=True,
+        arrowhead=0,
+        arrowcolor='#2962FF',
+        ax=40,
+        ay=0,
+        font=dict(size=11, color='white'),
+        bgcolor='#2962FF',
+        bordercolor='#2962FF',
+        borderwidth=1,
+        borderpad=4,
+        xanchor='left'
     )
     
     if toolbar_config.get('show_sma_20') and 'sma_20' in df.columns:
@@ -548,15 +571,22 @@ def create_advanced_chart(
     current_row = 2
     
     if toolbar_config.get('show_volume') and 'volume' in df.columns:
-        colors = ['#16C784' if df['close'].iloc[i] >= df['open'].iloc[i] else '#EA3943' 
+        # TradingView-style volume colors (teal/red matching candles)
+        colors = ['#26A69A' if df['close'].iloc[i] >= df['open'].iloc[i] else '#EF5350' 
                   for i in range(len(df))]
         
         fig.add_trace(
             go.Bar(x=df.index, y=df['volume'], name='Volume',
-                   marker_color=colors, opacity=0.7),
+                   marker_color=colors, opacity=0.5),
             row=current_row, col=1
         )
-        fig.update_yaxes(title_text="Volume", row=current_row, col=1)
+        fig.update_yaxes(
+            title_text="Volume", 
+            row=current_row, col=1,
+            gridcolor='#363c4e',
+            tickfont=dict(color='#787b86', size=10),
+            title_font=dict(color='#787b86', size=11)
+        )
         current_row += 1
     
     if indicator_config and indicator_config.get('show_rsi') and 'rsi' in df.columns:
@@ -590,23 +620,50 @@ def create_advanced_chart(
             )
             fig.update_yaxes(title_text="MACD", row=current_row, col=1)
     
+    # TradingView-style dark theme
     fig.update_layout(
-        title=f"{symbol} - Advanced Technical Analysis",
-        height=600 + (num_rows - 1) * 100,
+        title=dict(
+            text=f"{symbol} - Advanced Technical Analysis",
+            font=dict(size=16, color='#d1d4dc'),
+            x=0.01
+        ),
+        height=650 + (num_rows - 1) * 120,
         xaxis_rangeslider_visible=False,
         template="plotly_dark",
+        paper_bgcolor='#131722',
+        plot_bgcolor='#131722',
         legend=dict(
             orientation="h",
             yanchor="bottom",
             y=1.02,
             xanchor="right",
-            x=1
+            x=1,
+            font=dict(size=11, color='#d1d4dc'),
+            bgcolor='rgba(0,0,0,0)'
         ),
-        margin=dict(l=50, r=50, t=80, b=50)
+        margin=dict(l=60, r=80, t=60, b=40),
+        hovermode='x unified'
     )
     
-    fig.update_yaxes(title_text="Price ($)", row=1, col=1)
-    fig.update_xaxes(title_text="Date", row=num_rows, col=1)
+    # Style axes like TradingView
+    fig.update_yaxes(
+        title_text="Price ($)", 
+        row=1, col=1,
+        gridcolor='#363c4e',
+        gridwidth=0.5,
+        tickfont=dict(color='#787b86', size=10),
+        title_font=dict(color='#787b86', size=11),
+        side='right',
+        showgrid=True
+    )
+    fig.update_xaxes(
+        title_text="", 
+        row=num_rows, col=1,
+        gridcolor='#363c4e',
+        gridwidth=0.5,
+        tickfont=dict(color='#787b86', size=10),
+        showgrid=True
+    )
     
     fig.update_xaxes(
         rangeselector=dict(

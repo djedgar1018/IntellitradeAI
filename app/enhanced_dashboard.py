@@ -203,11 +203,30 @@ except ImportError as e:
         return {
             "symbol": symbol,
             "articles": [
-                {"title": f"Demo news for {symbol}", "sentiment": "positive", "source": "Demo"},
-                {"title": f"Market update on {symbol}", "sentiment": "neutral", "source": "Demo"}
+                {
+                    "title": f"{symbol} sees increased institutional interest amid market rally",
+                    "source": "Demo News",
+                    "published_date": "2026-01-26",
+                    "url": "#",
+                    "catalyst": {"types": ["institutional", "market_trend"], "is_high_impact": True},
+                    "sentiment": {"sentiment": "bullish", "score": 0.75}
+                },
+                {
+                    "title": f"Technical analysis: {symbol} approaching key resistance level",
+                    "source": "Demo Analysis", 
+                    "published_date": "2026-01-25",
+                    "url": "#",
+                    "catalyst": {"types": ["technical"], "is_high_impact": False},
+                    "sentiment": {"sentiment": "neutral", "score": 0.5}
+                }
             ],
-            "overall_sentiment": "neutral",
-            "sentiment_score": 0.5
+            "overall_sentiment": "bullish",
+            "sentiment_score": 0.65,
+            "recommendation": {
+                "recommendation": "BUY",
+                "confidence": 0.70,
+                "rationale": f"News sentiment for {symbol} is predominantly positive with institutional interest driving momentum."
+            }
         }
 
 # Page configuration
