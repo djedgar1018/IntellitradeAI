@@ -1,0 +1,74 @@
+{
+  "version": 3,
+  "run_date": "2026-01-27T00:48:20.427465",
+  "results": {
+    "stocks": {
+      "account_name": "Stocks V3",
+      "initial_balance": 10000,
+      "final_equity": 6269.33,
+      "total_return_pct": -37.31,
+      "total_trades": 15,
+      "winning_trades": 6,
+      "losing_trades": 9,
+      "win_rate_pct": 40.0,
+      "avg_win": 74.89,
+      "avg_loss": 62.52,
+      "profit_factor": 0.8,
+      "max_drawdown_pct": 38.76,
+      "sharpe_ratio": -2.98,
+      "failed": false,
+      "fail_reason": null
+    },
+    "crypto": {
+      "account_name": "Crypto V3",
+      "initial_balance": 10000,
+      "final_equity": 8099.51,
+      "total_return_pct": -19.0,
+      "total_trades": 10,
+      "winning_trades": 3,
+      "losing_trades": 7,
+      "win_rate_pct": 30.0,
+      "avg_win": 43.74,
+      "avg_loss": 80.14,
+      "profit_factor": 0.23,
+      "max_drawdown_pct": 19.2,
+      "sharpe_ratio": -1.65,
+      "failed": false,
+      "fail_reason": null
+    },
+    "forex": {
+      "account_name": "Forex V3",
+      "initial_balance": 10000,
+      "final_equity": 7632.16,
+      "total_return_pct": -23.68,
+      "total_trades": 3,
+      "winning_trades": 2,
+      "losing_trades": 1,
+      "win_rate_pct": 66.67,
+      "avg_win": 65.03,
+      "avg_loss": 45.85,
+      "profit_factor": 2.84,
+      "max_drawdown_pct": 24.17,
+      "sharpe_ratio": -1.88,
+      "failed": false,
+      "fail_reason": null
+    }
+  },
+  "comparison": {
+    "v1": {
+      "return": -13.93,
+      "trades": 202,
+      "win_rate": 31.2
+    },
+    "v2": {
+      "return": -1.82,
+      "trades": 32,
+      "win_rate": 31.2
+    },
+    "v3": {
+      "return": -26.66,
+      "trades": 28,
+      "win_rate": 39.3
+    }
+  }
+}
