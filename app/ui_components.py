@@ -489,3 +489,195 @@ def render_options_recommendation_popup(
     
     if recommendation and 'reason' in recommendation:
         st.info(f"💡 **AI Analysis:** {recommendation['reason']}")
+
+
+def render_goal_based_optimizer():
+    """
+    Render the goal-based trading optimizer UI.
+    Allows users to set their trading goals and get optimized parameters.
+    """
+    st.markdown("### 🎯 Goal-Based Strategy Optimizer")
+    st.markdown("Tell us your trading goals and we'll optimize parameters to help you achieve them.")
+    
+    try:
+        from trading.goal_based_optimizer import GoalBasedOptimizer
+        optimizer = GoalBasedOptimizer()
+    except ImportError:
+        st.error("Goal-based optimizer module not available")
+        return
+    
+    goal_col1, goal_col2 = st.columns(2)
+    
+    with goal_col1:
+        target_multiple = st.selectbox(
+            "Target Growth",
+            options=[1.5, 2.0, 3.0, 5.0, 10.0, 20.0],
+            format_func=lambda x: f"{x}x ({(x-1)*100:.0f}% return)",
+            index=2,
+            help="Your target portfolio growth"
+        )
+        
+        timeframe = st.selectbox(
+            "Timeframe",
+            options=[7, 14, 30, 60, 90],
+            format_func=lambda x: f"{x} days" if x < 30 else f"{x//30} month{'s' if x > 30 else ''}",
+            index=2,
+            help="Time to achieve your goal"
+        )
+        
+        starting_capital = st.number_input(
+            "Starting Capital ($)",
+            min_value=100.0,
+            max_value=10000000.0,
+            value=10000.0,
+            step=1000.0
+        )
+    
+    with goal_col2:
+        asset_class = st.selectbox(
+            "Asset Class",
+            options=['all', 'stocks', 'crypto', 'forex', 'options'],
+            format_func=lambda x: x.title() if x != 'all' else 'All Assets',
+            index=0,
+            help="Focus on specific asset class or trade all"
+        )
+        
+        risk_tolerance = st.selectbox(
+            "Risk Tolerance",
+            options=['conservative', 'moderate', 'aggressive', 'extreme'],
+            format_func=lambda x: x.title(),
+            index=2,
+            help="How much risk are you willing to take?"
+        )
+    
+    if st.button("🚀 Generate Optimized Strategy", type="primary", use_container_width=True):
+        with st.spinner("Calculating optimal parameters for your goal..."):
+            recommendation = optimizer.get_recommendation(
+                target_multiple=target_multiple,
+                timeframe_days=timeframe,
+                asset_class=asset_class,
+                risk_tolerance=risk_tolerance,
+                starting_capital=starting_capital
+            )
+            
+            st.session_state['trading_goal_recommendation'] = recommendation
+    
+    if 'trading_goal_recommendation' in st.session_state:
+        rec = st.session_state['trading_goal_recommendation']
+        
+        st.markdown("---")
+        st.markdown("### 📊 Your Optimized Trading Plan")
+        
+        goal_info = rec.get('user_goal', {})
+        feasibility = rec.get('feasibility_assessment', {})
+        
+        score = feasibility.get('score', 0)
+        if score >= 80:
+            score_color = "green"
+            score_emoji = "✅"
+        elif score >= 60:
+            score_color = "orange"
+            score_emoji = "⚠️"
+        elif score >= 40:
+            score_color = "red"
+            score_emoji = "⚡"
+        else:
+            score_color = "red"
+            score_emoji = "🔥"
+        
+        cols = st.columns(4)
+        cols[0].metric("Target", goal_info.get('target_multiple', 'N/A'))
+        cols[1].metric("Target Balance", f"${goal_info.get('target_balance', 0):,.0f}")
+        cols[2].metric("Timeframe", f"{goal_info.get('timeframe_days', 0)} days")
+        cols[3].metric(
+            f"{score_emoji} Feasibility",
+            f"{score:.0f}%",
+            delta=feasibility.get('rating', 'Unknown')
+        )
+        
+        if feasibility.get('message'):
+            st.info(f"💡 {feasibility['message']}")
+        
+        perf_req = rec.get('performance_requirements', {})
+        st.markdown("#### 📈 Performance Requirements")
+        perf_cols = st.columns(4)
+        perf_cols[0].metric("Daily Return Needed", perf_req.get('daily_return_needed', 'N/A'))
+        perf_cols[1].metric("Weekly Return Needed", perf_req.get('weekly_return_needed', 'N/A'))
+        perf_cols[2].metric("Required Win Rate", perf_req.get('required_win_rate', 'N/A'))
+        perf_cols[3].metric("Avg Gain/Trade", perf_req.get('required_avg_gain_per_trade', 'N/A'))
+        
+        params = rec.get('optimized_parameters', {})
+        
+        with st.expander("🔧 Optimized Parameters", expanded=True):
+            param_col1, param_col2, param_col3 = st.columns(3)
+            
+            with param_col1:
+                st.markdown("**Position Sizing**")
+                sizing = params.get('position_sizing', {})
+                st.write(f"Base Risk: {sizing.get('base_risk_pct', 0)}%")
+                st.write(f"Max Position: {sizing.get('max_position_pct', 0)}%")
+                st.write(f"Max Positions: {sizing.get('max_positions', 0)}")
+            
+            with param_col2:
+                st.markdown("**Exit Rules**")
+                exits = params.get('exit_rules', {})
+                st.write(f"Stop Loss: {exits.get('stop_loss_pct', 0)}%")
+                st.write(f"Target: {exits.get('target_pct', 0)}%")
+                st.write(f"Max Hold: {exits.get('max_hold_days', 0)} days")
+            
+            with param_col3:
+                st.markdown("**Compounding**")
+                comp = params.get('compounding', {})
+                st.write(f"Pyramiding: {'Enabled' if comp.get('pyramid_enabled') else 'Disabled'}")
+                st.write(f"Max Adds: {comp.get('pyramid_max', 0)}x")
+                st.write(f"Win Streak Bonus: {comp.get('win_streak_mult_max', 0)}x")
+        
+        recommendations = rec.get('recommendations', [])
+        if recommendations:
+            with st.expander("💡 Recommendations", expanded=True):
+                for i, r in enumerate(recommendations, 1):
+                    st.markdown(f"{i}. {r}")
+        
+        apply_col1, apply_col2 = st.columns(2)
+        
+        with apply_col1:
+            if st.button("✅ Apply These Parameters", type="primary", use_container_width=True):
+                try:
+                    from trading.mode_manager import TradingModeManager
+                    manager = TradingModeManager()
+                    if manager.apply_goal_parameters(rec):
+                        st.success("Parameters applied successfully! Your trading is now optimized for your goal.")
+                        st.balloons()
+                    else:
+                        st.error("Failed to apply parameters")
+                except Exception as e:
+                    st.error(f"Error applying parameters: {e}")
+        
+        with apply_col2:
+            if st.button("📊 Compare Asset Classes", use_container_width=True):
+                comparison = optimizer.compare_asset_classes(target_multiple, timeframe)
+                st.session_state['asset_comparison'] = comparison
+        
+        if 'asset_comparison' in st.session_state:
+            comp = st.session_state['asset_comparison']
+            st.markdown("#### 🏆 Asset Class Comparison")
+            st.caption(f"Goal: {comp.get('goal', 'N/A')}")
+            
+            comp_data = comp.get('comparison', {})
+            if comp_data:
+                import pandas as pd
+                df = pd.DataFrame([
+                    {
+                        'Asset': asset.title(),
+                        'Feasibility': f"{data.get('feasibility_score', 0):.0f}%",
+                        'Rating': data.get('rating', 'N/A'),
+                        'Win Rate Needed': data.get('required_win_rate', 'N/A'),
+                        'Stop Loss': f"{data.get('optimized_stop', 0)}%",
+                        'Target': f"{data.get('optimized_target', 0)}%"
+                    }
+                    for asset, data in comp_data.items()
+                ])
+                st.dataframe(df, use_container_width=True, hide_index=True)
+                
+                best = comp.get('best_choice', 'crypto')
+                st.success(f"🏆 **Recommended Asset Class:** {best.title()} - Best feasibility for your goal")

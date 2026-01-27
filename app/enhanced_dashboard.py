@@ -1795,7 +1795,8 @@ def render_market_sentiment_page():
             create_fear_greed_speedometer, 
             create_overall_sentiment_gauge,
             render_fear_greed_legend,
-            render_all_trading_mode_toggles
+            render_all_trading_mode_toggles,
+            render_goal_based_optimizer
         )
         
         sentiment_analyzer = TwitterSentimentAnalyzer()
@@ -1878,42 +1879,49 @@ def render_market_sentiment_page():
         
         with tab2:
             st.subheader("🎛️ Trading Mode Configuration")
-            st.markdown("Configure manual or automatic trading for each asset class:")
             
-            trading_modes = render_all_trading_mode_toggles()
+            mode_subtab1, mode_subtab2 = st.tabs(["⚙️ Mode Settings", "🎯 Goal-Based Optimizer"])
             
-            st.markdown("---")
-            st.markdown("### 📋 Current Configuration")
-            
-            config_col1, config_col2, config_col3 = st.columns(3)
-            
-            with config_col1:
-                mode = trading_modes['crypto']
-                icon = "🤖" if mode == "automatic" else "🚗"
-                st.metric("Crypto Mode", f"{icon} {mode.title()}")
-            
-            with config_col2:
-                mode = trading_modes['stocks']
-                icon = "🤖" if mode == "automatic" else "🚗"
-                st.metric("Stocks Mode", f"{icon} {mode.title()}")
-            
-            with config_col3:
-                mode = trading_modes['options']
-                icon = "🤖" if mode == "automatic" else "🚗"
-                st.metric("Options Mode", f"{icon} {mode.title()}")
-            
-            with st.expander("ℹ️ About Trading Modes"):
-                st.markdown("""
-                **👤 Manual Mode (AI-Assisted)**
-                - AI provides recommendations and analysis
-                - You make the final decision on all trades
-                - Best for learning and maintaining control
+            with mode_subtab1:
+                st.markdown("Configure manual or automatic trading for each asset class:")
                 
-                **🤖 Automatic Mode (AI Executes)**
-                - AI automatically executes trades when confidence thresholds are met
-                - Trades happen without your confirmation
-                - Best for hands-off trading with strict risk parameters
-                """)
+                trading_modes = render_all_trading_mode_toggles()
+                
+                st.markdown("---")
+                st.markdown("### 📋 Current Configuration")
+                
+                config_col1, config_col2, config_col3 = st.columns(3)
+                
+                with config_col1:
+                    mode = trading_modes['crypto']
+                    icon = "🤖" if mode == "automatic" else "🚗"
+                    st.metric("Crypto Mode", f"{icon} {mode.title()}")
+                
+                with config_col2:
+                    mode = trading_modes['stocks']
+                    icon = "🤖" if mode == "automatic" else "🚗"
+                    st.metric("Stocks Mode", f"{icon} {mode.title()}")
+                
+                with config_col3:
+                    mode = trading_modes['options']
+                    icon = "🤖" if mode == "automatic" else "🚗"
+                    st.metric("Options Mode", f"{icon} {mode.title()}")
+                
+                with st.expander("ℹ️ About Trading Modes"):
+                    st.markdown("""
+                    **👤 Manual Mode (AI-Assisted)**
+                    - AI provides recommendations and analysis
+                    - You make the final decision on all trades
+                    - Best for learning and maintaining control
+                    
+                    **🤖 Automatic Mode (AI Executes)**
+                    - AI automatically executes trades when confidence thresholds are met
+                    - Trades happen without your confirmation
+                    - Best for hands-off trading with strict risk parameters
+                    """)
+            
+            with mode_subtab2:
+                render_goal_based_optimizer()
         
         with tab3:
             st.subheader("🐦 Social Media Sentiment Analysis")

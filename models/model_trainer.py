@@ -64,6 +64,32 @@ class RobustModelTrainer:
             if not os.path.exists(directory):
                 os.makedirs(directory, exist_ok=True)
     
+    def _detect_asset_class(self, symbol: str) -> str:
+        """
+        Detect asset class from symbol name.
+        
+        Args:
+            symbol: Trading symbol
+            
+        Returns:
+            Asset class: 'crypto', 'stocks', 'forex', or 'options'
+        """
+        symbol_upper = symbol.upper()
+        
+        crypto_symbols = ['BTC', 'ETH', 'SOL', 'XRP', 'ADA', 'DOGE', 'DOT', 'AVAX', 
+                         'MATIC', 'LINK', 'UNI', 'AAVE', 'ATOM', 'FIL', 'LTC', 'BCH']
+        if any(cs in symbol_upper for cs in crypto_symbols):
+            return 'crypto'
+        
+        forex_pairs = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'CAD', 'NZD']
+        if len(symbol) == 6 and all(symbol[i:i+3].upper() in forex_pairs for i in [0, 3]):
+            return 'forex'
+        
+        if 'CALL' in symbol_upper or 'PUT' in symbol_upper or len(symbol) > 10:
+            return 'options'
+        
+        return 'stocks'
+    
     def engineer_features(self, data, symbol):
         """
         Comprehensive feature engineering pipeline
@@ -570,10 +596,21 @@ class RobustModelTrainer:
                         'feature_names': list(X_train.columns)
                     }
                     
+                    asset_class = self._detect_asset_class(symbol)
+                    
                     results['models'][algorithm] = {
                         'status': 'success',
                         'metrics': metrics,
-                        'model_key': model_key
+                        'model_key': model_key,
+                        'asset_class': asset_class
+                    }
+                    
+                    self.model_performance[model_key] = {
+                        'metrics': metrics,
+                        'asset_class': asset_class,
+                        'symbol': symbol,
+                        'algorithm': algorithm,
+                        'timestamp': datetime.now().isoformat()
                     }
                     
                     # Save model to disk
@@ -1069,3 +1106,111 @@ class ModelTrainer(RobustModelTrainer):
                         
         except Exception as e:
             print(f"Error cleaning up old models: {str(e)}")
+    
+    def get_performance_summary(self, symbol: str = None) -> dict:
+        """
+        Get a summary of all model performance metrics including precision, recall, F1.
+        
+        Args:
+            symbol: Optional symbol to filter results
+            
+        Returns:
+            Dictionary with performance summary
+        """
+        summary = {
+            'models': {},
+            'overall': {},
+            'by_asset_class': {}
+        }
+        
+        asset_class_metrics = {
+            'stocks': {'accuracies': [], 'precisions': [], 'recalls': [], 'f1_scores': []},
+            'crypto': {'accuracies': [], 'precisions': [], 'recalls': [], 'f1_scores': []},
+            'forex': {'accuracies': [], 'precisions': [], 'recalls': [], 'f1_scores': []},
+            'options': {'accuracies': [], 'precisions': [], 'recalls': [], 'f1_scores': []}
+        }
+        
+        for key, perf in self.model_performance.items():
+            if symbol and symbol not in key:
+                continue
+            
+            metrics = perf.get('metrics', {})
+            model_metrics = {
+                'accuracy': round(metrics.get('accuracy', 0) * 100, 2),
+                'precision': round(metrics.get('precision', 0) * 100, 2),
+                'recall': round(metrics.get('recall', 0) * 100, 2),
+                'f1_score': round(metrics.get('f1_score', 0) * 100, 2),
+                'train_accuracy': round(metrics.get('train_accuracy', 0) * 100, 2),
+                'test_accuracy': round(metrics.get('test_accuracy', 0) * 100, 2),
+                'auc': round(metrics.get('test_auc', 0), 4)
+            }
+            summary['models'][key] = model_metrics
+            
+            asset_class = perf.get('asset_class', 'stocks')
+            if asset_class in asset_class_metrics:
+                asset_class_metrics[asset_class]['accuracies'].append(model_metrics['accuracy'])
+                asset_class_metrics[asset_class]['precisions'].append(model_metrics['precision'])
+                asset_class_metrics[asset_class]['recalls'].append(model_metrics['recall'])
+                asset_class_metrics[asset_class]['f1_scores'].append(model_metrics['f1_score'])
+        
+        for ac, data in asset_class_metrics.items():
+            if data['accuracies']:
+                summary['by_asset_class'][ac] = {
+                    'avg_accuracy': round(np.mean(data['accuracies']), 2),
+                    'avg_precision': round(np.mean(data['precisions']), 2),
+                    'avg_recall': round(np.mean(data['recalls']), 2),
+                    'avg_f1_score': round(np.mean(data['f1_scores']), 2),
+                    'model_count': len(data['accuracies'])
+                }
+        
+        if summary['models']:
+            accuracies = [m['accuracy'] for m in summary['models'].values()]
+            precisions = [m['precision'] for m in summary['models'].values()]
+            recalls = [m['recall'] for m in summary['models'].values()]
+            f1_scores = [m['f1_score'] for m in summary['models'].values()]
+            
+            summary['overall'] = {
+                'avg_accuracy': round(np.mean(accuracies), 2),
+                'avg_precision': round(np.mean(precisions), 2),
+                'avg_recall': round(np.mean(recalls), 2),
+                'avg_f1_score': round(np.mean(f1_scores), 2),
+                'total_models': len(summary['models']),
+                'best_model': max(summary['models'].items(), key=lambda x: x[1]['f1_score'])[0] if summary['models'] else None
+            }
+        
+        if hasattr(self, '_perf_tracker'):
+            summary['trading_metrics'] = self._perf_tracker.get_all_metrics()
+        
+        return summary
+    
+    def record_trading_result(self, asset_class: str, predicted: str, actual: str, 
+                              profit_loss: float = 0) -> dict:
+        """
+        Record a trading prediction result for metrics calculation.
+        Integrates with goal-based optimizer's ModelPerformanceTracker.
+        
+        Args:
+            asset_class: 'stocks', 'crypto', 'forex', 'options'
+            predicted: Predicted signal ('BUY', 'SELL', 'HOLD')
+            actual: What the correct signal should have been
+            profit_loss: P&L if trade was taken
+            
+        Returns:
+            Updated metrics for this asset class
+        """
+        try:
+            from trading.goal_based_optimizer import ModelPerformanceTracker
+            
+            if not hasattr(self, '_perf_tracker'):
+                self._perf_tracker = ModelPerformanceTracker()
+            
+            self._perf_tracker.record_prediction(asset_class, predicted, actual, profit_loss)
+            return self._perf_tracker.get_metrics(asset_class)
+        except ImportError:
+            return {'error': 'ModelPerformanceTracker not available'}
+    
+    def get_asset_class_metrics(self) -> dict:
+        """Get performance metrics by asset class"""
+        if hasattr(self, '_perf_tracker'):
+            return self._perf_tracker.get_all_metrics()
+        return {}

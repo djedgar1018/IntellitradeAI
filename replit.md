@@ -62,6 +62,14 @@ File-based storage is used for caching cryptocurrency and stock data in JSON for
 
 ## Recent Changes (January 2026)
 
+- **Goal-Based Strategy Optimizer (Jan 27)**: New adaptive trading optimization system
+  - Custom parameters based on user's target (2x, 5x, 10x, 20x), timeframe, and asset class
+  - Precision, recall, F1 metrics integrated into model performance tracking
+  - Asset class comparison with feasibility scoring
+  - Automatic parameter application for trading mode
+  - New UI in Dashboard: Trading Modes > Goal-Based Optimizer tab
+  - Files: trading/goal_based_optimizer.py, trading/mode_manager.py, app/ui_components.py
+
 - **V22 Scalping Optimization (Jan 27)**: Updated main trading system with V22 optimized parameters
   - V22 achieved 4.6x portfolio growth (+360%) in 1-month backtest
   - Stocks: 5.0x growth (HIT 5x target), Crypto: 5.3x growth (HIT 5x target)

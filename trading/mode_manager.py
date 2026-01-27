@@ -14,6 +14,15 @@ try:
 except ImportError:
     V22_AVAILABLE = False
 
+try:
+    from trading.goal_based_optimizer import (
+        GoalBasedOptimizer, UserTradingPlan, 
+        ModelPerformanceTracker, RiskTolerance, AssetClass
+    )
+    OPTIMIZER_AVAILABLE = True
+except ImportError:
+    OPTIMIZER_AVAILABLE = False
+
 
 class TradingMode(Enum):
     """Trading mode enumeration"""
@@ -131,6 +140,139 @@ class TradingModeManager:
         else:
             self.win_streak = 0
             self.consecutive_losses += 1
+    
+    def get_optimized_params_for_goal(self, 
+                                       target_multiple: float,
+                                       timeframe_days: int,
+                                       asset_class: str = 'all',
+                                       risk_tolerance: str = 'moderate',
+                                       starting_capital: float = 10000.0) -> Dict[str, Any]:
+        """
+        Get optimized trading parameters for user's specific goal.
+        
+        Args:
+            target_multiple: Desired growth (2.0 for 2x, 5.0 for 5x, etc.)
+            timeframe_days: Days to achieve goal
+            asset_class: 'stocks', 'crypto', 'forex', 'options', or 'all'
+            risk_tolerance: 'conservative', 'moderate', 'aggressive', 'extreme'
+            starting_capital: Starting balance
+        
+        Returns:
+            Complete recommendation with optimized parameters
+        """
+        if OPTIMIZER_AVAILABLE:
+            optimizer = GoalBasedOptimizer()
+            return optimizer.get_recommendation(
+                target_multiple=target_multiple,
+                timeframe_days=timeframe_days,
+                asset_class=asset_class,
+                risk_tolerance=risk_tolerance,
+                starting_capital=starting_capital
+            )
+        
+        # Fallback to V22 defaults with clear warning
+        return {
+            'user_goal': {
+                'target_multiple': f'{target_multiple}x',
+                'timeframe_days': timeframe_days,
+                'asset_class': asset_class,
+                'starting_capital': starting_capital
+            },
+            'optimized_parameters': {
+                'position_sizing': {
+                    'base_risk_pct': 28.0,
+                    'max_position_pct': 85.0,
+                    'max_positions': 8
+                },
+                'exit_rules': {
+                    'stop_loss_pct': 0.35,
+                    'target_pct': 9.5,
+                    'max_hold_days': 2
+                },
+                'signal_filters': {
+                    'min_confidence': 45.0
+                },
+                'compounding': {
+                    'pyramid_enabled': True,
+                    'pyramid_max': 5,
+                    'pyramid_add_pct': 75.0,
+                    'win_streak_mult_max': 3.8,
+                    'volatility_bonus_max': 1.35
+                },
+                'execution': {
+                    'trades_per_day_target': 5
+                }
+            },
+            'performance_requirements': {
+                'daily_return_needed': 'N/A - Optimizer unavailable',
+                'weekly_return_needed': 'N/A - Optimizer unavailable',
+                'required_win_rate': '55%',
+                'required_avg_gain_per_trade': '2.5%'
+            },
+            'feasibility_assessment': {
+                'score': 0,
+                'rating': 'Unknown - Optimizer Unavailable',
+                'message': 'Goal-based optimizer not available. Using V22 default parameters which may not align with your specific goal.'
+            },
+            'recommendations': [
+                'Install goal_based_optimizer module for customized recommendations',
+                'V22 defaults are optimized for 5x monthly returns',
+                'Consider adjusting parameters manually if your goal differs'
+            ]
+        }
+    
+    def apply_goal_parameters(self, recommendation: Dict[str, Any]) -> bool:
+        """Apply all optimized parameters from goal-based recommendation"""
+        try:
+            params = recommendation.get('optimized_parameters', {})
+            
+            if 'position_sizing' in params:
+                sizing = params['position_sizing']
+                self.auto_trade_config['max_position_size_percent'] = sizing.get('max_position_pct', 85.0)
+                self.auto_trade_config['base_risk_percent'] = sizing.get('base_risk_pct', 28.0)
+                self.auto_trade_config['max_positions'] = sizing.get('max_positions', 8)
+            
+            if 'exit_rules' in params:
+                exits = params['exit_rules']
+                self.auto_trade_config['stop_loss_percent'] = exits.get('stop_loss_pct', 0.35)
+                self.auto_trade_config['take_profit_percent'] = exits.get('target_pct', 9.5)
+                self.auto_trade_config['max_hold_days'] = exits.get('max_hold_days', 2)
+            
+            if 'signal_filters' in params:
+                self.auto_trade_config['min_confidence'] = params['signal_filters'].get('min_confidence', 45.0)
+            
+            if 'compounding' in params:
+                comp = params['compounding']
+                self.auto_trade_config['pyramid_enabled'] = comp.get('pyramid_enabled', True)
+                self.auto_trade_config['pyramid_max'] = comp.get('pyramid_max', 5)
+                self.auto_trade_config['pyramid_add_percent'] = comp.get('pyramid_add_pct', 75.0)
+                self.auto_trade_config['win_streak_multiplier_max'] = comp.get('win_streak_mult_max', 3.8)
+                self.auto_trade_config['volatility_bonus_max'] = comp.get('volatility_bonus_max', 1.35)
+            
+            if 'execution' in params:
+                self.auto_trade_config['trades_per_day_target'] = params['execution'].get('trades_per_day_target', 5)
+            
+            if 'requirements' in params:
+                req = params['requirements']
+                self.auto_trade_config['required_win_rate'] = req.get('required_win_rate', 55.0)
+                self.auto_trade_config['required_avg_gain'] = req.get('required_avg_gain', 2.0)
+            
+            return True
+        except Exception as e:
+            print(f"Error applying goal parameters: {e}")
+            return False
+    
+    def compare_asset_feasibility(self, target_multiple: float, timeframe_days: int) -> Dict[str, Any]:
+        """Compare goal feasibility across asset classes"""
+        if OPTIMIZER_AVAILABLE:
+            optimizer = GoalBasedOptimizer()
+            return optimizer.compare_asset_classes(target_multiple, timeframe_days)
+        
+        return {
+            'goal': f'{target_multiple}x in {timeframe_days} days',
+            'recommended_order': ['crypto', 'stocks', 'options', 'forex'],
+            'best_choice': 'crypto'
+        }
     
     def switch_mode(self, new_mode: TradingMode) -> Dict[str, Any]:
         """
