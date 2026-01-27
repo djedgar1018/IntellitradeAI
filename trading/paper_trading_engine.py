@@ -70,19 +70,34 @@ class TradingSession:
 
 @dataclass
 class StrategyConfig:
-    version: int = 1
-    position_size_percent: float = 8.0
+    """V22 Optimized Strategy Configuration for 5x/10x Growth
+    
+    Note: This config is for OPTIONS trading engine.
+    - stop_loss_percent/take_profit_percent are on UNDERLYING price movement
+    - For V22 options: 0.25% stop on underlying = ~5% on premium
+    - Imported from trading.v22_scalp_config for consistency
+    """
+    version: int = 22
+    # V22 Position Sizing (Aggressive)
+    position_size_percent: float = 32.0  # V22: 32% base risk for options
     max_positions: int = 8
-    min_confidence: float = 50.0
-    stop_loss_percent: float = 20.0
-    take_profit_percent: float = 40.0
-    max_portfolio_exposure: float = 55.0
-    max_days_to_expiry: int = 45
-    min_days_to_expiry: int = 14
-    delta_range_min: float = 0.40
-    delta_range_max: float = 0.65
+    min_confidence: float = 45.0  # V22: Lower threshold for more trades
+    # V22 Options: Using underlying price stops (not premium %)
+    stop_loss_percent: float = 0.25  # V22: 0.25% stop on underlying
+    take_profit_percent: float = 7.5  # V22: 7.5% target on underlying
+    max_portfolio_exposure: float = 85.0  # V22: Allow 85% exposure
+    max_days_to_expiry: int = 30  # V22: Shorter expiry for theta
+    min_days_to_expiry: int = 7  # V22: Allow closer expiry
+    delta_range_min: float = 0.45
+    delta_range_max: float = 0.70
     calls_only: bool = True
     allowed_symbols: List[str] = field(default_factory=lambda: TARGET_SYMBOLS.copy())
+    # V22 Scalping additions
+    max_hold_days: int = 2
+    pyramid_max: int = 5
+    pyramid_add_percent: float = 75.0
+    win_streak_multiplier: float = 3.8
+    volatility_bonus_max: float = 1.35
 
 
 class OptionsGreeksCalculator:

@@ -61,6 +61,23 @@ File-based storage is used for caching cryptocurrency and stock data in JSON for
 - **Email Newsletter Integration**: Extract trading signals from TLDR AI, Barchart, Investing.com, Webull newsletters via Gmail IMAP
 
 ## Recent Changes (January 2026)
+
+- **V22 Scalping Optimization (Jan 27)**: Updated main trading system with V22 optimized parameters
+  - V22 achieved 4.6x portfolio growth (+360%) in 1-month backtest
+  - Stocks: 5.0x growth (HIT 5x target), Crypto: 5.3x growth (HIT 5x target)
+  - Updated config.py with V22 TRADING_CONFIG and V22_SCALP_CONFIG
+  - Updated trading/paper_trading_engine.py StrategyConfig for V22
+  - New module: trading/v22_scalp_config.py with asset-specific configurations
+  - Key V22 parameters: 28-35% base risk, 0.35-0.5% stops, 9.5-14% targets, 1-2 day holds
+  - Win streak multipliers up to 3.8x, pyramiding up to 5x adds, volatility bonus up to 1.35x
+  - Files: config.py, trading/paper_trading_engine.py, trading/v22_scalp_config.py
+
+- **Paper Trading Experiments (Jan 27)**: Completed V19-V24 strategy testing
+  - V19 baseline: +115.72% (2.16x)
+  - V22 best: +360% (4.6x) - stocks/crypto hit 5x target
+  - 10x target requires: 8-15% daily volatility, 15+ consecutive wins, leverage/options
+  - Files: backtesting/paper_trading_experiment_v21_5x10x.py, v22_optimized.py, v23_10x.py, v24_final.py
+
 - **Email Newsletter Integration (Jan 7)**: Extract trading signals from email newsletters
   - Gmail IMAP client with App Password authentication
   - Newsletter parser for TLDR AI, Barchart, Investing.com, Webull

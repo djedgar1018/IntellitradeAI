@@ -57,14 +57,60 @@ class Config:
         "ema_periods": [12, 26, 50, 200]
     }
     
-    # Trading Parameters
+    # Trading Parameters - V22 Optimized for 5x/10x Growth
     TRADING_CONFIG = {
-        "buy_threshold": 0.7,
-        "sell_threshold": 0.3,
-        "risk_tolerance": 0.02,
-        "max_position_size": 0.1,
-        "stop_loss": 0.05,
-        "take_profit": 0.15
+        "buy_threshold": 0.65,
+        "sell_threshold": 0.35,
+        "risk_tolerance": 0.28,  # V22: 28% base risk for aggressive growth
+        "max_position_size": 0.85,  # V22: Up to 85% in single position
+        "stop_loss": 0.0035,  # V22: 0.35% tight stops for scalping
+        "take_profit": 0.10,  # V22: 10% profit targets
+        "max_hold_days": 2,  # V22: Short holds for scalping
+        "win_streak_multiplier": 3.8,  # V22: Compound on win streaks
+        "pyramid_max": 5,  # V22: Up to 5 add-ons per position
+        "pyramid_add_percent": 0.75,  # V22: 75% position add each pyramid
+        "volatility_bonus_max": 1.35  # V22: Up to 35% bonus on high volatility
+    }
+    
+    # Asset-specific V22 configurations
+    # Note: Stop/target ranges vary by asset volatility:
+    # - Stocks: 0.35% stop (moderate volatility)
+    # - Crypto: 0.50% stop (high volatility)
+    # - Forex: 0.18% stop (low volatility, tight spreads)
+    # - Options: 0.25% stop on underlying (leveraged exposure)
+    V22_SCALP_CONFIG = {
+        "stocks": {
+            "max_positions": 8,
+            "base_risk_pct": 28.0,
+            "max_position_pct": 82.0,
+            "stop_loss_pct": 0.35,  # 0.35% stop for stocks
+            "target_pct": 9.5,      # 9.5% target
+            "max_hold_days": 2
+        },
+        "crypto": {
+            "max_positions": 6,
+            "base_risk_pct": 35.0,
+            "max_position_pct": 88.0,
+            "stop_loss_pct": 0.50,  # 0.50% stop (higher volatility)
+            "target_pct": 14.0,     # 14% target
+            "max_hold_days": 1
+        },
+        "forex": {
+            "max_positions": 6,
+            "base_risk_pct": 30.0,
+            "max_position_pct": 85.0,
+            "stop_loss_pct": 0.18,  # 0.18% stop (tight forex spreads)
+            "target_pct": 6.5,      # 6.5% target
+            "max_hold_days": 2
+        },
+        "options": {
+            "max_positions": 8,
+            "base_risk_pct": 32.0,
+            "max_position_pct": 85.0,
+            "stop_loss_pct": 0.25,  # 0.25% on underlying
+            "target_pct": 7.5,      # 7.5% on underlying
+            "max_hold_days": 2
+        }
     }
     
     # Data Configuration
