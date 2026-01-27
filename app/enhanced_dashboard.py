@@ -420,23 +420,55 @@ def render_login_page():
 def render_main_dashboard():
     """Render the main authenticated dashboard"""
     
-    # Header with user info
-    st.markdown(f'<h1 class="main-header">🤖 AI Trading Dashboard - Welcome {st.session_state.user["username"]}!</h1>', 
-                unsafe_allow_html=True)
+    has_beginner_ui = False
+    has_wizard = False
+    
+    try:
+        from app.beginner_friendly_ui import inject_beginner_styles, render_welcome_header, render_quick_start_cards
+        inject_beginner_styles()
+        has_beginner_ui = True
+    except ImportError:
+        pass
+    
+    try:
+        from app.trading_wizard import render_trading_wizard
+        has_wizard = True
+    except ImportError:
+        pass
+    
+    if st.session_state.get('show_trading_wizard', False) and has_wizard:
+        from app.trading_wizard import render_trading_wizard
+        render_trading_wizard()
+        return
+    
+    username = st.session_state.user.get("username", "Trader")
+    if has_beginner_ui:
+        from app.beginner_friendly_ui import render_welcome_header
+        render_welcome_header(username)
+    else:
+        st.markdown(f'<h1 class="main-header">🤖 AI Trading Dashboard - Welcome {username}!</h1>', 
+                    unsafe_allow_html=True)
     
     # Sidebar navigation
     with st.sidebar:
         st.markdown(f"### 👋 Hello, {st.session_state.user['username']}")
         st.markdown("---")
         
-        # Navigation menu (Trading Dictionary removed - tooltips integrated globally)
-        page = st.selectbox(
-            "🗺️ Navigate",
-            ["🏠 Dashboard Overview", "📋 My Trading Plan", "💼 Stock Portfolio", "₿ Crypto Portfolio", 
+        nav_options = ["🏠 Dashboard Overview", "🎓 Learning Hub", "📋 My Trading Plan", "💼 Stock Portfolio", "₿ Crypto Portfolio", 
              "🔍 AI Analysis", "📊 Pattern Recognition", "💳 Wallet Management",
              "📈 Options Analysis", "📝 Trade Log & P&L", "😊 Market Sentiment",
              "📧 Email Subscriptions", "⚖️ Legal & Compliance", 
              "⚙️ Settings", "🔒 Security"]
+        
+        default_index = 0
+        if 'quick_nav' in st.session_state and st.session_state['quick_nav'] in nav_options:
+            default_index = nav_options.index(st.session_state['quick_nav'])
+            del st.session_state['quick_nav']
+        
+        page = st.selectbox(
+            "🗺️ Navigate",
+            nav_options,
+            index=default_index
         )
         
         st.markdown("---")
@@ -449,6 +481,21 @@ def render_main_dashboard():
         st.metric("Active Positions", "7")
         
         st.markdown("---")
+        
+        if st.session_state.get('auto_trading_active', False):
+            st.success("🤖 Auto-Trading: Active")
+            if st.button("⚙️ Modify Settings", use_container_width=True):
+                st.session_state['show_trading_wizard'] = True
+                st.session_state['wizard_step'] = 2
+                st.rerun()
+        else:
+            st.markdown("### 🚀 Quick Start")
+            if st.button("🤖 Start Auto-Trading", type="primary", use_container_width=True):
+                st.session_state['show_trading_wizard'] = True
+                st.session_state['wizard_step'] = 1
+                st.rerun()
+        
+        st.markdown("---")
         if st.button("🚪 Logout", use_container_width=True):
             st.session_state.authenticated = False
             st.session_state.user = None
@@ -457,6 +504,12 @@ def render_main_dashboard():
     # Main content based on selected page
     if page == "🏠 Dashboard Overview":
         render_dashboard_overview()
+    elif page == "🎓 Learning Hub":
+        try:
+            from app.beginner_learning import render_learning_hub
+            render_learning_hub()
+        except ImportError:
+            st.info("Learning Hub is loading...")
     elif page == "📋 My Trading Plan":
         render_trading_plan_page()
     elif page == "💼 Stock Portfolio":
@@ -487,89 +540,144 @@ def render_main_dashboard():
 def render_dashboard_overview():
     """Render the main dashboard overview"""
     
-    # Portfolio overview cards
+    try:
+        from app.beginner_friendly_ui import render_quick_start_cards, render_explanation_box
+        has_beginner_ui = True
+    except ImportError:
+        has_beginner_ui = False
+    
+    if not st.session_state.get('auto_trading_active', False) and has_beginner_ui:
+        render_quick_start_cards()
+        st.markdown("---")
+    
+    if st.session_state.get('auto_trading_active', False):
+        st.markdown("""
+        <div style="
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        ">
+            <div>
+                <h3 style="margin: 0; color: white;">🤖 AI Auto-Trading is Active</h3>
+                <p style="margin: 4px 0 0 0; opacity: 0.9;">Your trading assistant is monitoring markets and executing trades</p>
+            </div>
+            <div style="font-size: 24px;">✅</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.markdown("""
-        <div class="metric-card success-card">
-            <h3>Total Value</h3>
-            <h2>$25,430</h2>
-            <p>+2.1% today</p>
+        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 16px; padding: 20px; text-align: center;">
+            <div style="font-size: 28px;">💰</div>
+            <h3 style="margin: 8px 0 4px 0; color: white;">Total Value</h3>
+            <h2 style="margin: 0; color: white; font-size: 1.8em;">$25,430</h2>
+            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.9);">+2.1% today</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
-        <div class="metric-card">
-            <h3>Stock Portfolio</h3>
-            <h2>$18,200</h2>
-            <p>5 positions</p>
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 20px; text-align: center;">
+            <div style="font-size: 28px;">📊</div>
+            <h3 style="margin: 8px 0 4px 0; color: white;">Stock Portfolio</h3>
+            <h2 style="margin: 0; color: white; font-size: 1.8em;">$18,200</h2>
+            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.9);">5 positions</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col3:
         st.markdown("""
-        <div class="metric-card">
-            <h3>Crypto Portfolio</h3>
-            <h2>$7,230</h2>
-            <p>3 positions</p>
+        <div style="background: linear-gradient(135deg, #f7931a 0%, #f5a623 100%); border-radius: 16px; padding: 20px; text-align: center;">
+            <div style="font-size: 28px;">₿</div>
+            <h3 style="margin: 8px 0 4px 0; color: white;">Crypto Portfolio</h3>
+            <h2 style="margin: 0; color: white; font-size: 1.8em;">$7,230</h2>
+            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.9);">3 positions</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col4:
         st.markdown("""
-        <div class="metric-card warning-card">
-            <h3>AI Signals</h3>
-            <h2>4 Active</h2>
-            <p>2 BUY, 1 SELL, 1 HOLD</p>
+        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 16px; padding: 20px; text-align: center;">
+            <div style="font-size: 28px;">🤖</div>
+            <h3 style="margin: 8px 0 4px 0; color: white;">AI Signals</h3>
+            <h2 style="margin: 0; color: white; font-size: 1.8em;">4 Active</h2>
+            <p style="margin: 4px 0 0 0; color: rgba(255,255,255,0.9);">2 BUY, 1 SELL, 1 HOLD</p>
         </div>
         """, unsafe_allow_html=True)
     
-    st.markdown("---")
+    st.markdown("<br>", unsafe_allow_html=True)
     
-    # Recent AI Signals
     col_signals, col_performance = st.columns([2, 1])
     
     with col_signals:
-        st.markdown("### 🤖 Recent AI Trading Signals")
+        st.markdown("""
+        <div style="margin-bottom: 16px;">
+            <h3 style="margin-bottom: 4px;">🤖 AI Trading Signals</h3>
+            <p style="color: rgba(255,255,255,0.6); margin: 0; font-size: 0.9em;">
+                These are the AI's current recommendations. BUY = good time to purchase, SELL = good time to exit, HOLD = wait for better opportunity.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
         
-        # Sample signals data - would come from database
-        signals_data = {
-            'Symbol': ['NVDA', 'BTC', 'AAPL', 'TSLA'],
-            'Signal': ['BUY', 'HOLD', 'BUY', 'SELL'],
-            'Confidence': [0.87, 0.72, 0.79, 0.84],
-            'Entry Price': [875.20, 43250.00, 178.50, 242.80],
-            'Target': [945.00, 45000.00, 190.00, 220.00],
-            'Pattern': ['Bullish Flag', 'Consolidation', 'Double Bottom', 'Head & Shoulders']
-        }
+        signals_data = [
+            {"symbol": "NVDA", "signal": "BUY", "confidence": 87, "price": 875.20, "target": 945.00, 
+             "explanation": "Strong upward momentum detected. AI sees potential 8% gain."},
+            {"symbol": "BTC", "signal": "HOLD", "confidence": 72, "price": 43250.00, "target": 45000.00,
+             "explanation": "Market is consolidating. Wait for clearer direction."},
+            {"symbol": "AAPL", "signal": "BUY", "confidence": 79, "price": 178.50, "target": 190.00,
+             "explanation": "Positive earnings outlook. Good entry point detected."},
+            {"symbol": "TSLA", "signal": "SELL", "confidence": 84, "price": 242.80, "target": 220.00,
+             "explanation": "Overbought conditions. Take profits before potential pullback."}
+        ]
         
-        signals_df = pd.DataFrame(signals_data)
+        for sig in signals_data:
+            signal_colors = {"BUY": ("#11998e", "#38ef7d"), "SELL": ("#eb3349", "#f45c43"), "HOLD": ("#667eea", "#764ba2")}
+            signal_icons = {"BUY": "📈", "SELL": "📉", "HOLD": "⏸️"}
+            colors = signal_colors.get(sig["signal"], ("#667eea", "#764ba2"))
+            icon = signal_icons.get(sig["signal"], "❓")
+            
+            st.markdown(f"""
+            <div style="
+                background: linear-gradient(135deg, {colors[0]} 0%, {colors[1]} 100%);
+                border-radius: 12px;
+                padding: 16px;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            ">
+                <div style="font-size: 32px;">{icon}</div>
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+                        <strong style="font-size: 1.2em;">{sig["symbol"]}</strong>
+                        <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-size: 0.85em;">
+                            {sig["signal"]}
+                        </span>
+                        <span style="font-size: 0.85em; opacity: 0.9;">AI Confidence: {sig["confidence"]}%</span>
+                    </div>
+                    <div style="font-size: 0.9em; opacity: 0.9;">
+                        💡 {sig["explanation"]}
+                    </div>
+                    <div style="font-size: 0.85em; margin-top: 4px; opacity: 0.8;">
+                        Current: ${sig["price"]:,.2f} → Target: ${sig["target"]:,.2f}
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
-        # Style the dataframe
-        def style_signals(val):
-            if val == 'BUY':
-                return 'background-color: #d4edda; color: #155724'
-            elif val == 'SELL':
-                return 'background-color: #f8d7da; color: #721c24'
-            elif val == 'HOLD':
-                return 'background-color: #fff3cd; color: #856404'
-            return ''
-        
-        styled_df = signals_df.style.applymap(style_signals, subset=['Signal'])
-        st.dataframe(styled_df, use_container_width=True)
-        
-        # Action buttons
-        col_btn1, col_btn2, col_btn3 = st.columns(3)
+        col_btn1, col_btn2 = st.columns(2)
         with col_btn1:
             if st.button("📈 View All Signals", use_container_width=True):
                 st.info("Navigating to AI Analysis page...")
         with col_btn2:
             if st.button("🔄 Refresh Signals", use_container_width=True):
                 st.success("Signals refreshed!")
-        with col_btn3:
-            if st.button("⚙️ Signal Settings", use_container_width=True):
-                st.info("Opening signal configuration...")
     
     with col_performance:
         st.markdown("### 📊 Performance Metrics")
