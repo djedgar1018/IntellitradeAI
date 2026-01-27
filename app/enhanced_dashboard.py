@@ -863,19 +863,28 @@ def render_ai_analysis_page():
                     
                     if not market_data:
                         st.error("❌ Could not fetch market data. Using sample data for demonstration.")
-                        # Create sample data for demo
-                        dates = pd.date_range(start='2024-01-01', periods=100, freq='D')
-                        sample_data = pd.DataFrame({
-                            'open': np.random.randn(100).cumsum() + 100,
-                            'high': np.random.randn(100).cumsum() + 102,
-                            'low': np.random.randn(100).cumsum() + 98,
-                            'close': np.random.randn(100).cumsum() + 100,
-                            'volume': np.random.randint(1000, 10000, 100)
-                        }, index=dates)
-                        
+                        # Create asset-specific sample data for demo
                         market_data = {}
                         for symbol in selected_symbols:
-                            market_data[symbol] = sample_data
+                            # Use realistic base prices from DataIngestion
+                            base_price = ing.base_prices.get(symbol, 100)
+                            volatility = 0.02 if base_price > 1000 else 0.03 if base_price > 100 else 0.04
+                            
+                            dates = pd.date_range(end=pd.Timestamp.today(), periods=100, freq='D')
+                            returns = np.random.normal(0.0002, volatility, 100)
+                            close_prices = base_price * np.cumprod(1 + returns)
+                            daily_range = close_prices * np.random.uniform(0.005, 0.025, 100)
+                            open_prices = close_prices * (1 + np.random.uniform(-0.01, 0.01, 100))
+                            high_prices = np.maximum(open_prices, close_prices) + daily_range * 0.5
+                            low_prices = np.minimum(open_prices, close_prices) - daily_range * 0.5
+                            
+                            market_data[symbol] = pd.DataFrame({
+                                'open': open_prices,
+                                'high': high_prices,
+                                'low': low_prices,
+                                'close': close_prices,
+                                'volume': np.random.randint(1000000, 50000000, 100)
+                            }, index=dates)
                     
                     st.session_state.market_data.update(market_data)
                     st.session_state.ai_selected_symbols = selected_symbols

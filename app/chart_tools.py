@@ -605,6 +605,9 @@ def create_advanced_chart(
         margin=dict(l=50, r=50, t=80, b=50)
     )
     
+    fig.update_yaxes(title_text="Price ($)", row=1, col=1)
+    fig.update_xaxes(title_text="Date", row=num_rows, col=1)
+    
     fig.update_xaxes(
         rangeselector=dict(
             buttons=list([
