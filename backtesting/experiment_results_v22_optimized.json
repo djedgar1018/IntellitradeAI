@@ -1,0 +1,78 @@
+{
+  "version": 22,
+  "strategy": "OPTIMIZED_5X_10X",
+  "period_days": 30,
+  "run_date": "2026-01-27T19:13:51.032140",
+  "targets": {
+    "5x": "+400%",
+    "10x": "+900%"
+  },
+  "starting_balance": 40000,
+  "ending_balance": 183886.98,
+  "total_return_pct": 359.72,
+  "total_growth_x": 4.6,
+  "hit_5x": "False",
+  "hit_10x": "False",
+  "results": {
+    "stocks": {
+      "account": "STOCKS V22",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 50443.18,
+      "return_pct": 404.43,
+      "growth_x": 5.04,
+      "trades": 86,
+      "wins": 58,
+      "losses": 28,
+      "win_rate": 67.44,
+      "profit_factor": 40.91,
+      "max_dd": 2.13,
+      "best_streak": 10
+    },
+    "crypto": {
+      "account": "CRYPTO V22",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 53087.4,
+      "return_pct": 430.87,
+      "growth_x": 5.31,
+      "trades": 87,
+      "wins": 62,
+      "losses": 25,
+      "win_rate": 71.26,
+      "profit_factor": 2.57,
+      "max_dd": 25.21,
+      "best_streak": 11
+    },
+    "forex": {
+      "account": "FOREX V22",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 42720.82,
+      "return_pct": 327.21,
+      "growth_x": 4.27,
+      "trades": 75,
+      "wins": 60,
+      "losses": 15,
+      "win_rate": 80.0,
+      "profit_factor": 82.89,
+      "max_dd": 0,
+      "best_streak": 10
+    },
+    "options": {
+      "account": "OPTIONS V22",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 37635.58,
+      "return_pct": 276.36,
+      "growth_x": 3.76,
+      "trades": 86,
+      "wins": 76,
+      "losses": 10,
+      "win_rate": 88.37,
+      "profit_factor": 27.69,
+      "max_dd": 6.51,
+      "best_streak": 20
+    }
+  }
+}

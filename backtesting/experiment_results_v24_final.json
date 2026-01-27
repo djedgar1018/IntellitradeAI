@@ -1,0 +1,80 @@
+{
+  "version": 24,
+  "strategy": "FINAL_5X_10X",
+  "period_days": 30,
+  "run_date": "2026-01-27T19:18:36.533775",
+  "targets": {
+    "5x": "+400%",
+    "10x": "+900%"
+  },
+  "starting_balance": 40000,
+  "ending_balance": 124510.2,
+  "total_return_pct": 211.28,
+  "total_growth_x": 3.11,
+  "hit_5x": "False",
+  "hit_10x": "False",
+  "assets_5x": 0,
+  "assets_10x": 0,
+  "results": {
+    "stocks": {
+      "account": "STOCKS V24",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 27174.77,
+      "return_pct": 171.75,
+      "growth_x": 2.72,
+      "trades": 71,
+      "wins": 44,
+      "losses": 27,
+      "win_rate": 61.97,
+      "profit_factor": 10.13,
+      "max_dd": 11.49,
+      "best_streak": 5
+    },
+    "crypto": {
+      "account": "CRYPTO V24",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 44215.11,
+      "return_pct": 342.15,
+      "growth_x": 4.42,
+      "trades": 78,
+      "wins": 51,
+      "losses": 27,
+      "win_rate": 65.38,
+      "profit_factor": 3.64,
+      "max_dd": 18.47,
+      "best_streak": 11
+    },
+    "forex": {
+      "account": "FOREX V24",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 27021.51,
+      "return_pct": 170.22,
+      "growth_x": 2.7,
+      "trades": 70,
+      "wins": 49,
+      "losses": 21,
+      "win_rate": 70.0,
+      "profit_factor": 107.25,
+      "max_dd": 1.78,
+      "best_streak": 8
+    },
+    "options": {
+      "account": "OPTIONS V24",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 26098.81,
+      "return_pct": 160.99,
+      "growth_x": 2.61,
+      "trades": 73,
+      "wins": 60,
+      "losses": 13,
+      "win_rate": 82.19,
+      "profit_factor": 4.62,
+      "max_dd": 21.66,
+      "best_streak": 10
+    }
+  }
+}
