@@ -1,0 +1,74 @@
+{
+  "version": 18,
+  "strategy": "DOUBLE_V17",
+  "period_days": 30,
+  "run_date": "2026-01-27T18:50:16.027308",
+  "starting_balance": 40000,
+  "ending_balance": 86356.39,
+  "total_return_pct": 115.89,
+  "results": {
+    "stocks": {
+      "account": "STOCKS V18",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 19468.03,
+      "return_pct": 94.68,
+      "trades": 87,
+      "wins": 54,
+      "losses": 33,
+      "win_rate": 62.07,
+      "profit_factor": 34.32,
+      "max_dd": 4.65,
+      "best_streak": 9
+    },
+    "crypto": {
+      "account": "CRYPTO V18",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 27690.8,
+      "return_pct": 176.91,
+      "trades": 92,
+      "wins": 47,
+      "losses": 45,
+      "win_rate": 51.09,
+      "profit_factor": 10.9,
+      "max_dd": 4.32,
+      "best_streak": 5
+    },
+    "forex": {
+      "account": "FOREX V18",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 20859.92,
+      "return_pct": 108.6,
+      "trades": 82,
+      "wins": 56,
+      "losses": 26,
+      "win_rate": 68.29,
+      "profit_factor": 212.86,
+      "max_dd": 0,
+      "best_streak": 16
+    },
+    "options": {
+      "account": "OPTIONS V18",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 18337.64,
+      "return_pct": 83.38,
+      "trades": 104,
+      "wins": 97,
+      "losses": 7,
+      "win_rate": 93.27,
+      "profit_factor": 7.09,
+      "max_dd": 4.4,
+      "best_streak": 34
+    }
+  },
+  "v17_baseline": {
+    "stocks": 43.88,
+    "crypto": 85.96,
+    "forex": 27.48,
+    "options": 49.84
+  },
+  "all_doubled": false
+}
