@@ -1405,7 +1405,7 @@ def render_pattern_recognition_page():
                                     
                                     with col_p2:
                                         # Pattern strength indicator
-                                        strength = pattern['signal_strength']
+                                        strength = pattern.get('signal_strength', pattern.get('confidence', 0.5))
                                         if strength > 0.7:
                                             strength_color = "green"
                                             strength_text = "Strong"
