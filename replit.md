@@ -62,6 +62,15 @@ File-based storage is used for caching cryptocurrency and stock data in JSON for
 
 ## Recent Changes (January 2026)
 
+- **Beginner-Friendly UI Overhaul (Jan 27)**: Major user experience improvements
+  - Modern design system with gradient cards, visual icons, and clear hierarchy
+  - 7-step Automated Trading Wizard for any timeframe and asset class
+  - Quick Start Cards on dashboard for common actions
+  - Learning Hub with educational content (trading basics, signals explained, risk management, AI explainer)
+  - Visual signal cards with plain English explanations of BUY/SELL/HOLD
+  - Interactive risk/asset/timeframe selectors with detailed descriptions
+  - Files: app/beginner_friendly_ui.py, app/trading_wizard.py, app/beginner_learning.py
+
 - **Goal-Based Strategy Optimizer (Jan 27)**: New adaptive trading optimization system
   - Custom parameters based on user's target (2x, 5x, 10x, 20x), timeframe, and asset class
   - Precision, recall, F1 metrics integrated into model performance tracking
