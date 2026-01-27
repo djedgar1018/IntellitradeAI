@@ -1004,7 +1004,7 @@ def render_ai_analysis_page():
                         """, unsafe_allow_html=True)
                     
                     # Display price levels for HOLD signals
-                    if unified_signal['signal'] == 'HOLD' and 'price_levels' in unified_signal:
+                    if unified_signal.get('signal', unified_signal.get('final_signal', '')) == 'HOLD' and 'price_levels' in unified_signal:
                         st.markdown("---")
                         st.markdown("### 🎯 **Key Price Levels - Actionable Trading Plan**")
                         st.markdown("When signal is HOLD, watch these 3 key levels for your next move:")
