@@ -1,0 +1,86 @@
+{
+  "version": 11,
+  "strategy": "SCALP",
+  "period_days": 30,
+  "run_date": "2026-01-27T18:14:34.307825",
+  "results": {
+    "stocks": {
+      "account": "Stocks SCALP",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 10251.16,
+      "return_pct": 2.51,
+      "trades": 23,
+      "wins": 11,
+      "losses": 12,
+      "win_rate": 47.83,
+      "avg_win": 32.61,
+      "avg_loss": 8.96,
+      "profit_factor": 3.33,
+      "max_dd": 0.3,
+      "sharpe": 4.51
+    },
+    "crypto": {
+      "account": "Crypto SCALP",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 10230.27,
+      "return_pct": 2.3,
+      "trades": 15,
+      "wins": 9,
+      "losses": 6,
+      "win_rate": 60.0,
+      "avg_win": 50.4,
+      "avg_loss": 37.22,
+      "profit_factor": 2.03,
+      "max_dd": 1.47,
+      "sharpe": 2.81
+    },
+    "forex": {
+      "account": "Forex SCALP",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 10134.27,
+      "return_pct": 1.34,
+      "trades": 9,
+      "wins": 5,
+      "losses": 4,
+      "win_rate": 55.56,
+      "avg_win": 36.97,
+      "avg_loss": 12.64,
+      "profit_factor": 3.66,
+      "max_dd": 0.23,
+      "sharpe": 4.01
+    },
+    "options": {
+      "account": "Options SCALP",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 10428.88,
+      "return_pct": 4.29,
+      "trades": 11,
+      "wins": 8,
+      "losses": 3,
+      "win_rate": 72.73,
+      "avg_win": 57.35,
+      "avg_loss": 9.97,
+      "profit_factor": 15.34,
+      "max_dd": 1.15,
+      "sharpe": 4.77
+    }
+  },
+  "profitable_count": 4,
+  "annualized_return": 36.25,
+  "comparison": {
+    "v10_12mo": {
+      "return": 11.03,
+      "trades": 182,
+      "profitable": 4
+    },
+    "v11_1mo_scalp": {
+      "return": 2.61,
+      "trades": 58,
+      "profitable": 4
+    }
+  }
+}
