@@ -1,0 +1,71 @@
+{
+  "version": 17,
+  "strategy": "FINAL_10X_PUSH",
+  "period_days": 30,
+  "run_date": "2026-01-27T18:45:46.337913",
+  "starting_balance": 40000,
+  "ending_balance": 60716.12,
+  "total_return_pct": 51.79,
+  "results": {
+    "stocks": {
+      "account": "STOCKS V17",
+      "asset_class": "stocks",
+      "initial": 10000,
+      "final": 14387.71,
+      "return_pct": 43.88,
+      "trades": 71,
+      "wins": 38,
+      "losses": 33,
+      "win_rate": 53.52,
+      "profit_factor": 6.89,
+      "max_dd": 3.31,
+      "best_streak": 9
+    },
+    "crypto": {
+      "account": "CRYPTO V17",
+      "asset_class": "crypto",
+      "initial": 10000,
+      "final": 18596.45,
+      "return_pct": 85.96,
+      "trades": 67,
+      "wins": 36,
+      "losses": 31,
+      "win_rate": 53.73,
+      "profit_factor": 13.26,
+      "max_dd": 0.56,
+      "best_streak": 6
+    },
+    "forex": {
+      "account": "FOREX V17",
+      "asset_class": "forex",
+      "initial": 10000,
+      "final": 12747.68,
+      "return_pct": 27.48,
+      "trades": 71,
+      "wins": 31,
+      "losses": 40,
+      "win_rate": 43.66,
+      "profit_factor": 8.99,
+      "max_dd": 2.46,
+      "best_streak": 5
+    },
+    "options": {
+      "account": "OPTIONS V17",
+      "asset_class": "options",
+      "initial": 10000,
+      "final": 14984.28,
+      "return_pct": 49.84,
+      "trades": 64,
+      "wins": 54,
+      "losses": 10,
+      "win_rate": 84.38,
+      "profit_factor": 7.36,
+      "max_dd": 3.62,
+      "best_streak": 10
+    }
+  },
+  "all_profitable": true,
+  "achieved_10x_count": 4,
+  "improvement_vs_v11": 19.84,
+  "gap_to_10x": -25.69
+}
