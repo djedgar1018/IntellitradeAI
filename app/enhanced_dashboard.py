@@ -1384,6 +1384,61 @@ def render_pattern_recognition_page():
                         if patterns:
                             st.success(f"✅ Found {len(patterns)} chart patterns in {symbol_input}")
                             
+                            # Display the chart with patterns
+                            st.markdown("### 📈 Chart with Detected Patterns")
+                            
+                            toolbar_config = {
+                                'show_volume': True,
+                                'show_sma_20': True,
+                                'show_patterns': True
+                            }
+                            indicator_config = {'show_rsi': False, 'show_macd': False}
+                            
+                            fig, config = create_advanced_chart(
+                                asset_data, symbol_input, toolbar_config, indicator_config, 
+                                f"pattern_chart_{symbol_input}"
+                            )
+                            
+                            # Add pattern markers to chart
+                            current_price = asset_data['close'].iloc[-1]
+                            for pattern in patterns:
+                                entry = pattern.get('entry_price', current_price)
+                                target = pattern.get('target_price', entry * 1.1)
+                                stop = pattern.get('stop_loss', entry * 0.95)
+                                
+                                # Entry line (blue)
+                                fig.add_hline(
+                                    y=entry, line_dash="solid", line_color="#2196F3", line_width=2,
+                                    annotation_text=f"Entry ${entry:,.2f}",
+                                    annotation_position="left", row=1, col=1
+                                )
+                                # Target line (green)
+                                fig.add_hline(
+                                    y=target, line_dash="dash", line_color="#4CAF50", line_width=2,
+                                    annotation_text=f"Target ${target:,.2f}",
+                                    annotation_position="left", row=1, col=1
+                                )
+                                # Stop loss line (red)
+                                fig.add_hline(
+                                    y=stop, line_dash="dash", line_color="#F44336", line_width=2,
+                                    annotation_text=f"Stop ${stop:,.2f}",
+                                    annotation_position="left", row=1, col=1
+                                )
+                            
+                            st.plotly_chart(fig, use_container_width=True, config=config)
+                            
+                            # Pattern legend
+                            st.markdown("""
+                            <div style="display: flex; gap: 20px; justify-content: center; margin: 10px 0;">
+                                <span>🔵 <strong>Entry Price</strong></span>
+                                <span>🟢 <strong>Target Price</strong></span>
+                                <span>🔴 <strong>Stop Loss</strong></span>
+                            </div>
+                            """, unsafe_allow_html=True)
+                            
+                            st.markdown("---")
+                            st.markdown("### 📋 Pattern Details")
+                            
                             # Display each pattern
                             for i, pattern in enumerate(patterns):
                                 with st.expander(f"Pattern {i+1}: {pattern['pattern_type']}", expanded=True):
