@@ -436,6 +436,15 @@ def render_main_dashboard():
     except ImportError:
         pass
     
+    # Show quick-start strategies selection screen
+    if st.session_state.get('show_quick_start_strategies', False):
+        try:
+            from app.beginner_friendly_ui import render_quick_start_strategies
+            render_quick_start_strategies()
+            return
+        except ImportError:
+            st.session_state['show_quick_start_strategies'] = False
+    
     if st.session_state.get('show_trading_wizard', False) and has_wizard:
         from app.trading_wizard import render_trading_wizard
         render_trading_wizard()
@@ -491,8 +500,7 @@ def render_main_dashboard():
         else:
             st.markdown("### 🚀 Quick Start")
             if st.button("🤖 Start Auto-Trading", type="primary", use_container_width=True):
-                st.session_state['show_trading_wizard'] = True
-                st.session_state['wizard_step'] = 1
+                st.session_state['show_quick_start_strategies'] = True
                 st.rerun()
         
         st.markdown("---")
@@ -1991,8 +1999,7 @@ def render_live_trades_page():
             st.warning("⚠️ Auto-trading is not active")
             st.info("Start auto-trading to see live trade notifications here.")
             if st.button("🤖 Start Auto-Trading", type="primary"):
-                st.session_state['show_trading_wizard'] = True
-                st.session_state['wizard_step'] = 1
+                st.session_state['show_quick_start_strategies'] = True
                 st.rerun()
 
 

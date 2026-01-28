@@ -278,8 +278,7 @@ def render_quick_start_cards():
             </div>
             """, unsafe_allow_html=True)
             if st.button("Start Trading", key="quick_auto", use_container_width=True):
-                st.session_state['show_trading_wizard'] = True
-                st.session_state['wizard_step'] = 1
+                st.session_state['show_quick_start_strategies'] = True
                 st.rerun()
     
     with col3:
@@ -305,6 +304,184 @@ def render_quick_start_cards():
         if st.button("Learn More", key="quick_learn", use_container_width=True):
             st.session_state['quick_nav'] = '🎓 Learning Hub'
             st.rerun()
+
+
+def render_quick_start_strategies():
+    """Render quick-start strategy selection with one-click activation"""
+    
+    st.markdown("""
+    <div style="text-align: center; padding: 20px 0;">
+        <h2>⚡ Quick Start Auto-Trading</h2>
+        <p style="color: rgba(255,255,255,0.7); font-size: 1.1em;">
+            Choose a preset strategy and start trading in seconds!
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # How auto-trading works explanation
+    with st.expander("❓ How does auto-trading work?", expanded=True):
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px;">
+            <h4 style="color: #667eea; margin-bottom: 15px;">🤖 Understanding AI Auto-Trading</h4>
+            
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #00d4aa;">When you activate auto-trading:</strong>
+                <ol style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Market Scanning</strong> - AI analyzes real-time prices from stocks, crypto, or ETFs</li>
+                    <li><strong>Signal Generation</strong> - When it spots a good opportunity, it creates a trade signal</li>
+                    <li><strong>Trade Execution</strong> - Trades appear in your Live Trade Feed instantly</li>
+                    <li><strong>Position Management</strong> - AI monitors and closes trades when targets are hit</li>
+                </ol>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #f5af19;">⏱️ Timing:</strong>
+                <p style="margin: 5px 0;">
+                    Trades execute when market conditions match your strategy. Click "Scan for Trades" 
+                    to manually check for new opportunities, or the AI will show you opportunities 
+                    as they appear during market hours.
+                </p>
+            </div>
+            
+            <div style="background: rgba(102, 126, 234, 0.2); padding: 12px; border-radius: 8px;">
+                <strong>💡 Paper Trading Mode:</strong> All trades are simulated - you won't lose real money. 
+                This helps you learn and test strategies before going live.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("### 🎯 Choose Your Strategy")
+    
+    # Preset strategies
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 16px; padding: 24px; text-align: center; height: 280px;">
+            <div style="font-size: 48px;">🛡️</div>
+            <h3 style="margin: 10px 0;">Conservative</h3>
+            <p style="font-size: 0.9em; opacity: 0.9;">Low risk, steady gains</p>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin: 15px 0; text-align: left;">
+                <div>• Stocks & ETFs only</div>
+                <div>• 1-2% per trade risk</div>
+                <div>• Tight stop losses</div>
+                <div>• $1,000 starting capital</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Start Conservative", key="quick_conservative", use_container_width=True, type="primary"):
+            _activate_preset_strategy("conservative")
+    
+    with col2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; text-align: center; height: 280px;">
+            <div style="font-size: 48px;">⚖️</div>
+            <h3 style="margin: 10px 0;">Balanced</h3>
+            <p style="font-size: 0.9em; opacity: 0.9;">Mix of stocks & crypto</p>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin: 15px 0; text-align: left;">
+                <div>• Stocks, ETFs & Crypto</div>
+                <div>• 3-5% per trade risk</div>
+                <div>• Moderate targets</div>
+                <div>• $5,000 starting capital</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Start Balanced", key="quick_balanced", use_container_width=True, type="primary"):
+            _activate_preset_strategy("balanced")
+    
+    with col3:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #f5af19 0%, #f12711 100%); border-radius: 16px; padding: 24px; text-align: center; height: 280px;">
+            <div style="font-size: 48px;">🚀</div>
+            <h3 style="margin: 10px 0;">Aggressive</h3>
+            <p style="font-size: 0.9em; opacity: 0.9;">High risk, high reward</p>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin: 15px 0; text-align: left;">
+                <div>• Crypto focused</div>
+                <div>• 5-10% per trade risk</div>
+                <div>• Larger position sizes</div>
+                <div>• $10,000 starting capital</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Start Aggressive", key="quick_aggressive", use_container_width=True, type="primary"):
+            _activate_preset_strategy("aggressive")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    col_back, col_wizard = st.columns([1, 1])
+    with col_back:
+        if st.button("← Back to Dashboard", use_container_width=True):
+            st.session_state['show_quick_start_strategies'] = False
+            st.rerun()
+    with col_wizard:
+        if st.button("🔧 Customize My Strategy", use_container_width=True):
+            st.session_state['show_quick_start_strategies'] = False
+            st.session_state['show_trading_wizard'] = True
+            st.session_state['wizard_step'] = 1
+            st.rerun()
+
+
+def _activate_preset_strategy(strategy: str):
+    """Activate a preset trading strategy and go directly to live feed"""
+    presets = {
+        "conservative": {
+            "risk_level": "Low",
+            "risk_description": "1-2% per trade",
+            "asset_classes": ["stocks", "etfs"],
+            "timeframe": "Daily",
+            "starting_capital": 1000,
+            "stop_loss_pct": 0.02,
+            "take_profit_pct": 0.04
+        },
+        "balanced": {
+            "risk_level": "Medium",
+            "risk_description": "3-5% per trade",
+            "asset_classes": ["stocks", "etfs", "crypto"],
+            "timeframe": "Daily",
+            "starting_capital": 5000,
+            "stop_loss_pct": 0.03,
+            "take_profit_pct": 0.06
+        },
+        "aggressive": {
+            "risk_level": "High",
+            "risk_description": "5-10% per trade",
+            "asset_classes": ["crypto", "stocks"],
+            "timeframe": "4 Hour",
+            "starting_capital": 10000,
+            "stop_loss_pct": 0.05,
+            "take_profit_pct": 0.10
+        }
+    }
+    
+    config = presets.get(strategy, presets["balanced"])
+    
+    # Set wizard config
+    st.session_state['wizard_config'] = config
+    st.session_state['trading_wizard_config'] = config
+    
+    # Initialize auto-trader with the preset
+    try:
+        from trading.auto_trader import AutoTrader
+        auto_trader = AutoTrader(
+            starting_capital=config['starting_capital'],
+            risk_per_trade=config['stop_loss_pct'],
+            asset_classes=config['asset_classes']
+        )
+        st.session_state['auto_trader'] = auto_trader
+        st.session_state['auto_trading_active'] = True
+        st.session_state['starting_balance'] = config['starting_capital']
+        st.session_state['current_balance'] = config['starting_capital']
+    except Exception as e:
+        st.session_state['auto_trading_active'] = True
+        st.session_state['starting_balance'] = config['starting_capital']
+        st.session_state['current_balance'] = config['starting_capital']
+    
+    # Clear quick start and go to live trades
+    st.session_state['show_quick_start_strategies'] = False
+    st.session_state['show_trading_wizard'] = False
+    st.session_state['quick_nav'] = '📡 Live Trades'
+    st.rerun()
 
 
 def render_signal_card(signal: str, symbol: str, confidence: float, 
