@@ -1535,28 +1535,74 @@ def render_pattern_recognition_page():
                             
                             # Add pattern markers to chart
                             current_price = asset_data['close'].iloc[-1]
-                            for pattern in patterns:
+                            dates = asset_data.index
+                            last_date = dates[-1]
+                            first_date = dates[0]
+                            
+                            for idx, pattern in enumerate(patterns):
                                 entry = pattern.get('entry_price', current_price)
                                 target = pattern.get('target_price', entry * 1.1)
                                 stop = pattern.get('stop_loss', entry * 0.95)
+                                pattern_type = pattern.get('pattern_type', 'Pattern')
+                                signal = pattern.get('signal', 'BUY')
+                                confidence = pattern.get('confidence', 0.75)
+                                
+                                # Add shaded zone between entry and target (profit zone)
+                                fig.add_shape(
+                                    type="rect",
+                                    x0=first_date, x1=last_date,
+                                    y0=entry, y1=target,
+                                    fillcolor="rgba(76, 175, 80, 0.1)",
+                                    line=dict(width=0),
+                                    row=1, col=1
+                                )
+                                
+                                # Add shaded zone between entry and stop (risk zone)
+                                fig.add_shape(
+                                    type="rect",
+                                    x0=first_date, x1=last_date,
+                                    y0=stop, y1=entry,
+                                    fillcolor="rgba(244, 67, 54, 0.1)",
+                                    line=dict(width=0),
+                                    row=1, col=1
+                                )
                                 
                                 # Entry line (blue)
                                 fig.add_hline(
                                     y=entry, line_dash="solid", line_color="#2196F3", line_width=2,
-                                    annotation_text=f"Entry ${entry:,.2f}",
+                                    annotation_text=f"📍 Entry ${entry:,.2f}",
                                     annotation_position="left", row=1, col=1
                                 )
                                 # Target line (green)
                                 fig.add_hline(
                                     y=target, line_dash="dash", line_color="#4CAF50", line_width=2,
-                                    annotation_text=f"Target ${target:,.2f}",
+                                    annotation_text=f"🎯 Target ${target:,.2f}",
                                     annotation_position="left", row=1, col=1
                                 )
                                 # Stop loss line (red)
                                 fig.add_hline(
                                     y=stop, line_dash="dash", line_color="#F44336", line_width=2,
-                                    annotation_text=f"Stop ${stop:,.2f}",
+                                    annotation_text=f"🛑 Stop ${stop:,.2f}",
                                     annotation_position="left", row=1, col=1
+                                )
+                                
+                                # Add pattern label annotation box
+                                signal_color = "#4CAF50" if signal == "BUY" else "#F44336"
+                                fig.add_annotation(
+                                    x=last_date,
+                                    y=target,
+                                    text=f"<b>{pattern_type}</b><br>{signal} • {confidence:.0%}",
+                                    showarrow=True,
+                                    arrowhead=2,
+                                    arrowcolor=signal_color,
+                                    bgcolor=signal_color,
+                                    font=dict(color="white", size=11),
+                                    bordercolor=signal_color,
+                                    borderwidth=2,
+                                    borderpad=4,
+                                    ax=50,
+                                    ay=-30,
+                                    row=1, col=1
                                 )
                             
                             st.plotly_chart(fig, use_container_width=True, config=config)
@@ -1579,11 +1625,13 @@ def render_pattern_recognition_page():
                                     col_p1, col_p2 = st.columns([2, 1])
                                     
                                     with col_p1:
+                                        # Escape $ signs to prevent markdown math interpretation
+                                        desc = pattern['description'].replace('$', '\\$')
                                         st.markdown(f"""
                                         **Pattern:** {pattern['pattern_type']}  
                                         **Signal:** {pattern['signal']}  
                                         **Confidence:** {pattern['confidence']:.1%}  
-                                        **Description:** {pattern['description']}
+                                        **Description:** {desc}
                                         """)
                                         
                                         st.markdown("**Trading Levels:**")
