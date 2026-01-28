@@ -8,6 +8,12 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any
 import json
 
+try:
+    from trading.auto_trader import get_auto_trader, reset_auto_trader, AutoTrader
+    AUTO_TRADER_AVAILABLE = True
+except ImportError:
+    AUTO_TRADER_AVAILABLE = False
+
 def inject_trade_feed_styles():
     """Inject CSS for trade notification cards"""
     st.markdown("""
@@ -381,17 +387,71 @@ def render_pnl_summary(trades: List[Dict], current_balance: float, starting_bala
 
 def render_no_trades_message():
     """Show message when no trades have been executed"""
-    st.markdown("""
-    <div class="no-trades-card">
-        <div class="no-trades-icon">⏳</div>
-        <h3 style="color: #fff; margin-bottom: 10px;">Waiting for Trade Signals...</h3>
-        <p style="color: #888; font-size: 1.1em;">
-            The AI is analyzing the market. Trades will appear here as soon as 
-            the system identifies profitable opportunities.
-        </p>
-        <p style="color: #667eea; margin-top: 15px;">
-            💡 Tip: The AI looks for high-confidence setups that match your risk profile.
-        </p>
+    auto_trading_active = st.session_state.get('auto_trading_active', False)
+    
+    if auto_trading_active:
+        st.markdown("""
+        <div class="no-trades-card">
+            <div class="no-trades-icon">🤖</div>
+            <h3 style="color: #fff; margin-bottom: 10px;">Auto-Trading is Active!</h3>
+            <p style="color: #888; font-size: 1.1em;">
+                Click <strong>"Scan for Trades"</strong> above to search for trading opportunities.
+                The AI will analyze the market and execute trades when it finds good setups.
+            </p>
+            <p style="color: #00d4aa; margin-top: 15px;">
+                💡 Tip: Each scan checks multiple assets and executes trades automatically when conditions are right.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div class="no-trades-card">
+            <div class="no-trades-icon">⏳</div>
+            <h3 style="color: #fff; margin-bottom: 10px;">Waiting for Trade Signals...</h3>
+            <p style="color: #888; font-size: 1.1em;">
+                The AI is analyzing the market. Trades will appear here as soon as 
+                the system identifies profitable opportunities.
+            </p>
+            <p style="color: #667eea; margin-top: 15px;">
+                💡 Tip: The AI looks for high-confidence setups that match your risk profile.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+def render_auto_trading_stats(stats: Dict[str, Any]):
+    """Render auto-trading statistics panel"""
+    pnl_color = "#00d4aa" if stats['total_pnl'] >= 0 else "#ff6b6b"
+    pnl_sign = "+" if stats['total_pnl'] >= 0 else ""
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 15px; margin-bottom: 20px; border: 1px solid #667eea33;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div style="text-align: center; flex: 1; min-width: 100px;">
+                <div style="font-size: 0.8em; color: #888;">Balance</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: #fff;">${stats['current_balance']:,.2f}</div>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 100px;">
+                <div style="font-size: 0.8em; color: #888;">Total P&L</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: {pnl_color};">{pnl_sign}${stats['total_pnl']:,.2f}</div>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 100px;">
+                <div style="font-size: 0.8em; color: #888;">Return</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: {pnl_color};">{pnl_sign}{stats['pnl_percent']:.1f}%</div>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 100px;">
+                <div style="font-size: 0.8em; color: #888;">Win Rate</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: #fff;">{stats['win_rate']:.0f}%</div>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 100px;">
+                <div style="font-size: 0.8em; color: #888;">Trades</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: #fff;">{stats['total_trades']}</div>
+            </div>
+            <div style="text-align: center; flex: 1; min-width: 100px;">
+                <div style="font-size: 0.8em; color: #888;">Open</div>
+                <div style="font-size: 1.2em; font-weight: bold; color: #667eea;">{stats['open_positions']}</div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -497,12 +557,52 @@ def render_live_trade_feed():
     """Main function to render the live trade feed"""
     inject_trade_feed_styles()
     
-    st.markdown("""
+    auto_trading_active = st.session_state.get('auto_trading_active', False)
+    
+    if auto_trading_active and not AUTO_TRADER_AVAILABLE:
+        st.error("Auto-trading is not available. There may be a system configuration issue. Please try again later or contact support.")
+        auto_trading_active = False
+    
+    if auto_trading_active and AUTO_TRADER_AVAILABLE:
+        if 'auto_trader' not in st.session_state:
+            auto_trader = get_auto_trader()
+            wizard_config = st.session_state.get('trading_wizard_config', {})
+            auto_trader.configure(
+                risk_tolerance=wizard_config.get('risk_level', 'moderate'),
+                asset_classes=wizard_config.get('asset_classes', ['stocks']),
+                starting_capital=wizard_config.get('capital', 10000),
+                timeframe=wizard_config.get('timeframe', 'day')
+            )
+            auto_trader.start()
+            st.session_state['auto_trader'] = auto_trader
+            st.session_state['last_scan_time'] = None
+            st.session_state['last_scan_result'] = None
+            st.session_state['initial_scan_done'] = False
+        else:
+            auto_trader = st.session_state['auto_trader']
+        
+        if not st.session_state.get('initial_scan_done', False) and auto_trader.is_active():
+            with st.spinner("🔍 Running initial market scan..."):
+                new_trades = auto_trader.run_scan()
+                st.session_state['initial_scan_done'] = True
+                st.session_state['last_scan_time'] = datetime.now()
+                st.session_state['last_scan_result'] = len(new_trades)
+                if new_trades:
+                    for trade in new_trades:
+                        st.toast(f"{'🟢' if trade['action'] == 'BUY' else '🔴'} New {trade['action']}: {trade['symbol']} @ ${trade['entry_price']:,.2f}", icon="📈")
+    else:
+        auto_trader = None
+    
+    is_running = auto_trader.is_active() if auto_trader else False
+    status_indicator = "LIVE" if is_running else "PAUSED"
+    status_color = "#00d4aa" if is_running else "#ffa500"
+    
+    st.markdown(f"""
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="margin: 0;">📡 Live Trade Feed</h2>
-        <div class="live-indicator">
-            <div class="live-dot"></div>
-            LIVE
+        <div class="live-indicator" style="background: linear-gradient(135deg, {status_color}22 0%, {status_color}11 100%); border: 1px solid {status_color};">
+            <div class="live-dot" style="background: {status_color};"></div>
+            {status_indicator}
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -510,37 +610,121 @@ def render_live_trade_feed():
     if 'demo_trades' not in st.session_state:
         st.session_state['demo_trades'] = []
     
-    trades = get_session_trades()
+    if auto_trader:
+        trades = auto_trader.get_all_trades()
+        stats = auto_trader.get_stats()
+        starting_balance = stats['starting_balance']
+        current_balance = stats['current_balance']
+    else:
+        trades = get_session_trades()
+        if not trades:
+            trades = st.session_state.get('demo_trades', [])
+        starting_balance = st.session_state.get('starting_balance', 10000)
+        current_balance = st.session_state.get('current_balance', starting_balance)
     
-    if not trades:
-        trades = st.session_state.get('demo_trades', [])
-    
-    starting_balance = st.session_state.get('starting_balance', 10000)
-    current_balance = st.session_state.get('current_balance', starting_balance)
-    
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col1:
-        if st.button("➕ Simulate New Trade", use_container_width=True, type="primary"):
-            new_trade = generate_demo_trade()
-            st.session_state['demo_trades'].insert(0, new_trade)
-            st.toast(f"{'🟢' if new_trade['action'] == 'BUY' else '🔴'} New {new_trade['action']} trade: {new_trade['symbol']} @ ${new_trade['entry_price']:,.2f}", icon="📈")
-            st.rerun()
-    
-    with col2:
-        if st.button("🔄 Refresh Prices", use_container_width=True):
-            import random
-            for trade in st.session_state.get('demo_trades', []):
-                if trade.get('status') == 'open':
-                    change = random.uniform(-0.02, 0.03)
-                    trade['current_price'] = round(trade['entry_price'] * (1 + change), 2)
-            st.rerun()
-    
-    with col3:
-        if st.session_state.get('demo_trades') and st.button("🗑️ Clear All", use_container_width=True):
-            st.session_state['demo_trades'] = []
-            st.rerun()
+    if auto_trader and is_running:
+        col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+        with col1:
+            if st.button("🔍 Scan for Trades", use_container_width=True, type="primary"):
+                with st.spinner("Scanning markets..."):
+                    new_trades = auto_trader.run_scan()
+                    st.session_state['last_scan_time'] = datetime.now()
+                    st.session_state['last_scan_result'] = len(new_trades)
+                    if new_trades:
+                        for trade in new_trades:
+                            st.toast(f"{'🟢' if trade['action'] == 'BUY' else '🔴'} New {trade['action']}: {trade['symbol']} @ ${trade['entry_price']:,.2f}", icon="📈")
+                    else:
+                        st.toast("No opportunities found - market conditions not ideal. Try again in a few minutes!", icon="👀")
+                st.rerun()
+        
+        with col2:
+            if st.button("🔄 Refresh Prices", use_container_width=True):
+                auto_trader.update_positions()
+                st.rerun()
+        
+        with col3:
+            if st.button("⏸️ Pause Trading", use_container_width=True):
+                auto_trader.stop()
+                st.toast("Auto-trading paused", icon="⏸️")
+                st.rerun()
+        
+        with col4:
+            if st.button("🛑 Stop & Exit", use_container_width=True):
+                auto_trader.stop()
+                st.session_state['auto_trading_active'] = False
+                st.session_state.pop('auto_trader', None)
+                reset_auto_trader()
+                st.toast("Auto-trading stopped", icon="🛑")
+                st.rerun()
+    elif auto_trader and not is_running:
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            if st.button("▶️ Resume Trading", use_container_width=True, type="primary"):
+                auto_trader.start()
+                st.toast("Auto-trading resumed!", icon="▶️")
+                st.rerun()
+        
+        with col2:
+            if st.button("🔄 Refresh Prices", use_container_width=True):
+                auto_trader.update_positions()
+                st.rerun()
+        
+        with col3:
+            if st.button("🛑 Stop & Exit", use_container_width=True):
+                st.session_state['auto_trading_active'] = False
+                st.session_state.pop('auto_trader', None)
+                reset_auto_trader()
+                st.rerun()
+    else:
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            if st.button("➕ Simulate New Trade", use_container_width=True, type="primary"):
+                new_trade = generate_demo_trade()
+                st.session_state['demo_trades'].insert(0, new_trade)
+                st.toast(f"{'🟢' if new_trade['action'] == 'BUY' else '🔴'} New {new_trade['action']} trade: {new_trade['symbol']} @ ${new_trade['entry_price']:,.2f}", icon="📈")
+                st.rerun()
+        
+        with col2:
+            if st.button("🔄 Refresh Prices", use_container_width=True):
+                import random
+                for trade in st.session_state.get('demo_trades', []):
+                    if trade.get('status') == 'open':
+                        change = random.uniform(-0.02, 0.03)
+                        trade['current_price'] = round(trade['entry_price'] * (1 + change), 2)
+                st.rerun()
+        
+        with col3:
+            if st.session_state.get('demo_trades') and st.button("🗑️ Clear All", use_container_width=True):
+                st.session_state['demo_trades'] = []
+                st.rerun()
     
     st.markdown("---")
+    
+    if auto_trader:
+        last_scan_time = st.session_state.get('last_scan_time')
+        last_scan_result = st.session_state.get('last_scan_result', 0)
+        
+        if last_scan_time:
+            time_ago = datetime.now() - last_scan_time
+            if time_ago.seconds < 60:
+                time_str = f"{time_ago.seconds} seconds ago"
+            elif time_ago.seconds < 3600:
+                time_str = f"{time_ago.seconds // 60} minutes ago"
+            else:
+                time_str = last_scan_time.strftime('%H:%M:%S')
+            
+            result_text = f"Found {last_scan_result} trading opportunities" if last_scan_result > 0 else "No opportunities found (market conditions not ideal)"
+            result_color = "#00d4aa" if last_scan_result > 0 else "#888"
+            
+            st.markdown(f"""
+            <div style="background: rgba(102, 126, 234, 0.1); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: #888;">📡 Last scan: <strong style="color: #fff;">{time_str}</strong></span>
+                <span style="color: {result_color};">{result_text}</span>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        stats = auto_trader.get_stats()
+        render_auto_trading_stats(stats)
     
     all_trades = trades if trades else st.session_state.get('demo_trades', [])
     

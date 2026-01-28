@@ -527,13 +527,28 @@ class AutomatedTradingWizard:
         
         with col2:
             if st.button("📊 View Dashboard", type="primary", use_container_width=True):
+                config = st.session_state.get('wizard_config', {})
+                st.session_state['trading_wizard_config'] = {
+                    'risk_level': config.get('risk_level', 'Moderate').lower(),
+                    'asset_classes': [a.lower() for a in config.get('asset_classes', ['Stocks'])],
+                    'capital': config.get('starting_capital', 10000),
+                    'timeframe': config.get('timeframe', 'day'),
+                }
                 st.session_state['show_trading_wizard'] = False
                 st.session_state['wizard_complete'] = True
                 st.session_state['auto_trading_active'] = True
+                st.session_state['quick_nav'] = 'live_trades'
                 st.rerun()
         
         with col3:
             if st.button("📈 View Signals", use_container_width=True):
+                config = st.session_state.get('wizard_config', {})
+                st.session_state['trading_wizard_config'] = {
+                    'risk_level': config.get('risk_level', 'Moderate').lower(),
+                    'asset_classes': [a.lower() for a in config.get('asset_classes', ['Stocks'])],
+                    'capital': config.get('starting_capital', 10000),
+                    'timeframe': config.get('timeframe', 'day'),
+                }
                 st.session_state['show_trading_wizard'] = False
                 st.session_state['wizard_complete'] = True
                 st.session_state['auto_trading_active'] = True

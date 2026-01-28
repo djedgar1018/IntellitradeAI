@@ -62,6 +62,17 @@ File-based storage is used for caching cryptocurrency and stock data in JSON for
 
 ## Recent Changes (January 2026)
 
+- **Auto-Trading Engine (Jan 28)**: Full automated trading execution system
+  - New AutoTrader engine that fetches real market data and executes trades automatically
+  - Configurable via Trading Wizard: risk tolerance, asset classes, capital, timeframe
+  - "Scan for Trades" button triggers market analysis and automatic trade execution
+  - Live status indicator (LIVE/PAUSED) with controls to pause, resume, or stop trading
+  - Real-time stats panel: Balance, P&L, Return %, Win Rate, Trades count, Open positions
+  - Integration with Yahoo Finance for live stock/crypto/ETF prices
+  - Signal generation based on momentum, volume, and price pattern analysis
+  - Automatic stop loss and take profit management
+  - Files: trading/auto_trader.py, app/live_trade_feed.py, app/trading_wizard.py
+
 - **Live Trade Feed (Jan 27)**: Real-time trade visibility system
   - Visual trade cards showing each trade as it executes
   - AI reasoning explanation for every trade decision
