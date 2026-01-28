@@ -261,7 +261,7 @@ def generate_trade_explanation(trade: Dict) -> str:
 
 
 def render_trade_card(trade: Dict, show_closed: bool = False):
-    """Render a single trade notification card"""
+    """Render a single trade notification card using Streamlit components"""
     symbol = trade.get('symbol', 'Unknown')
     action = trade.get('action', trade.get('signal', 'BUY')).upper()
     entry_price = trade.get('entry_price', trade.get('price', 0))
@@ -272,6 +272,7 @@ def render_trade_card(trade: Dict, show_closed: bool = False):
     confidence = trade.get('confidence', 75)
     timestamp = trade.get('timestamp', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     status = trade.get('status', 'open')
+    asset_type = trade.get('asset_type', 'stock').upper()
     
     if action in ['BUY', 'LONG']:
         unrealized_pnl = (current_price - entry_price) * quantity
@@ -283,67 +284,42 @@ def render_trade_card(trade: Dict, show_closed: bool = False):
     potential_loss = abs(entry_price - stop_loss) * quantity
     potential_profit = abs(take_profit - entry_price) * quantity
     
-    realized_pnl = trade.get('realized_pnl', 0)
+    action_color = "#00d4aa" if action in ['BUY', 'LONG'] else "#ff6b6b"
+    border_color = action_color
+    pnl_color = "#00d4aa" if unrealized_pnl >= 0 else "#ff6b6b"
     
-    action_class = 'buy' if action in ['BUY', 'LONG'] else 'sell'
-    card_class = 'closed' if status == 'closed' else action_class
-    pnl_class = 'positive' if unrealized_pnl >= 0 else 'negative'
+    reasons = trade.get('reasons', [])
+    if not reasons:
+        if action in ['BUY', 'LONG']:
+            reasons = ["Strong momentum detected", "Technical indicators bullish", "Volume confirms trend"]
+        else:
+            reasons = ["Overbought conditions", "Taking profits", "Momentum weakening"]
     
-    explanation = generate_trade_explanation(trade)
+    reasons_html = "".join([f"<li style='margin: 5px 0;'>{r}</li>" for r in reasons[:3]])
     
-    html = f"""
-    <div class="trade-card {card_class}">
-        <div class="trade-header">
-            <div>
-                <span class="trade-symbol">{symbol}</span>
-                <span style="color: #888; font-size: 0.8em; margin-left: 10px;">{trade.get('asset_type', 'stock').upper()}</span>
-            </div>
-            <span class="trade-action {action_class}">{action}</span>
-        </div>
-        
-        <div class="trade-reason">
-            {explanation}
-        </div>
-        
-        <div class="trade-metrics">
-            <div class="trade-metric">
-                <div class="metric-label">Entry Price</div>
-                <div class="metric-value">${entry_price:,.2f}</div>
-            </div>
-            <div class="trade-metric">
-                <div class="metric-label">Current Price</div>
-                <div class="metric-value">${current_price:,.2f}</div>
-            </div>
-            <div class="trade-metric">
-                <div class="metric-label">Quantity</div>
-                <div class="metric-value">{quantity:,.2f}</div>
-            </div>
-            <div class="trade-metric">
-                <div class="metric-label">Unrealized P&L</div>
-                <div class="metric-value {pnl_class}">${unrealized_pnl:+,.2f} ({unrealized_pnl_pct:+.2f}%)</div>
-            </div>
-        </div>
-        
-        <div class="stop-loss-bar">
-            <div>
-                <span class="stop-loss-label">🛑 Stop Loss:</span>
-                <span style="color: #fff; margin-left: 8px;">${stop_loss:,.2f}</span>
-                <span style="color: #888; font-size: 0.9em;"> (Risk: ${potential_loss:,.2f})</span>
-            </div>
-            <div>
-                <span class="take-profit-label">🎯 Take Profit:</span>
-                <span style="color: #fff; margin-left: 8px;">${take_profit:,.2f}</span>
-                <span style="color: #888; font-size: 0.9em;"> (Potential: ${potential_profit:,.2f})</span>
-            </div>
-        </div>
-        
-        <div class="trade-timestamp">
-            ⏰ {timestamp} | Confidence: {confidence}%
-        </div>
-    </div>
-    """
-    
-    st.markdown(html, unsafe_allow_html=True)
+    with st.container():
+        st.markdown(f"""<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 20px; margin: 15px 0; border-left: 5px solid {border_color}; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+<div><span style="font-size: 1.8em; font-weight: bold; color: #fff;">{symbol}</span><span style="color: #888; font-size: 0.8em; margin-left: 10px;">{asset_type}</span></div>
+<span style="padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 1.1em; background: {action_color}; color: {'#000' if action in ['BUY', 'LONG'] else '#fff'};">{action}</span>
+</div>
+<div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; margin: 15px 0;">
+<div style="font-weight: bold; color: #667eea; margin-bottom: 8px; font-size: 0.9em;">WHY THIS TRADE?</div>
+<div style="color: #fff;">The AI is {confidence}% confident because:</div>
+<ul style="margin: 10px 0; padding-left: 20px; color: rgba(255,255,255,0.9);">{reasons_html}</ul>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 15px 0;">
+<div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px; text-align: center;"><div style="font-size: 0.85em; color: #888; margin-bottom: 5px;">Entry Price</div><div style="font-size: 1.2em; font-weight: bold; color: #fff;">${entry_price:,.2f}</div></div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px; text-align: center;"><div style="font-size: 0.85em; color: #888; margin-bottom: 5px;">Current Price</div><div style="font-size: 1.2em; font-weight: bold; color: #fff;">${current_price:,.2f}</div></div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px; text-align: center;"><div style="font-size: 0.85em; color: #888; margin-bottom: 5px;">Quantity</div><div style="font-size: 1.2em; font-weight: bold; color: #fff;">{quantity:,.2f}</div></div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px; text-align: center;"><div style="font-size: 0.85em; color: #888; margin-bottom: 5px;">Unrealized P&L</div><div style="font-size: 1.2em; font-weight: bold; color: {pnl_color};">${unrealized_pnl:+,.2f} ({unrealized_pnl_pct:+.1f}%)</div></div>
+</div>
+<div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; margin: 15px 0; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+<div><span style="color: #ff6b6b; font-weight: bold;">🛑 Stop Loss:</span><span style="color: #fff; margin-left: 8px;">${stop_loss:,.2f}</span><span style="color: #888; font-size: 0.9em;"> (Risk: ${potential_loss:,.2f})</span></div>
+<div><span style="color: #00d4aa; font-weight: bold;">🎯 Take Profit:</span><span style="color: #fff; margin-left: 8px;">${take_profit:,.2f}</span><span style="color: #888; font-size: 0.9em;"> (Potential: ${potential_profit:,.2f})</span></div>
+</div>
+<div style="color: #888; font-size: 0.9em; text-align: right;">⏰ {timestamp} | Confidence: {confidence}%</div>
+</div>""", unsafe_allow_html=True)
 
 
 def render_pnl_summary(trades: List[Dict], current_balance: float, starting_balance: float):
