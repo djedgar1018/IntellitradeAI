@@ -320,35 +320,24 @@ def render_quick_start_strategies():
     
     # How auto-trading works explanation
     with st.expander("❓ How does auto-trading work?", expanded=True):
+        st.markdown("#### 🤖 Understanding AI Auto-Trading")
+        
+        st.markdown("**When you activate auto-trading:**")
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 20px;">
-            <h4 style="color: #667eea; margin-bottom: 15px;">🤖 Understanding AI Auto-Trading</h4>
-            
-            <div style="margin-bottom: 15px;">
-                <strong style="color: #00d4aa;">When you activate auto-trading:</strong>
-                <ol style="margin: 10px 0; padding-left: 20px;">
-                    <li><strong>Market Scanning</strong> - AI analyzes real-time prices from stocks, crypto, or ETFs</li>
-                    <li><strong>Signal Generation</strong> - When it spots a good opportunity, it creates a trade signal</li>
-                    <li><strong>Trade Execution</strong> - Trades appear in your Live Trade Feed instantly</li>
-                    <li><strong>Position Management</strong> - AI monitors and closes trades when targets are hit</li>
-                </ol>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <strong style="color: #f5af19;">⏱️ Timing:</strong>
-                <p style="margin: 5px 0;">
-                    Trades execute when market conditions match your strategy. Click "Scan for Trades" 
-                    to manually check for new opportunities, or the AI will show you opportunities 
-                    as they appear during market hours.
-                </p>
-            </div>
-            
-            <div style="background: rgba(102, 126, 234, 0.2); padding: 12px; border-radius: 8px;">
-                <strong>💡 Paper Trading Mode:</strong> All trades are simulated - you won't lose real money. 
-                This helps you learn and test strategies before going live.
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+1. **Market Scanning** - AI analyzes real-time prices from stocks, crypto, or ETFs
+2. **Signal Generation** - When it spots a good opportunity, it creates a trade signal
+3. **Trade Execution** - Trades appear in your Live Trade Feed instantly
+4. **Position Management** - AI monitors and closes trades when targets are hit
+        """)
+        
+        st.markdown("**⏱️ Timing:**")
+        st.markdown("""
+Trades execute when market conditions match your strategy. Click "Scan for Trades" 
+to manually check for new opportunities, or the AI will show you opportunities 
+as they appear during market hours.
+        """)
+        
+        st.info("💡 **Paper Trading Mode:** All trades are simulated - you won't lose real money. This helps you learn and test strategies before going live.")
     
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### 🎯 Choose Your Strategy")
